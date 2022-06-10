@@ -1,3 +1,0 @@
-# conda install --file conda_requirements should install all dependencies of gen3_workflow
-
-stackvana>=0.2021.40
