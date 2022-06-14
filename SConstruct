@@ -1,4 +1,4 @@
 # -*- python -*-
 from lsst.sconsUtils import scripts
-scripts.BasicSConstruct("gen3_workflow",
-                        versionModuleName='python/desc/gen3_workflow/version.py')
+scripts.BasicSConstruct("ctrl_bps_parsl",
+                        versionModuleName='python/lsst/ctrl/bps/parsl/version.py')
