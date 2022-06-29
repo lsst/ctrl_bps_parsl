@@ -244,7 +244,12 @@ class ParslWorkflow(BaseWmsWorkflow):
             label = self.site.select_executor(job)
         else:
             label = executors[0].label
-        return job.get_future(self.apps[label], [ff for ff in inputs if ff is not None], self.command_prefix)
+        return job.get_future(
+            self.apps[label],
+            [ff for ff in inputs if ff is not None],
+            self.command_prefix,
+            self.site.add_resources,
+        )
 
     def load_dfk(self):
         """Load data frame kernel

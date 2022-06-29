@@ -27,11 +27,16 @@ class SiteConfig(ABC):
     ----------
     config : `BpsConfig`
         BPS configuration.
+    add_resources : `bool`
+        Add resource specification when submitting the job? This is only
+        appropriate for the ``WorkQueue`` executor; other executors will
+        raise an exception.
     """
 
-    def __init__(self, config: BpsConfig):
+    def __init__(self, config: BpsConfig, add_resources: bool = False):
         self.config = config
         self.site = self.get_site_subconfig(config)
+        self.add_resources = add_resources
 
     @staticmethod
     def get_site_subconfig(config: BpsConfig) -> BpsConfig:

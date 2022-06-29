@@ -3,7 +3,7 @@ import re
 import subprocess
 from functools import partial
 from textwrap import dedent
-from typing import Dict, List, Optional, Sequence
+from typing import Any, Dict, List, Optional, Sequence
 
 from lsst.ctrl.bps import BpsConfig, GenericWorkflow, GenericWorkflowJob
 from parsl.app.bash import BashApp
@@ -22,6 +22,7 @@ def run_command(
     inputs: Sequence[Future] = (),
     stdout: Optional[str] = None,
     stderr: Optional[str] = None,
+    parsl_resource_specification: Optional[Dict[str, Any]] = None,
 ) -> str:
     """Run a command
 
@@ -37,6 +38,8 @@ def run_command(
         Other commands that must have run before this.
     stdout, stderr : `str`, optional
         Filenames for stdout and stderr.
+    parsl_resource_specification : `dict`, optional
+        Resources required for job.
 
     Returns
     -------
@@ -162,11 +165,27 @@ class ParslJob:
         command = re.sub(_file_regex, lambda match: self.file_paths[match.group(1)], command)  # Files
         return command
 
+    def get_resources(self) -> Dict[str, Any]:
+        """Return what resources are required for executing this job"""
+        resources = {}
+        for bps_name, parsl_name, scale in (
+            ("request_memory", "memory", 1.0e-3),  # BPS in MB, Parsl in GB
+            ("request_cpus", "cores", None),
+            ("request_disk", "disk", None),  # Both are MB
+            ("request_walltime", "running_time_max", None),  # Both are minutes
+        ):
+            value = getattr(self.generic, bps_name)
+            if scale is not None:
+                value *= scale
+            resources[parsl_name] = value
+        return resources
+
     def get_future(
         self,
         app: BashApp,
         inputs: List[Future],
         command_prefix: Optional[str] = None,
+        add_resources: bool = False,
     ) -> Optional[Future]:
         """Get the parsl app future for the job
 
@@ -182,6 +201,10 @@ class ParslJob:
         command_prefix : `str`, optional
             Bash commands to execute before the job command, e.g., for setting
             the environment.
+        add_resources : `bool`
+            Add resource specification when submitting the job? This is only
+            appropriate for the ``WorkQueue`` executor; other executors will
+            raise an exception.
 
         Returns
         -------
@@ -196,13 +219,20 @@ class ParslJob:
             command = self.evaluate_command_line(command)
             if command_prefix:
                 command = command_prefix + "\n" + command
+            resources = self.get_resources() if add_resources else None
 
             # Add a layer of indirection to which we can add a useful name.
             # This name is used by parsl for tracking workflow status.
             func = partial(run_command)
             setattr(func, "__name__", self.generic.label)
 
-            self.future = app(func)(command, inputs=inputs, stdout=self.stdout, stderr=self.stderr)
+            self.future = app(func)(
+                command,
+                inputs=inputs,
+                stdout=self.stdout,
+                stderr=self.stderr,
+                parsl_resource_specification=resources,
+            )
         return self.future
 
     def run_local(self):
