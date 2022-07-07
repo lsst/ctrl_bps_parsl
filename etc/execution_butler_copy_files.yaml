@@ -1,0 +1,18 @@
+# THIS FILE MAY BE DEPRECATED IN FUTURE VERSIONS
+#
+# This enables copying of files into the execution butler.
+# This is useful if the original butler sits on a slow disk.
+# Files are copied to the execution butler on creation, and
+# copied back to the original butler on completion.
+
+executionButler:
+  createCommand: >-
+    ${CTRL_MPEXEC_DIR}/bin/pipetask qgraph -b {butlerConfig} -i {inCollection}
+    -o {output} --output-run {outputRun}
+    --save-execution-butler {executionButlerDir}
+    --datastore-root "{submitPath}/EXEC_DATA-{uniqProcName}"
+    -g {qgraphFile} --transfer=copy
+  command1: >-
+    ${DAF_BUTLER_DIR}/bin/butler {mergePreCmdOpts} transfer-datasets
+    {executionButlerDir} {butlerConfig} --collections {outputRun}
+    --register-dataset-types --transfer=move
