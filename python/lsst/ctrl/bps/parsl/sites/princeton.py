@@ -23,6 +23,21 @@ class Tiger(Slurm):
     - ``walltime`` (`str`): time limit for each Slurm job.
     - ``mem_per_node`` (`int`): memory per node (GB) for each Slurm job.
     - ``max_blocks`` (`int`): number of blocks (Slurm jobs) to use; one will execute while the others wait.
+
+    When running on the Tiger cluster, you should operate on the
+    ``/scratch/gpfs`` filesystem, rather than ``/projects`` or ``/tigress``,
+    as the latter are much slower on the cluster nodes than they are on the
+    head nodes. Your BPS config should contain::
+
+        includeConfigs:
+          - ${CTRL_BPS_PARSL_DIR}/etc/execution_butler_copy_files.yaml
+
+    This will cause the necessary files to be transferred from your repo
+    (presumably on ``/projects`` or ``/tigress``) to the execution butler in
+    your submission directory (presumably on ``/scratch/gpfs``). Failure to do
+    so will result in about a 6x slowdown, and probably degrading performance
+    for other users. The results will be copied back to the original repo when
+    everything has completed.
     """
 
     def get_executors(self) -> List[ParslExecutor]:

@@ -130,7 +130,7 @@ class ParslJob:
         return dedent(
             f"""
             if [[ ! -d {job_dir} ]]; then mkdir -p {job_dir}; fi
-            cp {exec_butler_dir}/*.* {job_dir}
+            cp {exec_butler_dir}/{{butler.yaml,gen3.sqlite3}} {job_dir}
             {command}
             retcode=$?
             rm -rf {job_dir}

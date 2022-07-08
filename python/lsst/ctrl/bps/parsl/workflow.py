@@ -216,8 +216,8 @@ class ParslWorkflow(BaseWmsWorkflow):
             for ff in futures:
                 if ff is not None:
                     ff.exception()
-            self.finalize_jobs()
             self.shutdown()
+            self.finalize_jobs()
         return futures
 
     def execute(self, name: str) -> Optional[Future]:
