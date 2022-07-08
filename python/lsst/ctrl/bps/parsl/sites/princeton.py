@@ -22,7 +22,9 @@ class Tiger(Slurm):
     - ``cores_per_node`` (`int`): number of cores per node for each Slurm job.
     - ``walltime`` (`str`): time limit for each Slurm job.
     - ``mem_per_node`` (`int`): memory per node (GB) for each Slurm job.
-    - ``max_blocks`` (`int`): number of blocks (Slurm jobs) to use; one will execute while the others wait.
+    - ``max_blocks`` (`int`): maximum number of blocks (Slurm jobs) to use.
+    - ``singleton`` (`bool`): allow only one job to run at a time; by default
+      ``True``.
 
     When running on the Tiger cluster, you should operate on the
     ``/scratch/gpfs`` filesystem, rather than ``/projects`` or ``/tigress``,

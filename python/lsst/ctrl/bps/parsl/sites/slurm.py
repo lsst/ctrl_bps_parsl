@@ -34,6 +34,8 @@ class Slurm(SiteConfig):
       default we use whatever Slurm gives us.
     - ``qos`` (`str`): quality of service to request for each Slurm job; by
       default we use whatever Slurm gives us.
+    - ``singleton`` (`bool`): allow only one job to run at a time; by default
+      ``False``.
     """
 
     def make_executor(
@@ -91,6 +93,7 @@ class Slurm(SiteConfig):
         walltime = get_bps_config_value(self.site, "walltime", str, walltime, required=True)
         mem_per_node = get_bps_config_value(self.site, "mem_per_node", int, mem_per_node)
         qos = get_bps_config_value(self.site, "qos", str, qos)
+        singleton = get_bps_config_value(self.site, "singleton", bool, singleton)
 
         job_name = get_workflow_name(self.config)
         if scheduler_options is None:
