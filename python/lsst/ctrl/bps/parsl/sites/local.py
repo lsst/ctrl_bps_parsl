@@ -1,7 +1,8 @@
 from typing import TYPE_CHECKING, List
 
-from parsl.executors import ThreadPoolExecutor
+from parsl.executors import HighThroughputExecutor
 from parsl.executors.base import ParslExecutor
+from parsl.providers import LocalProvider
 
 from ..configuration import get_bps_config_value
 from ..site import SiteConfig
@@ -13,10 +14,7 @@ __all__ = ("Local",)
 
 
 class Local(SiteConfig):
-    """Configuration for running jobs on a local ThreadPool
-
-    (The python GIL does not impact the threads, because the jobs are running in
-    bash, outside the GIL.)
+    """Configuration for running jobs on the local machine
 
     The number of cores to use is specified in the site configuration, under
     ``site.<computeSite>.cores`` (`int`).
@@ -28,7 +26,7 @@ class Local(SiteConfig):
         Each executor should have a unique ``label``.
         """
         cores = get_bps_config_value(self.site, "cores", int, required=True)
-        return [ThreadPoolExecutor("local", max_threads=cores)]
+        return [HighThroughputExecutor("local", provider=LocalProvider(), max_workers=cores)]
 
     def select_executor(self, job: "ParslJob") -> str:
         """Get the ``label`` of the executor to use to execute a job
