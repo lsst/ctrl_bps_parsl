@@ -166,7 +166,7 @@ class SiteConfig(ABC):
         return MonitoringHub(
             workflow_name=get_workflow_name(self.config),
             hub_address=self.get_address(),
-            resource_monitoring_interval=get_bps_config_value(self.site, "monitorInterval", float, 30),
+            resource_monitoring_interval=get_bps_config_value(self.site, "monitorInterval", float, 30.0),
             logging_endpoint="sqlite:///"
             + get_bps_config_value(self.site, "monitorFilename", str, "monitor.sqlite"),
         )
