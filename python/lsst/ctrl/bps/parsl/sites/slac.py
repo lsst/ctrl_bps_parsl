@@ -12,8 +12,8 @@ if TYPE_CHECKING:
 
 
 class Sdf(Slurm):
-    """Configuration for running jobs on SLAC's Shared Data Facility
-    cluster using the rubin partition.
+    """Slurm-based configuration for running jobs on SLAC's Shared Data
+    Facility cluster using the rubin partition.
 
     The following BPS configuration parameters are recognised, overriding the
     defaults:
