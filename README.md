@@ -183,6 +183,21 @@ Optional settings are:
 It subclasses [`TripleSlurm`](#tripleslurm) and adds some customisation.
 Required and optional settings are the same as for `TripleSlurm`.
 
+### Sdf
+
+`lsst.ctrl.bps.parsl.sites.slac.Sdf` is intended to be used with the Rubin partition at the [SLAC Shared Scientific Data Facility (SDF)](https://sdf.slac.stanford.edu/public/doc/#/).  It subclasses [`Slurm`](#slurm) and adds some suitable customisation.  By default, a block of 1 node of 100 cores runs while another block waits in the queue.
+Optional settings are:
+
+* `nodes` (`int`): number of nodes for each Slurm job.
+* `cores_per_node` (`int`): number of cores per node for each Slurm job.
+* `walltime` (`str`): time limit for each Slurm job.
+* `mem_per_node` (`int`): memory per node (GB) for each Slurm job.
+* `max_blocks` (`int`): number of blocks (Slurm jobs) to use; one will execute while the others wait.
+
+### LocalSrunWorkQueue
+
+`lsst.ctrl.bps.parsl.sites.work_queue.LocalSrunWorkQueue` uses a [`LocalProvider`](https://parsl.readthedocs.io/en/stable/stubs/parsl.providers.LocalProvider.html) with a [`WorkQueueExecutor`](https://parsl.readthedocs.io/en/stable/stubs/parsl.executors.WorkQueueExecutor.html) to manage resources on single- or multi-node allocations.  For multi-node allocations, Slurm's [`srun`](https://slurm.schedmd.com/srun.html) command is used to launch jobs via an [`SrunLauncher`](https://parsl.readthedocs.io/en/stable/stubs/parsl.launchers.SrunLauncher.html).  This implementation uses the [`work_queue`](https://cctools.readthedocs.io/en/stable/work_queue/) module to schedule jobs with specific resource requests (e.g., memory, # cpus, wall time, disk space), taking into account the available resources on the nodes.
+
 ## Adding a site
 
 You don't need to use a site configuration that's already contained in the ctrl_bps_parsl package.

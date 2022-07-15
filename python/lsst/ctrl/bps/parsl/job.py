@@ -130,7 +130,7 @@ class ParslJob:
         return dedent(
             f"""
             if [[ ! -d {job_dir} ]]; then mkdir -p {job_dir}; fi
-            cp {exec_butler_dir}/{{butler.yaml,gen3.sqlite3}} {job_dir}
+            cp {exec_butler_dir}/* {job_dir}
             {command}
             retcode=$?
             rm -rf {job_dir}
@@ -169,10 +169,10 @@ class ParslJob:
         """Return what resources are required for executing this job"""
         resources = {}
         for bps_name, parsl_name, scale in (
-            ("request_memory", "memory", 1.0e-3),  # BPS in MB, Parsl in GB
+            ("request_memory", "memory", None),  # Both BPS and WorkQueueExecutor use MB
             ("request_cpus", "cores", None),
             ("request_disk", "disk", None),  # Both are MB
-            ("request_walltime", "running_time_max", None),  # Both are minutes
+            ("request_walltime", "running_time_min", None),  # Both are minutes
         ):
             value = getattr(self.generic, bps_name)
             if scale is not None:
