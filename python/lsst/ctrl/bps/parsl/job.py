@@ -127,6 +127,8 @@ class ParslJob:
         # The copy can be deleted once we're done, because the original execution butler contains
         # everything that's required.
         job_dir = os.path.join(os.path.dirname(exec_butler_dir), self.name)
+        # Set the butlerConfig field to the location of the job-specific copy.
+        command = command.replace("<FILE:butlerConfig>", job_dir)
         return dedent(
             f"""
             if [[ ! -d {job_dir} ]]; then mkdir -p {job_dir}; fi
