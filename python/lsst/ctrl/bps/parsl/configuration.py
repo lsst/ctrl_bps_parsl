@@ -95,8 +95,10 @@ def get_bps_config_value(
     if default is not None:
         options["default"] = default
     found, value = config.search(key, options)
-    if not found and required and default is None:
-        raise KeyError(f"No value found for {key} and no default provided")
+    if not found and default is None:
+        if required:
+            raise KeyError(f"No value found for {key} and no default provided")
+        return None
     if not isinstance(value, dataType):
         raise RuntimeError(f"Configuration value {key}={value} is not of type {dataType}")
     return value

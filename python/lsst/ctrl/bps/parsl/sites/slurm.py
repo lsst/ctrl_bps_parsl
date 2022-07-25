@@ -100,9 +100,9 @@ class Slurm(SiteConfig):
             scheduler_options = ""
         scheduler_options += "\n"
         scheduler_options += f"#SBATCH --job-name={job_name}\n"
-        if qos is not None:
+        if qos:
             scheduler_options += f"#SBATCH --qos={qos}\n"
-        if constraint is not None:
+        if constraint:
             scheduler_options += f"#SBATCH --constraint={constraint}\n"
         if singleton:
             # The following SBATCH directives allow only a single slurm job (parsl
