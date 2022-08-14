@@ -10,7 +10,7 @@ executionButler:
     ${CTRL_MPEXEC_DIR}/bin/pipetask qgraph -b {butlerConfig} -i {inCollection}
     -o {output} --output-run {outputRun}
     --save-execution-butler {executionButlerDir}
-    --datastore-root "{submitPath}/EXEC_DATA-{uniqProcName}"
+    --target-datastore-root "{submitPath}/EXEC_DATA-{uniqProcName}"
     -g {qgraphFile} --transfer=copy
   command1: >-
     ${DAF_BUTLER_DIR}/bin/butler {mergePreCmdOpts} transfer-datasets
