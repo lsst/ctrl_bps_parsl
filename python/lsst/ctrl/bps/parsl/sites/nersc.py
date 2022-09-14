@@ -7,6 +7,8 @@ from .slurm import TripleSlurm
 
 Kwargs = Dict[str, Any]
 
+__all__ = ("CoriKnl",)
+
 
 class CoriKnl(TripleSlurm):
     """Configuration for running jobs on the NERSC Cori-KNL cluster
