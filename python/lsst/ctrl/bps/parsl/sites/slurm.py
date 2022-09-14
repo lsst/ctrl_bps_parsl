@@ -19,9 +19,21 @@ Kwargs = Dict[str, Any]
 class Slurm(SiteConfig):
     """Configuration for generic Slurm cluster
 
-    This can be used directly as the site configuration for a Slurm cluster,
-    (e.g., setting ``computeSite: "slurm"`` and ``site.in the BPS config), or
-    as a base class for Slurm cluster configurations.
+    This can be used directly as the site configuration for a Slurm cluster by
+    setting the BPS config, e.g.:
+
+    .. code-block:: yaml
+
+        computeSite: slurm
+        site:
+          slurm:
+            class: lsst.ctrl.bps.parsl.sites.Slurm
+            nodes: 3
+            cores_per_node: 20
+            walltime: "00:59:00"  # Note: always quote walltime in YAML
+
+    Alternatively, it can be used as a base class for Slurm cluster
+    configurations.
 
     The following BPS configuration parameters are recognised (and required
     unless there is a default mentioned here, or provided by a subclass):
