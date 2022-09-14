@@ -1,3 +1,94 @@
+[build-system]
+requires = ["setuptools", "lsst-versions"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "lsst-ctrl-bps-parsl"
+description = "Parsl-based plugin for lsst-ctrl-bps."
+license = {text = "BSD 3-clause license"}
+readme = "README.md"
+authors = [
+    {name="Rubin Observatory Data Management", email="dm-admin@lists.lsst.org"},
+]
+classifiers = [
+    "Intended Audience :: Science/Research",
+    "License :: OSI Approved :: BSD 3-Clause License",
+    "Operating System :: OS Independent",
+    "Programming Language :: Python :: 3",
+    "Programming Language :: Python :: 3.9",
+    "Programming Language :: Python :: 3.10",
+    "Topic :: Scientific/Engineering :: Astronomy",
+]
+keywords = ["lsst"]
+dependencies = [
+    "lsst-ctrl-bps",
+    "parsl",
+]
+dynamic = ["version"]
+
+[project.urls]
+"Homepage" = "https://github.com/lsst/ctrl_bps_parsl"
+
+[project.optional-dependencies]
+test = [
+    "pytest >= 3.2",
+    "flake8 >= 3.7.5",
+    "flake8 < 5",
+    "pytest-flake8 >= 1.0.4",
+    "pytest-openfiles >= 0.5.0"
+]
+
+[tool.setuptools.packages.find]
+where = ["python"]
+
+[tool.setuptools]
+zip-safe = true
+license-files = ["COPYRIGHT", "LICENSE"]
+
+[tool.setuptools.package-data]
+"lsst.ctrl.bps.parsl" = ["etc/*.yaml"]
+
+[tool.setuptools.dynamic]
+version = { attr = "lsst_versions.get_lsst_version" }
+
+[tool.towncrier]
+    package = "lsst.ctrl.bps.parsl"
+    package_dir = "python"
+    filename = "doc/lsst.ctrl.bps.parsl/CHANGES.rst"
+    directory = "doc/changes"
+    title_format = "BPS-Parsl {version} {project_date}"
+    issue_format = "`{issue} <https://jira.lsstcorp.org/browse/{issue}>`_"
+
+    [[tool.towncrier.type]]
+        directory = "feature"
+        name = "New Features"
+        showcontent = true
+
+    [[tool.towncrier.type]]
+        directory = "api"
+        name = "API Changes"
+        showcontent = true
+
+    [[tool.towncrier.type]]
+        directory = "bugfix"
+        name = "Bug Fixes"
+        showcontent = true
+
+    [[tool.towncrier.type]]
+        directory = "perf"
+        name = "Performance Enhancement"
+        showcontent = true
+
+    [[tool.towncrier.type]]
+        directory = "misc"
+        name = "Other Changes and Additions"
+        showcontent = true
+
+    [[tool.towncrier.type]]
+        directory = "removal"
+        name = "An API Removal or Deprecation"
+        showcontent = true
+
 [tool.black]
 line-length = 110
 target-version = ["py310"]
@@ -5,3 +96,20 @@ target-version = ["py310"]
 [tool.isort]
 profile = "black"
 line_length = 110
+
+[tool.lsst_versions]
+write_to = "python/lsst/ctrl/bps/parsl/version.py"
+
+[tool.pytest.ini_options]
+addopts = "--flake8"
+flake8-ignore = ["W503", "E203", "N802", "N803", "N806", "N812", "N815", "N816"]
+
+[tool.pydocstyle]
+convention = "numpy"
+# Our coding style does not require docstrings for magic methods (D105)
+# Our docstyle documents __init__ at the class level (D107)
+# We allow methods to inherit docstrings and this is not compatible with D102.
+# Docstring at the very first line is not required
+# D200, D205 and D400 all complain if the first sentence of the docstring does
+# not fit on one line.
+add-ignore = ["D107", "D105", "D102", "D100", "D200", "D205", "D400"]
