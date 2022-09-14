@@ -62,12 +62,12 @@ class WorkQueue(SiteConfig):
         port : `int`, optional
             Port used by work_queue.  Default: ``9000``
         worker_options : `str`, optional
-            Extra options to pass to work_queue workers, e.g., ``"--memory=90000"``.
-            Default: `""`
+            Extra options to pass to work_queue workers, e.g.,
+            ``"--memory=90000"``. Default: `""`.
         wq_max_retries : `int`, optional
-            Number of retries for work_queue to attempt per job.  Set to ``None``
-            to have it try indefinitely; set to ``1`` to have Parsl control the
-            number of retries.  Default: ``1``
+            Number of retries for work_queue to attempt per job.  Set to
+            ``None`` to have it try indefinitely; set to ``1`` to have Parsl
+            control the number of retries.  Default: ``1``.
         """
         port = get_bps_config_value(self.site, "port", int, port)
         worker_options = get_bps_config_value(self.site, "worker_options", str, worker_options)
@@ -102,8 +102,10 @@ class LocalSrunWorkQueue(WorkQueue):
       Default: ``""``
     - ``wq_max_retries`` (`int`): The number of retries that work_queue
       will make in case of task failures.  Set to ``None`` to have work_queue
-      retry forever; set to ``1`` to have retries managed by Parsl. Default: ``1``
-    - ``nodes_per_block`` (`int`): The number of allocated nodes. Default: ``1``
+      retry forever; set to ``1`` to have retries managed by Parsl. Default:
+      ``1``.
+    - ``nodes_per_block`` (`int`): The number of allocated nodes.
+      Default: ``1``.
     """
 
     def get_executors(self) -> List[ParslExecutor]:

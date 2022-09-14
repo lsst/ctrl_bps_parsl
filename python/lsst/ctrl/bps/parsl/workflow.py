@@ -60,10 +60,11 @@ class ParslWorkflow(BaseWmsWorkflow):
         Jobs to be executed.
     parents : `dict` mapping `str` to iterable of `str`
         Dependency tree. Keywords are job names, and values are a list of job
-        names that must be executed before the keyword job name can be executed.
+        names that must be executed before the keyword job name can be
+        executed.
     endpoints : iterable of `str`
-        Endpoints of the dependency tree. These jobs (specified by name) have no
-        children.
+        Endpoints of the dependency tree. These jobs (specified by name) have
+        no children.
     final : `ParslJob`, optional
         Final job to be done, e.g., to merge the execution butler. This is done
         locally.
@@ -198,8 +199,8 @@ class ParslWorkflow(BaseWmsWorkflow):
         block : `bool`, optional
             Block returning from this method until the workflow is complete? If
             `False`, jobs may still be running when this returns, and it is the
-            user's responsibility to call the ``finalize_jobs`` and ``shutdown``
-            methods when they are complete.
+            user's responsibility to call the ``finalize_jobs`` and
+            ``shutdown`` methods when they are complete.
 
         Returns
         -------
@@ -285,7 +286,8 @@ class ParslWorkflow(BaseWmsWorkflow):
     def initialize_jobs(self):
         """Run initial jobs
 
-        These jobs are run locally before any other jobs are submitted to parsl.
+        These jobs are run locally before any other jobs are submitted to
+        parsl.
 
         This is used to set up the butler.
         """

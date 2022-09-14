@@ -124,8 +124,8 @@ class ParslJob:
 
         # Add commands to copy the execution butler.
         # This keeps workers from overloading the sqlite database.
-        # The copy can be deleted once we're done, because the original execution butler contains
-        # everything that's required.
+        # The copy can be deleted once we're done, because the original
+        # execution butler contains everything that's required.
         job_dir = os.path.join(os.path.dirname(exec_butler_dir), self.name)
         # Set the butlerConfig field to the location of the job-specific copy.
         command = command.replace("<FILE:butlerConfig>", job_dir)

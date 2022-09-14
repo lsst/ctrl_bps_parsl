@@ -117,12 +117,13 @@ class Slurm(SiteConfig):
         if constraint:
             scheduler_options += f"#SBATCH --constraint={constraint}\n"
         if singleton:
-            # The following SBATCH directives allow only a single slurm job (parsl
-            # block) with our job_name to run at once. This means we can have one job
-            # running, and one already in the queue when the first exceeds the walltime
-            # limit. More backups could be achieved with a larger value of max_blocks.
-            # This only allows one job to be actively running at once, so that needs
-            # to be sized appropriately by the user.
+            # The following SBATCH directives allow only a single slurm job
+            # (parsl block) with our job_name to run at once. This means we can
+            # have one job running, and one already in the queue when the first
+            # exceeds the walltime limit. More backups could be achieved with a
+            # larger value of max_blocks. This only allows one job to be
+            # actively running at once, so that needs to be sized appropriately
+            # by the user.
             scheduler_options += "#SBATCH --dependency=singleton\n"
         return HighThroughputExecutor(
             label,
@@ -178,14 +179,17 @@ class TripleSlurm(Slurm):
     - ``walltime`` (`str`): time limit for each Slurm job; setting this would
       override each of the ``small_walltime``, ``medium_walltime`` and
       ``large_walltime`` values.
-    - ``mem_per_node`` (`float`): memory per node for each Slurm job; by default
-      we use whatever Slurm gives us.
+    - ``mem_per_node`` (`float`): memory per node for each Slurm job; by
+      default we use whatever Slurm gives us.
     - ``qos`` (`str`): quality of service to request for each Slurm job; by
       default we use whatever Slurm gives us.
 
-    - ``small_memory`` (`float`): memory per worker (GB) for each 'small' Slurm job.
-    - ``medium_memory`` (`float`): memory per worker (GB) for each 'medium' Slurm job.
-    - ``large_memory`` (`float`): memory per worker (GB) for each 'large' Slurm job.
+    - ``small_memory`` (`float`): memory per worker (GB) for each 'small' Slurm
+      job.
+    - ``medium_memory`` (`float`): memory per worker (GB) for each 'medium'
+      Slurm job.
+    - ``large_memory`` (`float`): memory per worker (GB) for each 'large' Slurm
+      job.
     - ``small_walltime`` (`str`): time limit for each 'small' Slurm job.
     - ``medium_walltime`` (`str`): time limit for each 'medium' Slurm job.
     - ``large_walltime`` (`str`): time limit for each 'large' Slurm job.
