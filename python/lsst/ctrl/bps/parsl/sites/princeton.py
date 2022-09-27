@@ -48,9 +48,9 @@ class Tiger(Slurm):
         Each executor should have a unique ``label``.
 
         The walltime default here is set so we get into the tiger-vshort QoS,
-        which will hopefully reduce the wait for us to get a node. Then, we have
-        one Slurm job running at a time (singleton) while another saves a spot
-        in line (max_blocks=2). We hope that this allow us to run almost
+        which will hopefully reduce the wait for us to get a node. Then, we
+        have one Slurm job running at a time (singleton) while another saves a
+        spot in line (max_blocks=2). We hope that this allow us to run almost
         continually until the workflow is done.
         """
         max_blocks = get_bps_config_value(self.site, "max_blocks", int, 2)
@@ -59,7 +59,7 @@ class Tiger(Slurm):
                 "tiger",
                 nodes=4,
                 cores_per_node=40,
-                walltime="05:59:59",  # Ensures we get into qos=tiger-vshort, which cuts off at 6h
+                walltime="05:00:00",  # Ensures we get into qos=tiger-vshort, which cuts off at 5h
                 mem_per_node=192,
                 singleton=True,
                 provider_options=dict(
