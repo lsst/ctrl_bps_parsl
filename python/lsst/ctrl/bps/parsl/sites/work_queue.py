@@ -25,25 +25,28 @@
 # You should have received a copy of the GNU General Public License
 # along with this program.  If not, see <https://www.gnu.org/licenses/>.
 
-from typing import TYPE_CHECKING, Any
+from typing import TYPE_CHECKING, List, Optional, Any, Dict
 
 from parsl.executors import WorkQueueExecutor
 from parsl.executors.base import ParslExecutor
 from parsl.launchers import SrunLauncher
-from parsl.providers import LocalProvider
+from parsl.providers import LocalProvider, SlurmProvider
 
 try:
     from parsl.providers.base import ExecutionProvider
 except ImportError:
     from parsl.providers.provider_base import ExecutionProvider  # type: ignore
 
-from ..configuration import get_bps_config_value
+from ..configuration import get_bps_config_value, get_workflow_name
 from ..site import SiteConfig
 
 if TYPE_CHECKING:
     from ..job import ParslJob
 
-__all__ = ("LocalSrunWorkQueue", "WorkQueue")
+__all__ = ("LocalSrunWorkQueue", "SlurmWorkQueue", "WorkQueue")
+
+
+Kwargs = Dict[str, Any]
 
 
 class WorkQueue(SiteConfig):
@@ -123,6 +126,24 @@ class WorkQueue(SiteConfig):
             autolabel=False,
         )
 
+    def get_executors(self) -> List[ParslExecutor]:
+        return [self.make_executor("work_queue", self.get_provider())]
+
+    def select_executor(self, job: "ParslJob") -> str:
+        """Get the ``label`` of the executor to use to execute a job
+
+        Parameters
+        ----------
+        job : `ParslJob`
+            Job to be executed.
+
+        Returns
+        -------
+        label : `str`
+            Label of executor to use to execute ``job``.
+        """
+        return "work_queue"
+
 
 class LocalSrunWorkQueue(WorkQueue):
     """Configuration for a `WorkQueueExecutor` that uses a `LocalProvider`
@@ -149,33 +170,94 @@ class LocalSrunWorkQueue(WorkQueue):
       Default: ``1``.
     """
 
-    def get_executors(self) -> list[ParslExecutor]:
-        """Get a list of executors to be used in processing."""
-        nodes_per_block = get_bps_config_value(self.site, "nodes_per_block", int, 1)
-        provider_options: dict[str, Any] = {
-            "nodes_per_block": nodes_per_block,
-            "init_blocks": 0,
-            "min_blocks": 0,
-            "max_blocks": 1,
-            "parallelism": 0,
-            "cmd_timeout": 300,
-        }
-        if nodes_per_block > 1:
+    def get_provider(self) -> ExecutionProvider:
+        """Return a LocalProvider."""
+        nodes = get_bps_config_value(self.site, "nodes_per_block", int, 1)
+        provider_options = dict(
+            nodes_per_block=nodes,
+            init_blocks=0,
+            min_blocks=0,
+            max_blocks=1,
+            parallelism=0,
+            cmd_timeout=300,
+        )
+        if nodes > 1:
             provider_options["launcher"] = SrunLauncher(overrides="-K0 -k --slurmd-debug=verbose")
-        provider = LocalProvider(**provider_options)
-        return [self.make_executor("work_queue", provider)]
+        return LocalProvider(**provider_options)
 
-    def select_executor(self, job: "ParslJob") -> str:
-        """Get the ``label`` of the executor to use to execute a job.
 
-        Parameters
-        ----------
-        job : `ParslJob`
-            Job to be executed.
+class SlurmWorkQueue(WorkQueue):
+    """Configuration for a `WorkQueueExecutor` that uses a `SlurmProvider`
+    to manage resources.
 
-        Returns
-        -------
-        label : `str`
-            Label of executor to use to execute ``job``.
-        """
-        return "work_queue"
+    The following BPS configuration parameters are recognized, overriding the
+    defaults:
+
+    - ``port`` (`int`): The port used by work_queue. Default: ``9000``.
+    - ``worker_options (`str`): Extra options to pass to work_queue workers.
+      A typical option specifies the memory available per worker, e.g.,
+      ``"--memory=90000"``, which sets the available memory to 90 GB.
+      Default: ``""``
+    - ``wq_max_retries`` (`int`): The number of retries that work_queue
+      will make in case of task failures.  Set to ``None`` to have work_queue
+      retry forever; set to ``1`` to have retries managed by Parsl. Default: ``1``
+    - ``nodes_per_block`` (`int`): The number of allocated nodes. Default: ``1``
+    """
+
+    def get_provider(
+        self,
+        nodes: Optional[int] = 1,
+        cores_per_node: Optional[int] = None,
+        walltime: Optional[str] = None,
+        mem_per_node: Optional[int] = None,
+        qos: Optional[str] = None,
+        constraint: Optional[str] = None,
+        singleton: bool = False,
+        exclusive: bool = False,
+        scheduler_options: Optional[str] = None,
+        provider_options: Optional[Kwargs] = None,
+    ) -> ExecutionProvider:
+        """Return a SlurmProvider."""
+        nodes = get_bps_config_value(self.site, "nodes_per_block", int, 1)
+        cores_per_node = get_bps_config_value(self.site, "cores_per_node", int, cores_per_node)
+        walltime = get_bps_config_value(self.site, "walltime", str, walltime, required=True)
+        mem_per_node = get_bps_config_value(self.site, "mem_per_node", int, mem_per_node)
+        qos = get_bps_config_value(self.site, "qos", str, qos)
+        constraint = get_bps_config_value(self.site, "constraint", str, constraint)
+        singleton = get_bps_config_value(self.site, "singleton", bool, singleton)
+        exclusive = get_bps_config_value(self.site, "exclusive", bool, exclusive)
+        scheduler_options = get_bps_config_value(self.site, "scheduler_options", str, scheduler_options)
+
+        # Replace any filepath separators with underscores since Parsl
+        # creates a shell script named f"cmd_{job_name}.sh" using the
+        # --job-name value in the sbatch script.
+        job_name = get_workflow_name(self.config).replace("/", "_")
+        if scheduler_options is None:
+            scheduler_options = ""
+        scheduler_options += "\n"
+        scheduler_options += f"#SBATCH --job-name={job_name}\n"
+        if qos:
+            scheduler_options += f"#SBATCH --qos={qos}\n"
+        if constraint:
+            scheduler_options += f"#SBATCH --constraint={constraint}\n"
+        if singleton:
+            # The following SBATCH directives allow only a single
+            # slurm job (parsl block) with our job_name to run at
+            # once. This means we can have one job running, and one
+            # already in the queue when the first exceeds the walltime
+            # limit. More backups could be achieved with a larger
+            # value of max_blocks.  This only allows one job to be
+            # actively running at once, so that needs to be sized
+            # appropriately by the user.
+            scheduler_options += "#SBATCH --dependency=singleton\n"
+        provider = SlurmProvider(
+            nodes_per_block=nodes,
+            cores_per_node=cores_per_node,
+            mem_per_node=mem_per_node,
+            walltime=walltime,
+            exclusive=exclusive,
+            scheduler_options=scheduler_options,
+            launcher=SrunLauncher(overrides="-K0 -k --cpu-bind=none"),
+            **(provider_options or {}),
+        )
+        return provider
