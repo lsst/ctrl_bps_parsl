@@ -60,7 +60,7 @@ class Tiger(Slurm):
                 nodes=4,
                 cores_per_node=40,
                 walltime="05:00:00",  # Ensures we get into qos=tiger-vshort, which cuts off at 5h
-                mem_per_node=192,
+                mem_per_node=187,  # Ensures all nodes are queried, reserving 5GB for OS services
                 singleton=True,
                 provider_options=dict(
                     init_blocks=1,
