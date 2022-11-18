@@ -1,4 +1,4 @@
-from typing import TYPE_CHECKING, List
+from typing import TYPE_CHECKING, Any, Dict, List
 
 from parsl.executors import WorkQueueExecutor
 from parsl.executors.base import ParslExecutor
@@ -109,7 +109,7 @@ class LocalSrunWorkQueue(WorkQueue):
     def get_executors(self) -> List[ParslExecutor]:
         """Get a list of executors to be used in processing."""
         nodes_per_block = get_bps_config_value(self.site, "nodes_per_block", int, 1)
-        provider_options = dict(
+        provider_options: Dict[str, Any] = dict(
             nodes_per_block=nodes_per_block,
             init_blocks=0,
             min_blocks=0,
