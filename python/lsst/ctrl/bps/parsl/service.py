@@ -11,7 +11,7 @@ class ParslService(BaseWmsService):
     """Parsl-based implementation for the WMS interface."""
 
     def prepare(
-        self, config: BpsConfig, generic_workflow: GenericWorkflow, out_prefix: str = None
+        self, config: BpsConfig, generic_workflow: GenericWorkflow, out_prefix: str | None = None
     ) -> BaseWmsWorkflow:
         """Convert a generic workflow to a Parsl pipeline.
 

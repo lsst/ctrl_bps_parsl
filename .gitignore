@@ -1,3 +1,6 @@
+python/lsst/ctrl/bps/parsl/version.py
+.sconsign.dblite
+
 # Byte-compiled / optimized / DLL files
 __pycache__/
 *.py[cod]
