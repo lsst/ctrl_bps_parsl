@@ -25,6 +25,8 @@
 # You should have received a copy of the GNU General Public License
 # along with this program.  If not, see <https://www.gnu.org/licenses/>.
 
+from contextlib import closing
+import socket
 from typing import TYPE_CHECKING, List, Optional, Any, Dict
 
 from parsl.executors import WorkQueueExecutor
@@ -44,6 +46,17 @@ if TYPE_CHECKING:
     from ..job import ParslJob
 
 __all__ = ("LocalSrunWorkQueue", "SlurmWorkQueue", "WorkQueue")
+
+
+def get_free_port():
+    """Return a free port on the local host.
+    See https://stackoverflow.com/questions/1365265/
+    """
+    with closing(socket.socket(socket.AF_INET, socket.SOCK_STREAM)) as s:
+        s.bind(('', 0))
+        s.setsockopt(socket.SOL_SOCKET, socket.SO_REUSEADDR, 1)
+        port = s.getsockname()[1]
+        return port
 
 
 Kwargs = Dict[str, Any]
@@ -69,7 +82,8 @@ class WorkQueue(SiteConfig):
     The following BPS configuration parameters are recognized, overriding the
     defaults:
 
-    - ``port`` (`int`): The port used by work_queue. Default: ``9000``.
+    - ``port`` (`int`): The port used by work_queue. Default: ``None``.
+      If ``None``, then find a free port.
     - ``worker_options (`str`): Extra options to pass to work_queue workers.
       A typical option specifies the memory available per worker, e.g.,
       ``"--memory=90000"``, which sets the available memory to 90 GB.
@@ -90,7 +104,7 @@ class WorkQueue(SiteConfig):
         label: str,
         provider: ExecutionProvider,
         *,
-        port: int = 9000,
+        port: int = None,
         worker_options: str = "",
         wq_max_retries: int = 1,
     ) -> ParslExecutor:
@@ -104,7 +118,7 @@ class WorkQueue(SiteConfig):
         provider : `ExecutionProvider`
             Parsl execution provider, e.g., `SlurmProvider`.
         port : `int`, optional
-            Port used by work_queue.  Default: ``9000``.
+            Port used by work_queue.  Default: ``None``
         worker_options : `str`, optional
             Extra options to pass to work_queue workers, e.g.,
             ``"--memory=90000"``. Default: `""`.
@@ -114,6 +128,8 @@ class WorkQueue(SiteConfig):
             control the number of retries.  Default: ``1``.
         """
         port = get_bps_config_value(self.site, "port", int, port)
+        if port is None:
+            port = get_free_port()
         worker_options = get_bps_config_value(self.site, "worker_options", str, worker_options)
         max_retries = get_bps_config_value(self.site, "wq_max_retries", int, wq_max_retries)
         return WorkQueueExecutor(
@@ -157,7 +173,8 @@ class LocalSrunWorkQueue(WorkQueue):
     The following BPS configuration parameters are recognized, overriding the
     defaults:
 
-    - ``port`` (`int`): The port used by work_queue. Default: ``9000``.
+    - ``port`` (`int`): The port used by work_queue. Default: ``None``.
+      If ``None``, then find a free port.
     - ``worker_options (`str`): Extra options to pass to work_queue workers.
       A typical option specifies the memory available per worker, e.g.,
       ``"--memory=90000"``, which sets the available memory to 90 GB.
@@ -193,7 +210,8 @@ class SlurmWorkQueue(WorkQueue):
     The following BPS configuration parameters are recognized, overriding the
     defaults:
 
-    - ``port`` (`int`): The port used by work_queue. Default: ``9000``.
+    - ``port`` (`int`): The port used by work_queue. Default: ``None``.
+      If ``None``, then find a free port.
     - ``worker_options (`str`): Extra options to pass to work_queue workers.
       A typical option specifies the memory available per worker, e.g.,
       ``"--memory=90000"``, which sets the available memory to 90 GB.
