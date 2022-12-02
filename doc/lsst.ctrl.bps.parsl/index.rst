@@ -63,10 +63,10 @@ The plugin is now suitable for use in a variety of cluster environments and will
 .. _Subaru Prime Focus Spectrograph: https://pfs.ipmu.jp
 .. _Merian survey: https://merian.sites.ucsc.edu
 
-This package is open source software, released under a `BSD license`_.
+This package is open source software, released under the `GNU Public License (GPL)`_.
 Contributions, including bug reports and feature requests, are welcome: please open an issue `on GitHub`_.
 
-.. _BSD license: https://github.com/lsst/ctrl_bps_parsl/blob/main/LICENSE
+.. _GNU Public License (GPL): https://github.com/lsst/ctrl_bps_parsl/blob/main/LICENSE
 .. _on GitHub: https://github.com/lsst/ctrl_bps_parsl/issues
 
 
