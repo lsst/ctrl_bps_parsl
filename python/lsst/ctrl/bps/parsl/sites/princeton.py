@@ -11,6 +11,8 @@ from .slurm import Slurm
 if TYPE_CHECKING:
     from ..job import ParslJob
 
+__all__ = ("Tiger",)
+
 
 class Tiger(Slurm):
     """Configuration for running jobs on Princeton's Tiger cluster

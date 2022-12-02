@@ -7,6 +7,8 @@ from .slurm import TripleSlurm
 
 Kwargs = Dict[str, Any]
 
+__all__ = ("CoriKnl",)
+
 
 class CoriKnl(TripleSlurm):
     """Configuration for running jobs on the NERSC Cori-KNL cluster
@@ -20,13 +22,14 @@ class CoriKnl(TripleSlurm):
     - ``walltime`` (`str`): time limit for each Slurm job; setting this would
       override each of the ``small_walltime``, ``medium_walltime`` and
       ``large_walltime`` values.
-    - ``mem_per_node`` (`float`): memory per node for each Slurm job; by default
-      we use whatever Slurm gives us.
+    - ``mem_per_node`` (`float`): memory per node for each Slurm job; by
+      default we use whatever Slurm gives us.
     - ``qos`` (`str`): quality of service to request for each Slurm job; by
       default we use whatever Slurm gives us.
 
     - ``small_memory`` (`float`): memory per worker for each 'small' Slurm job.
-    - ``medium_memory`` (`float`): memory per worker for each 'small' Slurm job.
+    - ``medium_memory`` (`float`): memory per worker for each 'small' Slurm
+      job.
     - ``large_memory`` (`float`): memory per worker for each 'large' Slurm job.
     - ``small_walltime`` (`str`): time limit for each 'small' Slurm job.
     - ``medium_walltime`` (`str`): time limit for each 'small' Slurm job.

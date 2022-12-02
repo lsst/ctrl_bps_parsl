@@ -60,7 +60,8 @@ def get_bps_config_value(
 ) -> Optional[T]:
     """Get a value from the BPS configuration
 
-    I find this more useful than ``BpsConfig.__getitem__`` or ``BpsConfig.get``.
+    I find this more useful than ``BpsConfig.__getitem__`` or
+    ``BpsConfig.get``.
 
     Parameters
     ----------
@@ -71,8 +72,8 @@ def get_bps_config_value(
     dataType : `type`
         We require that the returned value have this type.
     default : optional
-        Default value to be provided if ``key`` doesn't exist in the ``config``.
-        A default value of `None` means that there is no default.
+        Default value to be provided if ``key`` doesn't exist in the
+        ``config``. A default value of `None` means that there is no default.
     required : `bool`, optional
         If ``True``, the returned value may come from the configuration or from
         the default, but it may not be `None`.
@@ -107,8 +108,9 @@ def get_bps_config_value(
 def get_workflow_name(config: BpsConfig) -> str:
     """Get name of this workflow
 
-    The workflow name is constructed by joining the ``project`` and ``campaign``
-    (if set; otherwise ``operator``) entries in the BPS configuration.
+    The workflow name is constructed by joining the ``project`` and
+    ``campaign`` (if set; otherwise ``operator``) entries in the BPS
+    configuration.
 
     Parameters
     ----------

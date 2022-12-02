@@ -65,8 +65,8 @@ class SiteConfig(ABC):
         The ``computeSite`` (`str`) value in the BPS configuration is used to
         select a site configuration. The site configuration class to use is
         specified by the BPS configuration as ``site.<computeSite>.class``
-        (`str`), which should be the fully-qualified name of a python class that
-        inherits from `SiteConfig`.
+        (`str`), which should be the fully-qualified name of a python class
+        that inherits from `SiteConfig`.
 
         Parameters
         ----------
@@ -119,9 +119,9 @@ class SiteConfig(ABC):
         This is used by the default implementation of ``get_monitor``, but will
         generally be used by ``get_executors`` too.
 
-        This default implementation gets the address from the hostname, but that
-        will not work if the workers don't access the driver/submission node by
-        that address.
+        This default implementation gets the address from the hostname, but
+        that will not work if the workers don't access the driver/submission
+        node by that address.
         """
         return address_by_hostname()
 

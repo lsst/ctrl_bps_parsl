@@ -66,3 +66,8 @@ target/
 
 # Backup files
 *~
+
+# LSST-specific
+.scon*
+python/lsst/ctrl/bps/parsl/version.py
+tests/.tests

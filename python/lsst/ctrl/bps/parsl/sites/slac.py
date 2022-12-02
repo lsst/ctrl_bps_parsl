@@ -10,6 +10,8 @@ from .slurm import Slurm
 if TYPE_CHECKING:
     from ..job import ParslJob
 
+__all__ = ("Sdf",)
+
 
 class Sdf(Slurm):
     """Slurm-based configuration for running jobs on SLAC's Shared Data
