@@ -200,6 +200,7 @@ class SlurmWorkQueue(WorkQueue):
         qos = get_bps_config_value(self.site, "qos", str, qos)
         singleton = get_bps_config_value(self.site, "singleton", bool, singleton)
         exclusive = get_bps_config_value(self.site, "exclusive", bool, exclusive)
+        scheduler_options = get_bps_config_value(self.site, "scheduler_options", str, scheduler_options)
 
         # Replace any filepath separators with underscores since Parsl
         # creates a shell script named f"cmd_{job_name}.sh" using the
