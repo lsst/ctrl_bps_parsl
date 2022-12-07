@@ -1,10 +1,21 @@
+import sys
 from typing import TYPE_CHECKING, Any, Dict, List
 
-from parsl.executors import WorkQueueExecutor
-from parsl.executors.base import ParslExecutor
-from parsl.launchers import SrunLauncher
-from parsl.providers import LocalProvider
-from parsl.providers.provider_base import ExecutionProvider
+try:
+    from parsl.executors import WorkQueueExecutor
+    from parsl.executors.base import ParslExecutor
+    from parsl.launchers import SrunLauncher
+    from parsl.providers import LocalProvider
+    from parsl.providers.provider_base import ExecutionProvider
+except ImportError:
+    if "pydoc" in sys.modules or "sphinx" in sys.modules:
+        WorkQueueExecutor = None
+        ParslExecutor = None
+        SrunLauncher = None
+        LocalProvider = None
+        ExecutionProvider = None
+    else:
+        raise
 
 from ..configuration import get_bps_config_value
 from ..site import SiteConfig

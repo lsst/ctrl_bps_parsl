@@ -1,8 +1,17 @@
+import sys
 from typing import TYPE_CHECKING, Any, Dict, List, Optional
 
-from parsl.executors import HighThroughputExecutor
-from parsl.executors.base import ParslExecutor
-from parsl.providers import SlurmProvider
+try:
+    from parsl.executors import HighThroughputExecutor
+    from parsl.executors.base import ParslExecutor
+    from parsl.providers import SlurmProvider
+except ImportError:
+    if "pydoc" in sys.modules or "sphinx" in sys.modules:
+        HighThroughputExecutor = None
+        ParslExecutor = None
+        SlurmProvider = None
+    else:
+        raise
 
 from ..configuration import get_bps_config_value, get_workflow_name
 from ..site import SiteConfig
