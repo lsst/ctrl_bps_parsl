@@ -1,13 +1,22 @@
 import os
 import re
 import subprocess
+import sys
 from functools import partial
 from textwrap import dedent
 from typing import Any, Dict, List, Optional, Sequence
 
 from lsst.ctrl.bps import BpsConfig, GenericWorkflow, GenericWorkflowJob
-from parsl.app.bash import BashApp
-from parsl.app.futures import Future
+
+try:
+    from parsl.app.bash import BashApp
+    from parsl.app.futures import Future
+except ImportError:
+    if "pydoc" in sys.modules or "sphinx" in sys.modules:
+        BashApp = None
+        Future = None
+    else:
+        raise
 
 from .configuration import get_bps_config_value
 

@@ -1,13 +1,30 @@
 import logging
 import os
 import pickle
+import sys
 from typing import Dict, Iterable, List, Mapping, Optional
 
-import parsl
-import parsl.config
+try:
+    import parsl
+except ImportError:
+    if "pydoc" in sys.modules or "sphinx" in sys.modules:
+        parsl = None
+    else:
+        raise
+
 from lsst.ctrl.bps import BaseWmsWorkflow, BpsConfig, GenericWorkflow, GenericWorkflowJob
-from parsl.app.app import bash_app
-from parsl.app.futures import Future
+
+try:
+    from parsl.app.app import bash_app
+    from parsl.app.futures import Future
+    from parsl.config import Config as ParslConfig
+except ImportError:
+    if "pydoc" in sys.modules or "sphinx" in sys.modules:
+        bash_app = None
+        Future = None
+        ParslConfig = None
+    else:
+        raise
 
 from .configuration import get_bps_config_value, get_workflow_filename, set_parsl_logging
 from .job import ParslJob, get_file_paths
@@ -18,7 +35,7 @@ __all__ = ("ParslWorkflow", "get_parsl_config")
 _log = logging.getLogger("lsst.ctrl.bps.parsl")
 
 
-def get_parsl_config(config: BpsConfig) -> parsl.config.Config:
+def get_parsl_config(config: BpsConfig) -> ParslConfig:
     """Construct parsl configuration from BPS configuration
 
     For details on the site configuration, see `SiteConfig`. For details on the
@@ -40,9 +57,7 @@ def get_parsl_config(config: BpsConfig) -> parsl.config.Config:
     executors = site.get_executors()
     retries = get_bps_config_value(site.site, "retries", int, 1)
     monitor = site.get_monitor()
-    return parsl.config.Config(
-        executors=executors, monitoring=monitor, retries=retries, checkpoint_mode="task_exit"
-    )
+    return ParslConfig(executors=executors, monitoring=monitor, retries=retries, checkpoint_mode="task_exit")
 
 
 class ParslWorkflow(BaseWmsWorkflow):

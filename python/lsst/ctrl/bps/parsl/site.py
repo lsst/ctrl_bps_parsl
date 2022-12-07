@@ -1,12 +1,22 @@
+import sys
 from abc import ABC, abstractmethod
 from types import ModuleType
 from typing import TYPE_CHECKING, List, Optional
 
 from lsst.ctrl.bps import BpsConfig
 from lsst.utils import doImport
-from parsl.addresses import address_by_hostname
-from parsl.executors.base import ParslExecutor
-from parsl.monitoring import MonitoringHub
+
+try:
+    from parsl.addresses import address_by_hostname
+    from parsl.executors.base import ParslExecutor
+    from parsl.monitoring import MonitoringHub
+except ImportError:
+    if "pydoc" in sys.modules or "sphinx" in sys.modules:
+        address_by_hostname = None
+        ParslExecutor = None
+        MonitoringHub = None
+    else:
+        raise
 
 from .configuration import get_bps_config_value, get_workflow_name
 from .environment import export_environment

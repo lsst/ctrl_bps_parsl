@@ -1,7 +1,15 @@
+import sys
 from typing import TYPE_CHECKING, List
 
-from parsl.executors.base import ParslExecutor
-from parsl.launchers import SrunLauncher
+try:
+    from parsl.executors.base import ParslExecutor
+    from parsl.launchers import SrunLauncher
+except ImportError:
+    if "pydoc" in sys.modules or "sphinx" in sys.modules:
+        ParslExecutor = None
+        SrunLauncher = None
+    else:
+        raise
 
 from ..configuration import get_bps_config_value
 from ..environment import export_environment

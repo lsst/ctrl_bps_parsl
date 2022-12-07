@@ -1,8 +1,17 @@
+import sys
 from typing import TYPE_CHECKING, List
 
-from parsl.executors import HighThroughputExecutor
-from parsl.executors.base import ParslExecutor
-from parsl.providers import LocalProvider
+try:
+    from parsl.executors import HighThroughputExecutor
+    from parsl.executors.base import ParslExecutor
+    from parsl.providers import LocalProvider
+except ImportError:
+    if "pydoc" in sys.modules or "sphinx" in sys.modules:
+        HighThroughputExecutor = None
+        ParslExecutor = None
+        LocalProvider = None
+    else:
+        raise
 
 from ..configuration import get_bps_config_value
 from ..site import SiteConfig
