@@ -48,6 +48,8 @@ class Slurm(SiteConfig):
       default we use whatever Slurm gives us.
     - ``singleton`` (`bool`): allow only one job to run at a time; by default
       ``False``.
+    - ``scheduler_options`` (`str`): text to prepend to the Slurm submission
+      script (each line usually starting with ``#SBATCH``).
     """
 
     def make_executor(
@@ -106,11 +108,13 @@ class Slurm(SiteConfig):
         mem_per_node = get_bps_config_value(self.site, "mem_per_node", int, mem_per_node)
         qos = get_bps_config_value(self.site, "qos", str, qos)
         singleton = get_bps_config_value(self.site, "singleton", bool, singleton)
+        scheduler_options = get_bps_config_value(self.site, "scheduler_options", str, scheduler_options)
 
         job_name = get_workflow_name(self.config)
         if scheduler_options is None:
             scheduler_options = ""
-        scheduler_options += "\n"
+        else:
+            scheduler_options += "\n"
         scheduler_options += f"#SBATCH --job-name={job_name}\n"
         if qos:
             scheduler_options += f"#SBATCH --qos={qos}\n"
