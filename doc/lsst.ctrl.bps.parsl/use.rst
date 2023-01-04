@@ -103,6 +103,7 @@ Optional settings are:
 * ``cores_per_node`` (`int`): number of cores per node for each Slurm job; by default we use all cores on the node.
 * ``mem_per_node`` (`int`): memory per node (GB) for each Slurm job; by default we use whatever Slurm gives us.
 * ``qos`` (`str`): quality of service to request for each Slurm job; by default we use whatever Slurm gives us.
+* ``scheduler_options`` (`str`): text to prepend to the Slurm submission script (each line usually starting with ``#SBATCH``); empty string by default.
 
 .. |HighThroughputExecutor| replace:: ``HighThroughputExecutor``
 .. _HighThroughputExecutor: https://parsl.readthedocs.io/en/stable/stubs/parsl.executors.HighThroughputExecutor.html#parsl.executors.HighThroughputExecutor
