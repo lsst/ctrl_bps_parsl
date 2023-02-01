@@ -66,40 +66,40 @@ $ ln -s /global/cscratch1/sd/jchiang8/desc/gen3_tests/w_2021_12/gen3-3828-y1 .
 Since the registry in this repo is backed by a postgres database, you'll need a file with db access credentials in your home directory at NERSC.  Contact [jchiang87](https://lsstc.slack.com/team/U2LRMHKJ5) in LSSTC Slack to obtain these.  Once everything is set up, you can check that the repo is accessible via the butler with:
 ```
 $ butler query-collections gen3-3828-y1 --chains tree
-                      Name                            Type   
+                      Name                            Type
 -------------------------------------------------- -----------
-LSSTCam-imSim/raw/all                              RUN        
+LSSTCam-imSim/raw/all                              RUN
 LSSTCam-imSim/calib                                CALIBRATION
-LSSTCam-imSim/calib/unbounded                      RUN        
-LSSTCam-imSim/calib/20220806T000000Z               RUN        
-LSSTCam-imSim/calib/20220101T000000Z               RUN        
-LSSTCam-imSim/calib/20231201T000000Z               RUN        
-skymaps                                            RUN        
-ref_cat                                            RUN        
-LSSTCam-imSim/defaults                             CHAINED    
-  LSSTCam-imSim/raw/all                            RUN        
+LSSTCam-imSim/calib/unbounded                      RUN
+LSSTCam-imSim/calib/20220806T000000Z               RUN
+LSSTCam-imSim/calib/20220101T000000Z               RUN
+LSSTCam-imSim/calib/20231201T000000Z               RUN
+skymaps                                            RUN
+ref_cat                                            RUN
+LSSTCam-imSim/defaults                             CHAINED
+  LSSTCam-imSim/raw/all                            RUN
   LSSTCam-imSim/calib                              CALIBRATION
-  skymaps                                          RUN        
-  ref_cat                                          RUN        
-shared/sfp_3828_y1/20210223T191036Z                RUN        
-shared/coadd_processing_3828_y1/20210319T055155Z   RUN        
-shared/drp_pg_test/20210408T150000Z                RUN        
-shared/drp_full_test/20210419T202408Z              RUN        
-shared/bfk/20210415T142710Z                        RUN        
-shared/drp_full_test/20210419T204856Z              RUN        
-shared/dia_test/20210420T181323Z                   RUN        
-shared/drp_3828/20210521T161048Z                   RUN        
-shared/drp_3828/20210521T201925Z                   RUN        
-u/jchiang/sfp_3828/20210525T153432Z                RUN        
-u/jchiang/coadd_multiband_3828/20210531T215629Z    RUN        
-u/jchiang/objectTables_3828/20210608T230612Z       RUN        
-shared/bfk/20210618T044003Z                        RUN        
-u/jchiang/calibrate_dm-30490_test/20210621T225054Z RUN        
-u/jchiang/sfp_3828-y1/20210805T011112Z             RUN        
-u/jchiang/sfp_3828-y1/20210805T031935Z             RUN        
-u/jchiang/sfp_3828-y1/20210806T223525Z             RUN        
-u/jchiang/sfp_3828-y1/20210810T000946Z             RUN        
-u/jchiang/sfp_3828-y1/20210811T031616Z             RUN        
+  skymaps                                          RUN
+  ref_cat                                          RUN
+shared/sfp_3828_y1/20210223T191036Z                RUN
+shared/coadd_processing_3828_y1/20210319T055155Z   RUN
+shared/drp_pg_test/20210408T150000Z                RUN
+shared/drp_full_test/20210419T202408Z              RUN
+shared/bfk/20210415T142710Z                        RUN
+shared/drp_full_test/20210419T204856Z              RUN
+shared/dia_test/20210420T181323Z                   RUN
+shared/drp_3828/20210521T161048Z                   RUN
+shared/drp_3828/20210521T201925Z                   RUN
+u/jchiang/sfp_3828/20210525T153432Z                RUN
+u/jchiang/coadd_multiband_3828/20210531T215629Z    RUN
+u/jchiang/objectTables_3828/20210608T230612Z       RUN
+shared/bfk/20210618T044003Z                        RUN
+u/jchiang/calibrate_dm-30490_test/20210621T225054Z RUN
+u/jchiang/sfp_3828-y1/20210805T011112Z             RUN
+u/jchiang/sfp_3828-y1/20210805T031935Z             RUN
+u/jchiang/sfp_3828-y1/20210806T223525Z             RUN
+u/jchiang/sfp_3828-y1/20210810T000946Z             RUN
+u/jchiang/sfp_3828-y1/20210811T031616Z             RUN
 ```
 This prints all of the collections in that repo.
 
@@ -143,7 +143,7 @@ parsl_config:
   max_blocks: 16
   walltime: 48:00:00
   worker_options: "--memory=90000"
-  # The worker_init command sets up the environment 
+  # The worker_init command sets up the environment
   # science pipeline, wq_env, gen3_workflow
   worker_init: "source ~/lsst_stack.sh"
 ```
