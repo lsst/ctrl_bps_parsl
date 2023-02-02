@@ -4,7 +4,11 @@ from parsl.executors import WorkQueueExecutor
 from parsl.executors.base import ParslExecutor
 from parsl.launchers import SrunLauncher
 from parsl.providers import LocalProvider
-from parsl.providers.provider_base import ExecutionProvider
+
+try:
+    from parsl.providers.base import ExecutionProvider
+except ImportError:
+    from parsl.providers.provider_base import ExecutionProvider  # type: ignore
 
 from ..configuration import get_bps_config_value
 from ..site import SiteConfig
