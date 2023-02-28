@@ -3,6 +3,7 @@ from typing import TYPE_CHECKING, List
 from parsl.addresses import address_by_interface
 from parsl.executors.base import ParslExecutor
 from parsl.launchers import SrunLauncher
+from psutil import net_if_addrs
 
 from ..configuration import get_bps_config_value
 from ..environment import export_environment
@@ -91,10 +92,10 @@ class Tiger(Slurm):
         return "tiger"
 
     def get_address(self) -> str:
-        """Return the IP address of the machine hosting the driver/submission
+        """Return the IP address of the machine hosting the driver/submission.
 
-        This address should be accessible from the workers. This should
-        generally by the return value of one of the functions in
+        This host machine address should be accessible from the workers and
+        should generally be the return value of one of the functions in
         ``parsl.addresses``.
 
         This is used by the default implementation of ``get_monitor``, but will
@@ -104,4 +105,7 @@ class Tiger(Slurm):
         interface, because the cluster nodes can't connect to the head node
         through the regular internet.
         """
-        return address_by_interface("ib0")
+        net_interfaces = [interface for interface in net_if_addrs().keys() if interface[:2] in ["ib", "op"]]
+        if net_interfaces:
+            return address_by_interface(net_interfaces[0])
+        raise RuntimeError("No Infiniband network interface found.")
