@@ -156,6 +156,7 @@ Optional settings are:
 * ``walltime`` (`str`): time limit for each Slurm job.
 * ``mem_per_node`` (`int`): memory per node (GB) for each Slurm job.
 * ``max_blocks`` (`int`): number of blocks (Slurm jobs) to use; one will execute while the others wait.
+* ``cmd_timeout`` (`int`): timeout (seconds) to wait for a scheduler.
 
 .. _Princeton Tiger cluster: https://researchcomputing.princeton.edu/systems/tiger
 
@@ -177,10 +178,11 @@ Sdf
 Optional settings are:
 
 * ``nodes`` (`int`): number of nodes for each Slurm job.
-* ``cores_per_node``` (`int`): number of cores per node for each Slurm job.
+* ``cores_per_node`` (`int`): number of cores per node for each Slurm job.
 * ``walltime`` (`str`): time limit for each Slurm job.
 * ``mem_per_node`` (`int`): memory per node (GB) for each Slurm job.
 * ``max_blocks`` (`int`): number of blocks (Slurm jobs) to use; one will execute while the others wait.
+* ``cmd_timeout`` (`int`): timeout (seconds) to wait for a scheduler.
 
 .. _SLAC Shared Scientific Data Facility (SDF): https://sdf.slac.stanford.edu/public/doc/
 

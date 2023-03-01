@@ -16,7 +16,7 @@ __all__ = ("Tiger",)
 
 
 class Tiger(Slurm):
-    """Configuration for running jobs on Princeton's Tiger cluster
+    """Configuration for running jobs on Princeton's Tiger cluster.
 
     The following BPS configuration parameters are recognised, overriding the
     defaults:
@@ -26,6 +26,7 @@ class Tiger(Slurm):
     - ``walltime`` (`str`): time limit for each Slurm job.
     - ``mem_per_node`` (`int`): memory per node (GB) for each Slurm job.
     - ``max_blocks`` (`int`): maximum number of blocks (Slurm jobs) to use.
+    - ``cmd_timeout`` (`int`): timeout (seconds) to wait for a scheduler.
     - ``singleton`` (`bool`): allow only one job to run at a time; by default
       ``True``.
 
@@ -46,17 +47,22 @@ class Tiger(Slurm):
     """
 
     def get_executors(self) -> List[ParslExecutor]:
-        """Get a list of executors to be used in processing
+        """Get a list of executors to be used in processing.
 
         Each executor should have a unique ``label``.
 
         The walltime default here is set so we get into the tiger-vshort QoS,
         which will hopefully reduce the wait for us to get a node. Then, we
         have one Slurm job running at a time (singleton) while another saves a
-        spot in line (max_blocks=2). We hope that this allow us to run almost
-        continually until the workflow is done.
+        spot in line (max_blocks=2). We hope that this will allow us to run
+        almost continually until the workflow is done.
+
+        We set the cmd_timeout value to 300 seconds to help avoid
+        TimeoutExpired errors when commands are slow to return (often due to
+        system contention).
         """
         max_blocks = get_bps_config_value(self.site, "max_blocks", int, 2)
+        cmd_timeout = get_bps_config_value(self.site, "cmd_timeout", int, 300)
         return [
             self.make_executor(
                 "tiger",
@@ -72,12 +78,13 @@ class Tiger(Slurm):
                     parallelism=1.0,
                     worker_init=export_environment(),
                     launcher=SrunLauncher(overrides="-K0 -k --slurmd-debug=verbose"),
+                    cmd_timeout=cmd_timeout,
                 ),
             )
         ]
 
     def select_executor(self, job: "ParslJob") -> str:
-        """Get the ``label`` of the executor to use to execute a job
+        """Get the ``label`` of the executor to use to execute a job.
 
         Parameters
         ----------
