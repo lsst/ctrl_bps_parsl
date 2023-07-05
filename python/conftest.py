@@ -16,6 +16,7 @@ namespace_pkg_dirs = [str(d) for d in root_dir.iterdir() if d.is_dir()]
 
 # patched method
 def resolve_package_path(path: pathlib.Path) -> pathlib.Path | None:
+    """Resolve the supplied path."""
     # call original lookup
     result = resolve_pkg_path_orig(path)
     if result is None:
