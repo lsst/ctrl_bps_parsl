@@ -16,3 +16,5 @@ html_title = project
 html_short_title = project
 exclude_patterns = ["changes/*"]
 numpydoc_show_class_members = False
+
+intersphinx_mapping["lsst"] = ("https://pipelines.lsst.io/v/daily/", None)  # noqa
