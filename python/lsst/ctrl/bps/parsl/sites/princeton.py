@@ -1,4 +1,4 @@
-from typing import TYPE_CHECKING, List
+from typing import TYPE_CHECKING
 
 from parsl.addresses import address_by_interface
 from parsl.executors.base import ParslExecutor
@@ -46,7 +46,7 @@ class Tiger(Slurm):
     everything has completed.
     """
 
-    def get_executors(self) -> List[ParslExecutor]:
+    def get_executors(self) -> list[ParslExecutor]:
         """Get a list of executors to be used in processing.
 
         Each executor should have a unique ``label``.

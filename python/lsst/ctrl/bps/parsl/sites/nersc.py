@@ -1,11 +1,11 @@
-from typing import Any, Dict, List, Optional
+from typing import Any
 
 from parsl.executors.base import ParslExecutor
 from parsl.launchers import SrunLauncher
 
 from .slurm import TripleSlurm
 
-Kwargs = Dict[str, Any]
+Kwargs = dict[str, Any]
 
 __all__ = ("CoriKnl",)
 
@@ -39,11 +39,11 @@ class CoriKnl(TripleSlurm):
 
     def get_executors(
         self,
-        small_options: Optional[Kwargs] = None,
-        medium_options: Optional[Kwargs] = None,
-        large_options: Optional[Kwargs] = None,
+        small_options: Kwargs | None = None,
+        medium_options: Kwargs | None = None,
+        large_options: Kwargs | None = None,
         **common_options,
-    ) -> List[ParslExecutor]:
+    ) -> list[ParslExecutor]:
         """Get a list of executors to be used in processing
 
         We create three executors, with different walltime and memory per

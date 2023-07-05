@@ -1,6 +1,6 @@
 from abc import ABC, abstractmethod
 from types import ModuleType
-from typing import TYPE_CHECKING, List, Optional
+from typing import TYPE_CHECKING
 
 from lsst.ctrl.bps import BpsConfig
 from lsst.utils import doImport
@@ -86,7 +86,7 @@ class SiteConfig(ABC):
         return site_config(config)
 
     @abstractmethod
-    def get_executors(self) -> List[ParslExecutor]:
+    def get_executors(self) -> list[ParslExecutor]:
         """Get a list of executors to be used in processing
 
         Each executor should have a unique ``label``.
@@ -142,7 +142,7 @@ class SiteConfig(ABC):
             prefix += "\n" + export_environment()
         return prefix
 
-    def get_monitor(self) -> Optional[MonitoringHub]:
+    def get_monitor(self) -> MonitoringHub | None:
         """Get parsl monitor
 
         The parsl monitor provides a database that tracks the progress of the

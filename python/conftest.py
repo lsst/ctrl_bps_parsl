@@ -4,7 +4,6 @@
 # The following code is from https://stackoverflow.com/a/72366347/834250
 
 import pathlib
-from typing import Optional
 
 import _pytest.pathlib
 
@@ -16,7 +15,7 @@ namespace_pkg_dirs = [str(d) for d in root_dir.iterdir() if d.is_dir()]
 
 
 # patched method
-def resolve_package_path(path: pathlib.Path) -> Optional[pathlib.Path]:
+def resolve_package_path(path: pathlib.Path) -> pathlib.Path | None:
     # call original lookup
     result = resolve_pkg_path_orig(path)
     if result is None:

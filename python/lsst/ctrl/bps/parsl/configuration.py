@@ -1,6 +1,6 @@
 import logging
 import os
-from typing import Any, Dict, Literal, Optional, Type, TypeVar, overload
+from typing import Any, Literal, TypeVar, overload
 
 from lsst.ctrl.bps import BpsConfig
 
@@ -20,7 +20,7 @@ T = TypeVar("T")
 def get_bps_config_value(
     config: BpsConfig,
     key: str,
-    dataType: Type[T],
+    dataType: type[T],
     default: T,
 ) -> T:
     ...
@@ -31,8 +31,8 @@ def get_bps_config_value(
 def get_bps_config_value(
     config: BpsConfig,
     key: str,
-    dataType: Type[T],
-    default: Optional[T] = None,
+    dataType: type[T],
+    default: T | None = None,
     *,
     required: Literal[True],
 ) -> T:
@@ -44,20 +44,20 @@ def get_bps_config_value(
 def get_bps_config_value(
     config: BpsConfig,
     key: str,
-    dataType: Type[T],
-    default: Optional[T] = None,
-) -> Optional[T]:
+    dataType: type[T],
+    default: T | None = None,
+) -> T | None:
     ...
 
 
 def get_bps_config_value(
     config: BpsConfig,
     key: str,
-    dataType: Type[T],
-    default: Optional[T] = None,
+    dataType: type[T],
+    default: T | None = None,
     *,
     required: bool = False,
-) -> Optional[T]:
+) -> T | None:
     """Get a value from the BPS configuration
 
     I find this more useful than ``BpsConfig.__getitem__`` or
@@ -92,7 +92,7 @@ def get_bps_config_value(
     RuntimeError
         If the value is not set or is of the wrong type.
     """
-    options: Dict[str, Any] = dict(expandEnvVars=True, replaceVars=True, required=required)
+    options: dict[str, Any] = dict(expandEnvVars=True, replaceVars=True, required=required)
     if default is not None:
         options["default"] = default
     found, value = config.search(key, options)

@@ -1,7 +1,7 @@
 import logging
 import os
 import pickle
-from typing import Dict, Iterable, List, Mapping, Optional
+from collections.abc import Iterable, Mapping
 
 import parsl
 import parsl.config
@@ -75,10 +75,10 @@ class ParslWorkflow(BaseWmsWorkflow):
         name: str,
         config: BpsConfig,
         path: str,
-        jobs: Dict[str, ParslJob],
+        jobs: dict[str, ParslJob],
         parents: Mapping[str, Iterable[str]],
         endpoints: Iterable[str],
-        final: Optional[ParslJob] = None,
+        final: ParslJob | None = None,
     ):
         super().__init__(name, config)
 
@@ -86,7 +86,7 @@ class ParslWorkflow(BaseWmsWorkflow):
         self.bps_config = config
         self.parsl_config = get_parsl_config(config)
         self.site = SiteConfig.from_config(config)
-        self.dfk: Optional[parsl.DataFlowKernel] = None  # type: ignore
+        self.dfk: parsl.DataFlowKernel | None = None  # type: ignore
         self.command_prefix = self.site.get_command_prefix()
 
         # these are function decorators
@@ -135,7 +135,7 @@ class ParslWorkflow(BaseWmsWorkflow):
             Constructed workflow.
         """
         # Generate list of jobs
-        jobs: Dict[str, ParslJob] = {}
+        jobs: dict[str, ParslJob] = {}
         for job_name in generic_workflow:
             generic_job = generic_workflow.get_job(job_name)
             assert generic_job.name not in jobs
@@ -146,7 +146,7 @@ class ParslWorkflow(BaseWmsWorkflow):
 
         # Add final job: execution butler merge
         job = generic_workflow.get_final()
-        final: Optional[ParslJob] = None
+        final: ParslJob | None = None
         if job is not None:
             assert isinstance(job, GenericWorkflowJob)
             final = ParslJob(job, config, get_file_paths(generic_workflow, job.name))
@@ -191,7 +191,7 @@ class ParslWorkflow(BaseWmsWorkflow):
         assert isinstance(self, cls)
         return self
 
-    def run(self, block: bool = True) -> List[Optional[Future]]:
+    def run(self, block: bool = True) -> list[Future | None]:
         """Run the workflow
 
         Parameters
@@ -221,7 +221,7 @@ class ParslWorkflow(BaseWmsWorkflow):
             self.finalize_jobs()
         return futures
 
-    def execute(self, name: str) -> Optional[Future]:
+    def execute(self, name: str) -> Future | None:
         """Execute a job
 
         Parameters

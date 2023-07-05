@@ -1,5 +1,3 @@
-from typing import Tuple
-
 from lsst.ctrl.bps import BaseWmsService, BaseWmsWorkflow, BpsConfig, GenericWorkflow
 
 from .workflow import ParslWorkflow
@@ -47,7 +45,7 @@ class ParslService(BaseWmsService):
         workflow.start()
         workflow.run()
 
-    def restart(self, out_prefix: str) -> Tuple[str, str, str]:
+    def restart(self, out_prefix: str) -> tuple[str, str, str]:
         """Restart a workflow from the point of failure.
 
         Parameters
