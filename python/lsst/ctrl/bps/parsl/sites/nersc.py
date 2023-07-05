@@ -44,20 +44,20 @@ class CoriKnl(TripleSlurm):
         large_options: Kwargs | None = None,
         **common_options,
     ) -> list[ParslExecutor]:
-        """Get a list of executors to be used in processing
+        """Get a list of executors to be used in processing.
 
         We create three executors, with different walltime and memory per
         worker.
 
         Parameters
         ----------
-        small_options : kwargs
+        small_options : `dict`
             Options for ``make_executor`` for small executor.
-        medium_options : kwargs
+        medium_options : `dict`
             Options for ``make_executor`` for medium executor.
-        large_options : kwargs
+        large_options : `dict`
             Options for ``make_executor`` for large executor.
-        **common_options
+        **common_options : Any
             Common options for ``make_executor`` for each of the executors.
         """
         scheduler_options = "\n".join(
