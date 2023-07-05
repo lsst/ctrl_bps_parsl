@@ -22,6 +22,9 @@ jobs:
           cache: "pip"
           cache-dependency-path: "setup.cfg"
 
+      - name: Install graphviz
+        run: sudo apt-get install graphviz
+
       - name: Install sqlite
         run: sudo apt-get install sqlite libyaml-dev
 
