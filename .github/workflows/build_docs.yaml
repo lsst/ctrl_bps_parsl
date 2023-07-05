@@ -45,4 +45,4 @@ jobs:
 
       - name: Build documentation
         working-directory: ./doc
-        run: package-docs build
+        run: package-docs build -W
