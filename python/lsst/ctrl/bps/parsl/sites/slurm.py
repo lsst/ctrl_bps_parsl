@@ -1,4 +1,4 @@
-from typing import TYPE_CHECKING, Any, Dict, List, Optional
+from typing import TYPE_CHECKING, Any
 
 from parsl.executors import HighThroughputExecutor
 from parsl.executors.base import ParslExecutor
@@ -13,7 +13,7 @@ if TYPE_CHECKING:
 __all__ = ("Slurm", "TripleSlurm")
 
 
-Kwargs = Dict[str, Any]
+Kwargs = dict[str, Any]
 
 
 class Slurm(SiteConfig):
@@ -56,17 +56,17 @@ class Slurm(SiteConfig):
         self,
         label: str,
         *,
-        nodes: Optional[int] = None,
-        cores_per_node: Optional[int] = None,
-        walltime: Optional[str] = None,
-        mem_per_node: Optional[int] = None,
-        mem_per_worker: Optional[float] = None,
-        qos: Optional[str] = None,
-        constraint: Optional[str] = None,
+        nodes: int | None = None,
+        cores_per_node: int | None = None,
+        walltime: str | None = None,
+        mem_per_node: int | None = None,
+        mem_per_worker: float | None = None,
+        qos: str | None = None,
+        constraint: str | None = None,
         singleton: bool = False,
-        scheduler_options: Optional[str] = None,
-        provider_options: Optional[Kwargs] = None,
-        executor_options: Optional[Kwargs] = None,
+        scheduler_options: str | None = None,
+        provider_options: Kwargs | None = None,
+        executor_options: Kwargs | None = None,
     ) -> ParslExecutor:
         """Return an executor for running on a Slurm cluster
 
@@ -144,7 +144,7 @@ class Slurm(SiteConfig):
             **(executor_options or {}),
         )
 
-    def get_executors(self) -> List[ParslExecutor]:
+    def get_executors(self) -> list[ParslExecutor]:
         """Get a list of executors to be used in processing
 
         Each executor should have a unique ``label``.
@@ -211,11 +211,11 @@ class TripleSlurm(Slurm):
 
     def get_executors(
         self,
-        small_options: Optional[Kwargs] = None,
-        medium_options: Optional[Kwargs] = None,
-        large_options: Optional[Kwargs] = None,
+        small_options: Kwargs | None = None,
+        medium_options: Kwargs | None = None,
+        large_options: Kwargs | None = None,
         **common_options,
-    ) -> List[ParslExecutor]:
+    ) -> list[ParslExecutor]:
         """Get a list of executors to be used in processing
 
         We create three executors, with different walltime and memory per

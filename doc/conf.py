@@ -5,14 +5,13 @@ For more information, see:
 https://developer.lsst.io/stack/building-single-package-docs.html
 """
 
-from documenteer.sphinxconfig.stackconf import build_package_configs  # noqa: F401
-
-master_doc = "index"
-extensions = ["sphinx_automodapi.automodapi"]
+from documenteer.conf.pipelinespkg import *  # noqa: F403, import *
 
 project = "ctrl_bps_parsl"
-html_theme_options = dict(logotext=project)
+html_theme_options["logotext"] = project  # noqa: F405, unknown name
 html_title = project
 html_short_title = project
 exclude_patterns = ["changes/*"]
 numpydoc_show_class_members = False
+
+intersphinx_mapping["lsst"] = ("https://pipelines.lsst.io/v/daily/", None)  # noqa

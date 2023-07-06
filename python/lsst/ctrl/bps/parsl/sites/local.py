@@ -1,4 +1,4 @@
-from typing import TYPE_CHECKING, List
+from typing import TYPE_CHECKING
 
 from parsl.executors import HighThroughputExecutor
 from parsl.executors.base import ParslExecutor
@@ -20,7 +20,7 @@ class Local(SiteConfig):
     ``site.<computeSite>.cores`` (`int`).
     """
 
-    def get_executors(self) -> List[ParslExecutor]:
+    def get_executors(self) -> list[ParslExecutor]:
         """Get a list of executors to be used in processing
 
         Each executor should have a unique ``label``.

@@ -1,9 +1,10 @@
 import os
 import re
 import subprocess
+from collections.abc import Sequence
 from functools import partial
 from textwrap import dedent
-from typing import Any, Dict, List, Optional, Sequence
+from typing import Any
 
 from lsst.ctrl.bps import BpsConfig, GenericWorkflow, GenericWorkflowJob
 from parsl.app.bash import BashApp
@@ -20,9 +21,9 @@ _file_regex = re.compile(r"<FILE:(\S+)>")  # Regex for replacing <FILE:WHATEVER>
 def run_command(
     command_line: str,
     inputs: Sequence[Future] = (),
-    stdout: Optional[str] = None,
-    stderr: Optional[str] = None,
-    parsl_resource_specification: Optional[Dict[str, Any]] = None,
+    stdout: str | None = None,
+    stderr: str | None = None,
+    parsl_resource_specification: dict[str, Any] | None = None,
 ) -> str:
     """Run a command
 
@@ -49,7 +50,7 @@ def run_command(
     return command_line
 
 
-def get_file_paths(workflow: GenericWorkflow, name: str) -> Dict[str, str]:
+def get_file_paths(workflow: GenericWorkflow, name: str) -> dict[str, str]:
     """Extract file paths for a job
 
     Parameters
@@ -84,7 +85,7 @@ class ParslJob:
         self,
         generic: GenericWorkflowJob,
         config: BpsConfig,
-        file_paths: Dict[str, str],
+        file_paths: dict[str, str],
     ):
         self.generic = generic
         self.name = generic.name
@@ -167,7 +168,7 @@ class ParslJob:
         command = re.sub(_file_regex, lambda match: self.file_paths[match.group(1)], command)  # Files
         return command
 
-    def get_resources(self) -> Dict[str, Any]:
+    def get_resources(self) -> dict[str, Any]:
         """Return what resources are required for executing this job"""
         resources = {}
         for bps_name, parsl_name, scale in (
@@ -185,10 +186,10 @@ class ParslJob:
     def get_future(
         self,
         app: BashApp,
-        inputs: List[Future],
-        command_prefix: Optional[str] = None,
+        inputs: list[Future],
+        command_prefix: str | None = None,
         add_resources: bool = False,
-    ) -> Optional[Future]:
+    ) -> Future | None:
         """Get the parsl app future for the job
 
         This effectively queues the job for execution by a worker, subject to

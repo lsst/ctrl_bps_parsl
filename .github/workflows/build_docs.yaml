@@ -22,6 +22,9 @@ jobs:
           cache: "pip"
           cache-dependency-path: "setup.cfg"
 
+      - name: Install graphviz
+        run: sudo apt-get install graphviz
+
       - name: Install sqlite
         run: sudo apt-get install sqlite libyaml-dev
 
@@ -38,8 +41,8 @@ jobs:
         run: pip install -v .
 
       - name: Install documenteer
-        run: pip install 'documenteer[pipelines]<0.7'
+        run: pip install 'documenteer[pipelines]<0.9'
 
       - name: Build documentation
         working-directory: ./doc
-        run: package-docs build
+        run: package-docs build -W
