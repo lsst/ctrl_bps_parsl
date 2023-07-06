@@ -164,8 +164,21 @@ class ParslJob:
             Command ready for execution on a worker.
         """
         command = command.format(**self.generic.cmdvals)  # BPS variables
-        command = re.sub(_env_regex, r"${\g<1>}", command)  # Environment variables
-        command = re.sub(_file_regex, lambda match: self.file_paths[match.group(1)], command)  # Files
+
+        # Make sure *all* symbolic names are resolved.
+        #
+        # In general, actual values for some symbolic names may contain other
+        # symbolic names. As a result, more than one iteration may be required
+        # to resolve all symbolic names.  For example, an actual value for
+        # a filename may contain a symbolic name for an environment variable.
+        prev_command = command
+        while True:
+            command = re.sub(_env_regex, r"${\g<1>}", command)  # Environment variables
+            command = re.sub(_file_regex, lambda match: self.file_paths[match.group(1)], command)  # Files
+            if prev_command == command:
+                break
+            prev_command = command
+
         return command
 
     def get_resources(self) -> dict[str, Any]:
