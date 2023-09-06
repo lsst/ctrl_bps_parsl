@@ -11,3 +11,6 @@ Parsl can also be configured to run on a single node using a [thread pool](https
 This is a **Python 3 only** package (we assume Python 3.8 or higher).
 
 Documentation will be available [here](https://pipelines.lsst.io/modules/lsst.ctrl.bps.parsl/index.html).
+
+This software is dual licensed under the GNU General Public License (version 3 of the License, or (at your option) any later version, and also under a 3-clause BSD license.
+Recipients may choose which of these licenses to use; please see the files gpl-3.0.txt and/or bsd_license.txt, respectively.
