@@ -4,6 +4,7 @@ build-backend = "setuptools.build_meta"
 
 [project]
 name = "lsst-ctrl-bps-parsl"
+requires-python = ">=3.10.0"
 description = "Parsl-based plugin for lsst-ctrl-bps."
 license = {text = "GPLv3+ License"}
 readme = "README.md"
@@ -16,11 +17,12 @@ classifiers = [
     "Operating System :: OS Independent",
     "Programming Language :: Python :: 3",
     "Programming Language :: Python :: 3.10",
+    "Programming Language :: Python :: 3.11",
     "Topic :: Scientific/Engineering :: Astronomy",
 ]
 keywords = ["lsst"]
 dependencies = [
-    "lsst-ctrl-bps",
+    "lsst-ctrl-bps >=26.0,<26.100",
     "parsl",
 ]
 dynamic = ["version"]
@@ -52,7 +54,7 @@ version = { attr = "lsst_versions.get_lsst_version" }
     package_dir = "python"
     filename = "doc/lsst.ctrl.bps.parsl/CHANGES.rst"
     directory = "doc/changes"
-    title_format = "BPS-Parsl {version} {project_date}"
+    title_format = "lsst-ctrl-bps-parsl {version} {project_date}"
     issue_format = "`{issue} <https://jira.lsstcorp.org/browse/{issue}>`_"
 
     [[tool.towncrier.type]]
