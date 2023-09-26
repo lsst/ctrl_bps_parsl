@@ -1,1 +1,0 @@
-Resolve nested symbolic names correctly 
