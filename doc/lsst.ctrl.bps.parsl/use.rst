@@ -52,6 +52,9 @@ The following configuration settings can be used in configuring the plugin:
 * ``parsl.log_level`` (`str`): logging level for Parsl; may be one of ``CRITICAL``, ``DEBUG``, ``ERROR``, ``FATAL``, ``INFO``, ``WARN``.
 * ``project`` (`str`): project name; defaults to ``bps``.
 * ``campaign`` (`str`): campaign name; defaults to the user name (which can also be set via the ``username`` setting).
+* ``subDirTemplate`` (`str`): template used to define log subdirectories in order to avoid having too many files in a single directory; defaults to a very generic template defined by ctrl_bps in bps_defaults.yaml_.  To run with no subdirectories, in the submit yaml set ``subDirTemplate`` to the empty string (``subDirTemplate: ''``).
+
+.. _bps_defaults.yaml: https://github.com/lsst/ctrl_bps/blob/main/python/lsst/ctrl/bps/etc/bps_defaults.yaml
 
 The workflow job name is taken to be ``<project>.<campaign>``.
 
