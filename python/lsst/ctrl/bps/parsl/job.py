@@ -28,6 +28,7 @@
 import os
 import re
 import subprocess
+from collections import defaultdict
 from collections.abc import Sequence
 from functools import partial
 from textwrap import dedent
@@ -120,9 +121,28 @@ class ParslJob:
         self.file_paths = file_paths
         self.future = None
         self.done = False
+
+        # Determine directory for job stdout and stderr
         log_dir = os.path.join(get_bps_config_value(self.config, "submitPath", str, required=True), "logs")
-        self.stdout = os.path.join(log_dir, self.name + ".stdout")
-        self.stderr = os.path.join(log_dir, self.name + ".stderr")
+        _, template = self.config.search(
+            "subDirTemplate",
+            opt={
+                "curvals": {"curr_site": self.config["computeSite"], "curr_cluster": self.generic.label},
+                "replaceVars": False,
+                "default": "",
+            },
+        )
+        job_vals = defaultdict(str)
+        job_vals["label"] = self.generic.label
+        if self.generic.tags:
+            job_vals.update(self.generic.tags)
+        subdir = template.format_map(job_vals)
+        # Call normpath just to make paths easier to read as templates tend
+        # to have variables that aren't used by every job.  Avoid calling on
+        # empty string because changes it to dot.
+        same_part = os.path.normpath(os.path.join(log_dir, subdir, self.name))
+        self.stdout = same_part + ".stdout"
+        self.stderr = same_part + ".stderr"
 
     def __reduce__(self):
         """Recipe for pickling"""
@@ -288,6 +308,8 @@ class ParslJob:
             return
         command = self.get_command_line(False)
         command = self.evaluate_command_line(command)
+        os.makedirs(os.path.dirname(self.stdout), exist_ok=True)
+        os.makedirs(os.path.dirname(self.stderr), exist_ok=True)
         with open(self.stdout, "w") as stdout, open(self.stderr, "w") as stderr:
             subprocess.check_call(command, shell=True, executable="/bin/bash", stdout=stdout, stderr=stderr)
         self.done = True
