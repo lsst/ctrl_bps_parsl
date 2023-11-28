@@ -4,7 +4,7 @@ build-backend = "setuptools.build_meta"
 
 [project]
 name = "lsst-ctrl-bps-parsl"
-requires-python = ">=3.10.0"
+requires-python = ">=3.11.0"
 description = "Parsl-based plugin for lsst-ctrl-bps."
 license = {text = "BSD 3-Clause License"}
 readme = "README.md"
@@ -16,7 +16,6 @@ classifiers = [
     "License :: OSI Approved :: BSD License",
     "Operating System :: OS Independent",
     "Programming Language :: Python :: 3",
-    "Programming Language :: Python :: 3.10",
     "Programming Language :: Python :: 3.11",
     "Topic :: Scientific/Engineering :: Astronomy",
 ]
@@ -89,7 +88,7 @@ version = { attr = "lsst_versions.get_lsst_version" }
 
 [tool.black]
 line-length = 110
-target-version = ["py310"]
+target-version = ["py311"]
 
 [tool.isort]
 profile = "black"
@@ -140,7 +139,7 @@ select = [
     "W",  # pycodestyle
     "D",  # pydocstyle
 ]
-target-version = "py310"
+target-version = "py311"
 extend-select = [
     "RUF100", # Warn about unused noqa
 ]
