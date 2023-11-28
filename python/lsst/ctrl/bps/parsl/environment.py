@@ -46,7 +46,7 @@ def export_environment():
             if key.startswith("BASH_FUNC_") and key.endswith("()"):
                 key = key[10:-2]
 
-            output += "{key} {val}\nexport -f {key}\n".format(key=key, val=val)
+            output += f"{key} {val}\nexport -f {key}\n"
         else:
             # This is a variable.
             output += "export {key}='{val}'\n".format(key=key, val=val.replace("'", "'\"'\"'"))

@@ -34,6 +34,7 @@ import parsl
 import parsl.config
 from lsst.ctrl.bps import BaseWmsWorkflow, BpsConfig, GenericWorkflow, GenericWorkflowJob
 from parsl.app.app import bash_app
+from parsl.app.bash import BashApp
 from parsl.app.futures import Future
 
 from .configuration import get_bps_config_value, get_workflow_filename, set_parsl_logging
@@ -117,8 +118,10 @@ class ParslWorkflow(BaseWmsWorkflow):
         self.command_prefix = self.site.get_command_prefix()
 
         # these are function decorators
-        self.apps = {
-            ex.label: bash_app(executors=[ex.label], cache=True, ignore_for_cache=["stderr", "stdout"])
+        self.apps: dict[str, BashApp] = {
+            ex.label: bash_app(  # type: ignore
+                executors=[ex.label], cache=True, ignore_for_cache=["stderr", "stdout"]
+            )
             for ex in self.parsl_config.executors
         }
 
