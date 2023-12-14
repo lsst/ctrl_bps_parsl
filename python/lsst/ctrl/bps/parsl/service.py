@@ -42,9 +42,9 @@ class ParslService(BaseWmsService):
 
         Parameters
         ----------
-        config: `lss.ctrl.bps.BpsConfig`
+        config : `lss.ctrl.bps.BpsConfig`
             Configuration of the workflow.
-        generic_workflow: `lsst.ctrl.bps.generic_workflow.GenericWorkflow`
+        generic_workflow : `lsst.ctrl.bps.generic_workflow.GenericWorkflow`
             Generic representation of a single workflow.
         out_prefix : `str` [None]
             Prefix for WMS output files.
