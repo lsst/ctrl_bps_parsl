@@ -44,7 +44,7 @@ Kwargs = dict[str, Any]
 
 
 class Slurm(SiteConfig):
-    """Configuration for generic Slurm cluster
+    """Configuration for generic Slurm cluster.
 
     This can be used directly as the site configuration for a Slurm cluster by
     setting the BPS config, e.g.:
@@ -95,7 +95,7 @@ class Slurm(SiteConfig):
         provider_options: Kwargs | None = None,
         executor_options: Kwargs | None = None,
     ) -> ParslExecutor:
-        """Return an executor for running on a Slurm cluster
+        """Return an executor for running on a Slurm cluster.
 
         Parameters
         ----------
@@ -116,7 +116,7 @@ class Slurm(SiteConfig):
         constraint : `str`, optional
             Node feature(s) to require for each Slurm job.
         singleton : `bool`, optional
-            Allow only a single Slurm job to run at a time?
+            Wether to allow only a single Slurm job to run at a time.
         scheduler_options : `str`, optional
             ``#SBATCH`` directives to prepend to the Slurm submission script.
         provider_options : `dict`, optional
@@ -172,14 +172,14 @@ class Slurm(SiteConfig):
         )
 
     def get_executors(self) -> list[ParslExecutor]:
-        """Get a list of executors to be used in processing
+        """Get a list of executors to be used in processing.
 
         Each executor should have a unique ``label``.
         """
         return [self.make_executor("slurm")]
 
     def select_executor(self, job: "ParslJob") -> str:
-        """Get the ``label`` of the executor to use to execute a job
+        """Get the ``label`` of the executor to use to execute a job.
 
         Parameters
         ----------
@@ -195,8 +195,17 @@ class Slurm(SiteConfig):
 
 
 class TripleSlurm(Slurm):
-    """Configuration for running jobs on a Slurm cluster with three levels
+    """Configuration for running jobs on a Slurm cluster with three levels.
 
+    Parameters
+    ----------
+    *args : `~typing.Any`
+        Parameters forwarded to base class constructor.
+    **kwargs : `~typing.Any`
+        Keyword arguments passed to base class constructor.
+
+    Notes
+    -----
     The three levels are useful for having workers with different amount of
     available memory (and this is how executors are selected, by default),
     though other uses are possible.
@@ -214,7 +223,6 @@ class TripleSlurm(Slurm):
       default we use whatever Slurm gives us.
     - ``qos`` (`str`): quality of service to request for each Slurm job; by
       default we use whatever Slurm gives us.
-
     - ``small_memory`` (`float`): memory per worker (GB) for each 'small' Slurm
       job.
     - ``medium_memory`` (`float`): memory per worker (GB) for each 'medium'
@@ -224,7 +232,6 @@ class TripleSlurm(Slurm):
     - ``small_walltime`` (`str`): time limit for each 'small' Slurm job.
     - ``medium_walltime`` (`str`): time limit for each 'medium' Slurm job.
     - ``large_walltime`` (`str`): time limit for each 'large' Slurm job.
-
     """
 
     def __init__(self, *args, **kwargs):
@@ -243,7 +250,7 @@ class TripleSlurm(Slurm):
         large_options: Kwargs | None = None,
         **common_options,
     ) -> list[ParslExecutor]:
-        """Get a list of executors to be used in processing
+        """Get a list of executors to be used in processing.
 
         We create three executors, with different walltime and memory per
         worker.
@@ -281,7 +288,7 @@ class TripleSlurm(Slurm):
         ]
 
     def select_executor(self, job: "ParslJob") -> str:
-        """Get the ``label`` of the executor to use to execute a job
+        """Get the ``label`` of the executor to use to execute a job.
 
         This implementation only looks at the requested memory.
 

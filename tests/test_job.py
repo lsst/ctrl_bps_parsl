@@ -34,7 +34,7 @@ TESTDIR = os.path.abspath(os.path.dirname(__file__))
 
 
 def testInitWithTemplate():
-    """Test ParslJob stdout/stderr init. with template"""
+    """Test ParslJob stdout/stderr init. with template."""
     # Test doesn't actually use directory
     submit_path = os.path.join(TESTDIR, "with_template")
     config = BpsConfig(
@@ -52,7 +52,7 @@ def testInitWithTemplate():
 
 
 def testInitWithTemplateNoTags():
-    """Test ParslJob stdout/stderr init. with template but without tags"""
+    """Test ParslJob stdout/stderr init. with template but without tags."""
     # Test doesn't actually use directory
     submit_path = os.path.join(TESTDIR, "with_template_no_tags")
     config = BpsConfig(
@@ -70,7 +70,7 @@ def testInitWithTemplateNoTags():
 
 
 def testInitWithoutTemplate():
-    """Test ParslJob stdout/stderr init. with template"""
+    """Test ParslJob stdout/stderr init. with template."""
     # Test doesn't actually use directory
     submit_path = os.path.join(TESTDIR, "without_template")
     config = BpsConfig({"subDirTemplate": "", "submitPath": submit_path})

@@ -57,7 +57,7 @@ class Sdf(Slurm):
     """
 
     def get_executors(self) -> list[ParslExecutor]:
-        """Get a list of executors to be used in processing
+        """Get a list of executors to be used in processing.
 
         Each executor should have a unique ``label``.
 
@@ -88,7 +88,7 @@ class Sdf(Slurm):
         ]
 
     def select_executor(self, job: "ParslJob") -> str:
-        """Get the ``label`` of the executor to use to execute a job
+        """Get the ``label`` of the executor to use to execute a job.
 
         Parameters
         ----------

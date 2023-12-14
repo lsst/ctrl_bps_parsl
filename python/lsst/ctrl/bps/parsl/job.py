@@ -53,7 +53,7 @@ def run_command(
     stderr: str | None = None,
     parsl_resource_specification: dict[str, Any] | None = None,
 ) -> str:
-    """Run a command
+    """Run a command.
 
     This function exists to get information into parsl, through the ``inputs``,
     ``stdout`` and ``stderr`` parameters. It needs to be wrapped by a parsl
@@ -79,7 +79,7 @@ def run_command(
 
 
 def get_file_paths(workflow: GenericWorkflow, name: str) -> dict[str, str]:
-    """Extract file paths for a job
+    """Extract file paths for a job.
 
     Parameters
     ----------
@@ -97,7 +97,7 @@ def get_file_paths(workflow: GenericWorkflow, name: str) -> dict[str, str]:
 
 
 class ParslJob:
-    """Job to execute with parsl
+    """Job to execute with parsl.
 
     Parameters
     ----------
@@ -145,11 +145,11 @@ class ParslJob:
         self.stderr = same_part + ".stderr"
 
     def __reduce__(self):
-        """Recipe for pickling"""
+        """Recipe for pickling."""
         return type(self), (self.generic, self.config, self.file_paths)
 
     def get_command_line(self, allow_stage=True) -> str:
-        """Get the bash command-line to run to execute this job
+        """Get the bash command-line to run to execute this job.
 
         Parameters
         ----------
@@ -189,7 +189,7 @@ class ParslJob:
         )
 
     def evaluate_command_line(self, command: str) -> str:
-        """Evaluate the bash command-line
+        """Evaluate the bash command-line.
 
         BPS provides a command-line with symbolic names for BPS variables,
         environment variables and files. Here, we replace those symbolic names
@@ -229,7 +229,7 @@ class ParslJob:
         return command
 
     def get_resources(self) -> dict[str, Any]:
-        """Return what resources are required for executing this job"""
+        """Return what resources are required for executing this job."""
         resources = {}
         for bps_name, parsl_name, scale in (
             ("request_memory", "memory", None),  # Both BPS and WorkQueueExecutor use MB
@@ -250,7 +250,7 @@ class ParslJob:
         command_prefix: str | None = None,
         add_resources: bool = False,
     ) -> Future | None:
-        """Get the parsl app future for the job
+        """Get the parsl app future for the job.
 
         This effectively queues the job for execution by a worker, subject to
         dependencies.
@@ -299,7 +299,7 @@ class ParslJob:
         return self.future
 
     def run_local(self):
-        """Run the command locally
+        """Run the command locally.
 
         This is intended to support jobs that should not be done by a
         worker.

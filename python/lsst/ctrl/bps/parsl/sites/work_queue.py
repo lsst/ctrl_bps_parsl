@@ -53,6 +53,16 @@ class WorkQueue(SiteConfig):
     and ``.select_executor``.  In ``.get_executors``, the site-specific
     `ExecutionProvider` must be defined.
 
+    Parameters
+    ----------
+    *args : `~typing.Any`
+        Parameters forwarded to base class constructor.
+    **kwargs : `~typing.Any`
+        Keyword arguments passed to base class constructor, augmented by
+        the ``add_resources`` argument.
+
+    Notes
+    -----
     The following BPS configuration parameters are recognized, overriding the
     defaults:
 
@@ -91,7 +101,7 @@ class WorkQueue(SiteConfig):
         provider : `ExecutionProvider`
             Parsl execution provider, e.g., `SlurmProvider`.
         port : `int`, optional
-            Port used by work_queue.  Default: ``9000``
+            Port used by work_queue.  Default: ``9000``.
         worker_options : `str`, optional
             Extra options to pass to work_queue workers, e.g.,
             ``"--memory=90000"``. Default: `""`.
@@ -156,7 +166,7 @@ class LocalSrunWorkQueue(WorkQueue):
         return [self.make_executor("work_queue", provider)]
 
     def select_executor(self, job: "ParslJob") -> str:
-        """Get the ``label`` of the executor to use to execute a job
+        """Get the ``label`` of the executor to use to execute a job.
 
         Parameters
         ----------

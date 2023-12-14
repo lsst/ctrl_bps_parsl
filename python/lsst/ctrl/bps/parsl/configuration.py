@@ -85,7 +85,7 @@ def get_bps_config_value(
     *,
     required: bool = False,
 ) -> T | None:
-    """Get a value from the BPS configuration
+    """Get a value from the BPS configuration.
 
     I find this more useful than ``BpsConfig.__getitem__`` or
     ``BpsConfig.get``.
@@ -133,7 +133,7 @@ def get_bps_config_value(
 
 
 def get_workflow_name(config: BpsConfig) -> str:
-    """Get name of this workflow
+    """Get name of this workflow.
 
     The workflow name is constructed by joining the ``project`` and
     ``campaign`` (if set; otherwise ``operator``) entries in the BPS
@@ -157,7 +157,7 @@ def get_workflow_name(config: BpsConfig) -> str:
 
 
 def get_workflow_filename(out_prefix: str) -> str:
-    """Get filename for persisting workflow
+    """Get filename for persisting workflow.
 
     Parameters
     ----------
@@ -173,7 +173,7 @@ def get_workflow_filename(out_prefix: str) -> str:
 
 
 def set_parsl_logging(config: BpsConfig) -> int:
-    """Set parsl logging levels
+    """Set parsl logging levels.
 
     The logging level is set by the ``parsl.log_level`` entry in the BPS
     configuration.
