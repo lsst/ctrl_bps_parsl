@@ -47,7 +47,7 @@ _log = logging.getLogger("lsst.ctrl.bps.parsl")
 
 
 def get_parsl_config(config: BpsConfig) -> parsl.config.Config:
-    """Construct parsl configuration from BPS configuration
+    """Construct parsl configuration from BPS configuration.
 
     For details on the site configuration, see `SiteConfig`. For details on the
     monitor configuration, see ``get_parsl_monitor``.
@@ -57,7 +57,7 @@ def get_parsl_config(config: BpsConfig) -> parsl.config.Config:
     Parameters
     ----------
     config : `BpsConfig`
-        BPS configuration
+        BPS configuration.
 
     Returns
     -------
@@ -150,13 +150,13 @@ class ParslWorkflow(BaseWmsWorkflow):
 
         Parameters
         ----------
-        config: `BpsConfig`
+        config : `BpsConfig`
             Configuration of the workflow.
-        generic_workflow: `lsst.ctrl.bps.generic_workflow.GenericWorkflow`
+        generic_workflow : `lsst.ctrl.bps.generic_workflow.GenericWorkflow`
             Generic representation of a single workflow.
-        out_prefix: `str`
+        out_prefix : `str`
             Prefix for workflow output files.
-        service_class: `str`
+        service_class : `str`
             Full module name of WMS service class that created this workflow.
 
         Returns
@@ -184,7 +184,7 @@ class ParslWorkflow(BaseWmsWorkflow):
         return cls(generic_workflow.name, config, out_prefix, jobs, parents, endpoints, final)
 
     def write(self, out_prefix: str):
-        """Write workflow state
+        """Write workflow state.
 
         This, in combination with the parsl checkpoint files, can be used to
         restart a workflow that was interrupted.
@@ -202,7 +202,7 @@ class ParslWorkflow(BaseWmsWorkflow):
 
     @classmethod
     def read(cls, out_prefix: str) -> "ParslWorkflow":
-        """Construct from the saved workflow state
+        """Construct from the saved workflow state.
 
         Parameters
         ----------
@@ -222,7 +222,7 @@ class ParslWorkflow(BaseWmsWorkflow):
         return self
 
     def run(self, block: bool = True) -> list[Future | None]:
-        """Run the workflow
+        """Run the workflow.
 
         Parameters
         ----------
@@ -252,7 +252,7 @@ class ParslWorkflow(BaseWmsWorkflow):
         return futures
 
     def execute(self, name: str) -> Future | None:
-        """Execute a job
+        """Execute a job.
 
         Parameters
         ----------
@@ -283,7 +283,7 @@ class ParslWorkflow(BaseWmsWorkflow):
         )
 
     def load_dfk(self):
-        """Load data frame kernel
+        """Load data frame kernel.
 
         This starts parsl.
         """
@@ -293,17 +293,17 @@ class ParslWorkflow(BaseWmsWorkflow):
         self.dfk = parsl.load(self.parsl_config)
 
     def start(self):
-        """Start the workflow"""
+        """Start the workflow."""
         self.initialize_jobs()
         self.load_dfk()
 
     def restart(self):
-        """Restart the workflow after interruption"""
+        """Restart the workflow after interruption."""
         self.parsl_config.checkpoint_files = parsl.utils.get_last_checkpoint()
         self.load_dfk()
 
     def shutdown(self):
-        """Shut down the workflow
+        """Shut down the workflow.
 
         This stops parsl.
         """
@@ -314,7 +314,7 @@ class ParslWorkflow(BaseWmsWorkflow):
         parsl.DataFlowKernelLoader.clear()
 
     def initialize_jobs(self):
-        """Run initial jobs
+        """Run initial jobs.
 
         These jobs are run locally before any other jobs are submitted to
         parsl.
@@ -327,7 +327,7 @@ class ParslWorkflow(BaseWmsWorkflow):
             job.run_local()
 
     def finalize_jobs(self):
-        """Run final jobs
+        """Run final jobs.
 
         These jobs are run locally after all other jobs are complete.
 

@@ -42,11 +42,11 @@ class ParslService(BaseWmsService):
 
         Parameters
         ----------
-        config: `lss.ctrl.bps.BpsConfig`
+        config : `lsst.ctrl.bps.BpsConfig`
             Configuration of the workflow.
-        generic_workflow: `lsst.ctrl.bps.generic_workflow.GenericWorkflow`
+        generic_workflow : `lsst.ctrl.bps.generic_workflow.GenericWorkflow`
             Generic representation of a single workflow.
-        out_prefix : `str` [None]
+        out_prefix : `str` or `None`
             Prefix for WMS output files.
 
         Returns
@@ -62,12 +62,12 @@ class ParslService(BaseWmsService):
         return workflow
 
     def submit(self, workflow: BaseWmsWorkflow):
-        """Submit a single WMS workflow
+        """Submit a single WMS workflow.
 
         Parameters
         ----------
         workflow : `lsst.ctrl.bps.BaseWmsWorkflow`
-            Prepared WMS Workflow to submit for execution
+            Prepared WMS Workflow to submit for execution.
         """
         workflow.start()
         workflow.run()

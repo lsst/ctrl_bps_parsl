@@ -45,7 +45,7 @@ __all__ = ("SiteConfig",)
 
 
 class SiteConfig(ABC):
-    """Base class for site configuration
+    """Base class for site configuration.
 
     Subclasses need to override at least the ``get_executors`` and
     ``select_executor`` methods.
@@ -67,7 +67,7 @@ class SiteConfig(ABC):
 
     @staticmethod
     def get_site_subconfig(config: BpsConfig) -> BpsConfig:
-        """Get BPS configuration for the site of interest
+        """Get BPS configuration for the site of interest.
 
         We return the BPS sub-configuration for the site indicated by the
         ``computeSite`` value, which is ``site.<computeSite>``.
@@ -87,7 +87,7 @@ class SiteConfig(ABC):
 
     @classmethod
     def from_config(cls, config: BpsConfig) -> "SiteConfig":
-        """Get the site configuration nominated in the BPS config
+        """Get the site configuration nominated in the BPS config.
 
         The ``computeSite`` (`str`) value in the BPS configuration is used to
         select a site configuration. The site configuration class to use is
@@ -114,7 +114,7 @@ class SiteConfig(ABC):
 
     @abstractmethod
     def get_executors(self) -> list[ParslExecutor]:
-        """Get a list of executors to be used in processing
+        """Get a list of executors to be used in processing.
 
         Each executor should have a unique ``label``.
         """
@@ -122,7 +122,7 @@ class SiteConfig(ABC):
 
     @abstractmethod
     def select_executor(self, job: "ParslJob") -> str:
-        """Get the ``label`` of the executor to use to execute a job
+        """Get the ``label`` of the executor to use to execute a job.
 
         Parameters
         ----------
@@ -137,7 +137,7 @@ class SiteConfig(ABC):
         raise NotImplementedError("Subclasses must define")
 
     def get_address(self) -> str:
-        """Return the IP address of the machine hosting the driver/submission
+        """Return the IP address of the machine hosting the driver/submission.
 
         This address should be accessible from the workers. This should
         generally by the return value of one of the functions in
@@ -153,7 +153,7 @@ class SiteConfig(ABC):
         return address_by_hostname()
 
     def get_command_prefix(self) -> str:
-        """Return command(s) to add before each job command
+        """Return command(s) to add before each job command.
 
         These may be used to configure the environment for the job.
 
@@ -170,7 +170,7 @@ class SiteConfig(ABC):
         return prefix
 
     def get_monitor(self) -> MonitoringHub | None:
-        """Get parsl monitor
+        """Get parsl monitor.
 
         The parsl monitor provides a database that tracks the progress of the
         workflow and the use of resources on the workers.

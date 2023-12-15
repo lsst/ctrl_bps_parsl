@@ -41,14 +41,14 @@ __all__ = ("Local",)
 
 
 class Local(SiteConfig):
-    """Configuration for running jobs on the local machine
+    """Configuration for running jobs on the local machine.
 
     The number of cores to use is specified in the site configuration, under
     ``site.<computeSite>.cores`` (`int`).
     """
 
     def get_executors(self) -> list[ParslExecutor]:
-        """Get a list of executors to be used in processing
+        """Get a list of executors to be used in processing.
 
         Each executor should have a unique ``label``.
         """
@@ -56,7 +56,7 @@ class Local(SiteConfig):
         return [HighThroughputExecutor("local", provider=LocalProvider(), max_workers=cores)]
 
     def select_executor(self, job: "ParslJob") -> str:
-        """Get the ``label`` of the executor to use to execute a job
+        """Get the ``label`` of the executor to use to execute a job.
 
         Parameters
         ----------

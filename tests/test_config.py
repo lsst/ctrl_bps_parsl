@@ -31,7 +31,7 @@ from lsst.daf.butler import Config
 
 
 def test_config():
-    """Super-basic test of configuration reading
+    """Super-basic test of configuration reading.
 
     This is intended as a test of testing more than anything else.
     """

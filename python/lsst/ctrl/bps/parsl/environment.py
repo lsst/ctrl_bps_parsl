@@ -31,7 +31,7 @@ __all__ = ("export_environment",)
 
 
 def export_environment():
-    """Generate bash script to regenerate the current environment"""
+    """Generate bash script to regenerate the current environment."""
     output = ""
     for key, val in os.environ.items():
         if key in ("DISPLAY",):

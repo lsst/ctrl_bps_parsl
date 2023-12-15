@@ -38,8 +38,10 @@ __all__ = ("CoriKnl",)
 
 
 class CoriKnl(TripleSlurm):
-    """Configuration for running jobs on the NERSC Cori-KNL cluster
+    """Configuration for running jobs on the NERSC Cori-KNL cluster.
 
+    Notes
+    -----
     The following BPS configuration parameters are recognised, overriding the
     defaults:
 
@@ -53,7 +55,6 @@ class CoriKnl(TripleSlurm):
       default we use whatever Slurm gives us.
     - ``qos`` (`str`): quality of service to request for each Slurm job; by
       default we use whatever Slurm gives us.
-
     - ``small_memory`` (`float`): memory per worker for each 'small' Slurm job.
     - ``medium_memory`` (`float`): memory per worker for each 'small' Slurm
       job.
@@ -61,7 +62,6 @@ class CoriKnl(TripleSlurm):
     - ``small_walltime`` (`str`): time limit for each 'small' Slurm job.
     - ``medium_walltime`` (`str`): time limit for each 'small' Slurm job.
     - ``large_walltime`` (`str`): time limit for each 'large' Slurm job.
-
     """
 
     def get_executors(
