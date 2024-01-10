@@ -104,7 +104,7 @@ class Tiger(Slurm):
                     max_blocks=max_blocks,
                     parallelism=1.0,
                     worker_init=export_environment(),
-                    launcher=SrunLauncher(overrides="-K0 -k --slurmd-debug=verbose"),
+                    launcher=SrunLauncher(overrides="-K0 -k"),
                     cmd_timeout=cmd_timeout,
                 ),
             )
