@@ -1,6 +1,2 @@
 parsl >= 1.2
 git+https://github.com/lsst/ctrl_bps@main#egg=lsst-ctrl-bps
-git+https://github.com/lsst/daf_butler@main#egg=lsst-daf-butler
-git+https://github.com/lsst/pipe_base@main#egg=lsst-pipe-base
-git+https://github.com/lsst/ctrl_mpexec@main#egg=lsst-ctrl-mpexec
-documenteer==0.8.2
