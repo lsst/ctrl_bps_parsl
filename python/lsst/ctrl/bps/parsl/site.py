@@ -29,6 +29,7 @@ from abc import ABC, abstractmethod
 from types import ModuleType
 from typing import TYPE_CHECKING
 
+import parsl.config
 from lsst.ctrl.bps import BpsConfig
 from lsst.utils import doImport
 from parsl.addresses import address_by_hostname
@@ -197,3 +198,17 @@ class SiteConfig(ABC):
             logging_endpoint="sqlite:///"
             + get_bps_config_value(self.site, "monitorFilename", str, "monitor.sqlite"),
         )
+
+    def get_parsl_config(self) -> parsl.config.Config | None:
+        """Get Parsl configuration for this site.
+
+        This method allows concrete subclasses to override this method to
+        provide a a Parsl configuration specific for the site. If not
+        implemented by the subclasses a default configuration is built and
+        provided to Parsl.
+
+        Returns
+        -------
+        config : `parsl.config.Config` or `None`.
+        """
+        return None

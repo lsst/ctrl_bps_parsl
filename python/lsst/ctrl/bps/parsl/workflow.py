@@ -52,6 +52,10 @@ def get_parsl_config(config: BpsConfig) -> parsl.config.Config:
     For details on the site configuration, see `SiteConfig`. For details on the
     monitor configuration, see ``get_parsl_monitor``.
 
+    Subclasses of `SiteConfig` can override their method ``get_parsl_config``
+    to configure Parsl for the specific context of the site. A default
+    Parsl configuration is returned if the subclass did not provide a config.
+
     The retries are set from the ``site.<computeSite>.retries`` value.
 
     Parameters
@@ -65,11 +69,14 @@ def get_parsl_config(config: BpsConfig) -> parsl.config.Config:
         Parsl configuration.
     """
     site = SiteConfig.from_config(config)
-    executors = site.get_executors()
-    retries = get_bps_config_value(site.site, "retries", int, 1)
-    monitor = site.get_monitor()
+    if parsl_config := site.get_parsl_config():
+        return parsl_config
+
     return parsl.config.Config(
-        executors=executors, monitoring=monitor, retries=retries, checkpoint_mode="task_exit"
+        executors=site.get_executors(),
+        monitoring=site.get_monitor(),
+        retries=get_bps_config_value(site.site, "retries", int, 1),
+        checkpoint_mode="task_exit",
     )
 
 
