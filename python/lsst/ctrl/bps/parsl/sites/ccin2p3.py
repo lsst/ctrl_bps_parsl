@@ -80,6 +80,13 @@ class Ccin2p3(SiteConfig):
         ccin2p3:
             class: lsst.ctrl.bps.parsl.sites.Ccin2p3
 
+    Parameters
+    ----------
+    *args : optional
+        Arguments to initialize the super-class.
+    **kwargs : optional
+        Keyword arguments to initialize the super-class.
+
     Returns
     -------
     Ccin2p3 : `SiteConfig`
@@ -88,15 +95,6 @@ class Ccin2p3(SiteConfig):
     """
 
     def __init__(self, *args, **kwargs):
-        """Create a specialization of `SiteConfig` for CC-IN2P3.
-
-        Parameters
-        ----------
-        args : optional
-            Arguments to initialize the super-class.
-        kwargs : optional
-            Keyword arguments to initialize the super-class.
-        """
         super().__init__(*args, **kwargs)
 
         self._account = get_bps_config_value(self.site, "account", str, "lsst")
