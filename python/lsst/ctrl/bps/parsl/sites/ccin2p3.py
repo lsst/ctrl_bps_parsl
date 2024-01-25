@@ -79,9 +79,24 @@ class Ccin2p3(SiteConfig):
         site:
           ccin2p3:
             class: lsst.ctrl.bps.parsl.sites.Ccin2p3
+
+    Returns
+    -------
+    Ccin2p3 : `SiteConfig`
+        Concrete instance of a `SiteConfig` specific for the CC-IN2P3 Slurm
+        farm.
     """
 
     def __init__(self, *args, **kwargs):
+        """Create an concrete instance of `SiteConfig` for CC-IN2P3.
+
+        Parameters
+        ----------
+        *args : optional
+            Arguments to initialize the super-class.
+        **kwargs : optional
+            Keyword arguments to initialize the super-class.
+        """
         super().__init__(*args, **kwargs)
 
         self._account = get_bps_config_value(self.site, "account", str, "lsst")
@@ -181,7 +196,7 @@ class Ccin2p3(SiteConfig):
         return executors
 
     def select_executor(self, job: "ParslJob") -> str:
-        """Get the ``label`` of the executor to use to execute ``job``
+        """Get the ``label`` of the executor to use to execute ``job``.
 
         Parameters
         ----------

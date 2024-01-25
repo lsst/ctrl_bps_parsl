@@ -209,6 +209,8 @@ class SiteConfig(ABC):
 
         Returns
         -------
-        config : `parsl.config.Config` or `None`.
+        config : `parsl.config.Config` or `None`
+            The configuration to be used for Parsl. If `None` a default
+            configuration with sensible values will be passed to Parsl.
         """
         return None
