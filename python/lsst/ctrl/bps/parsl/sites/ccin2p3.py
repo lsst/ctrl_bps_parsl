@@ -51,7 +51,7 @@ class Ccin2p3(SiteConfig):
                 memory: 150
                 partition: "lsst"
 
-    At the level of 'site' entry in the BPS submission file, the following
+    At the level of 'site:' entry in the BPS submission file, the following
     configuration parameters are accepted, which apply to all slot sizes:
 
     - `partition` (`str`): name of the one or more configured partitions. If
@@ -72,12 +72,12 @@ class Ccin2p3(SiteConfig):
     If you don't need to modify those values and use the default configuration
     for all the job slot sizes use:
 
-        .. code-block:: yaml
+    .. code-block:: yaml
         wmsServiceClass: lsst.ctrl.bps.parsl.ParslService
         computeSite: ccin2p3
 
         site:
-          ccin2p3:
+        ccin2p3:
             class: lsst.ctrl.bps.parsl.sites.Ccin2p3
 
     Returns
@@ -88,13 +88,13 @@ class Ccin2p3(SiteConfig):
     """
 
     def __init__(self, *args, **kwargs):
-        """Create an concrete instance of `SiteConfig` for CC-IN2P3.
+        """Create a specialization of `SiteConfig` for CC-IN2P3.
 
         Parameters
         ----------
-        *args : optional
+        args : optional
             Arguments to initialize the super-class.
-        **kwargs : optional
+        kwargs : optional
             Keyword arguments to initialize the super-class.
         """
         super().__init__(*args, **kwargs)
@@ -224,6 +224,7 @@ class Ccin2p3(SiteConfig):
         Returns
         -------
         config : `parsl.config.Config`
+            The configuration to be used to initialize Parsl for this site.
         """
         return parsl.config.Config(
             executors=self.get_executors(),
