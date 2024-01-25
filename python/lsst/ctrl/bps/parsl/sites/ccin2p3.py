@@ -124,7 +124,6 @@ class Ccin2p3(SiteConfig):
         """Get a list of executors to be used for processing a workflow.
         Each executor must have a unique ``label``.
         """
-
         executors: List[ParslExecutor] = []
         for label, slot in self._slot_size.items():
             qos = slot["qos"]
@@ -153,8 +152,9 @@ class Ccin2p3(SiteConfig):
                     # '#SBATCH' directives to prepend to the Slurm submission
                     # script.
                     scheduler_options=f"#SBATCH --qos={qos} --licenses=sps",
-                    # Set the maximum number of file descriptors allowed.
-                    worker_init="ulimit -n $(ulimit -H -n)",
+                    # Set the number of file descriptors and process to
+                    # the maximum allowed.
+                    worker_init="ulimit -n hard && ulimit -u hard",
                     # Requests nodes which are not shared with other running
                     # jobs.
                     exclusive=False,
@@ -193,7 +193,6 @@ class Ccin2p3(SiteConfig):
         label : `str`
             Label of executor to use to execute ``job``.
         """
-
         # We choose the executor to use based only on the memory required
         # by the job.
         memory = job.generic.request_memory / 1024  # Convert to GB
