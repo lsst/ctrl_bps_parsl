@@ -199,18 +199,23 @@ class SiteConfig(ABC):
             + get_bps_config_value(self.site, "monitorFilename", str, "monitor.sqlite"),
         )
 
-    def get_parsl_config(self) -> parsl.config.Config | None:
+    def get_parsl_config(self) -> parsl.config.Config:
         """Get Parsl configuration for this site.
 
-        This method allows concrete subclasses to override this method to
-        provide a a Parsl configuration specific for the site. If not
-        implemented by the subclasses a default configuration is built and
-        provided to Parsl.
+        Subclasses can overwrite this method to build a more specific Parsl
+        configuration, if required.
+
+        The retries are set from the ``site.<computeSite>.retries`` value
+        found in the BPS configuration file.
 
         Returns
         -------
-        config : `parsl.config.Config` or `None`
-            The configuration to be used for Parsl. If `None` a default
-            configuration with sensible values will be passed to Parsl.
+        config : `parsl.config.Config`
+            The configuration to be used for Parsl.
         """
-        return None
+        executors = self.get_executors()
+        monitor = self.get_monitor()
+        retries = get_bps_config_value(self.site, "retries", int, 1)
+        return parsl.config.Config(
+            executors=executors, monitoring=monitor, retries=retries, checkpoint_mode="task_exit"
+        )

@@ -165,7 +165,7 @@ class Ccin2p3(SiteConfig):
                     # '#SBATCH' directives to prepend to the Slurm submission
                     # script.
                     scheduler_options=f"#SBATCH --qos={qos} --licenses=sps",
-                    # Set the number of file descriptors and process to
+                    # Set the number of file descriptors and processes to
                     # the maximum allowed.
                     worker_init="ulimit -n hard && ulimit -u hard",
                     # Requests nodes which are not shared with other running
@@ -224,16 +224,22 @@ class Ccin2p3(SiteConfig):
         config : `parsl.config.Config`
             The configuration to be used to initialize Parsl for this site.
         """
+        executors = self.get_executors()
+        monitor = self.get_monitor()
+        retries = get_bps_config_value(self.site, "retries", int, 1)
+        # Path to Parsl run directory. The default set by Parsl is
+        # 'runinfo' which is not explicit enough for end users given that
+        # we are using BPS + Parsl + Slurm to execute a workflow.
+        run_dir = get_bps_config_value(self.site, "run_dir", str, "parsl_runinfo")
+        # Strategy for scaling blocks according to workflow needs.
+        # Use a strategy that allows for scaling in and out Parsl
+        # workers.
+        strategy = get_bps_config_value(self.site, "strategy", str, "htex_auto_scale")
         return parsl.config.Config(
-            executors=self.get_executors(),
-            monitoring=self.get_monitor(),
-            retries=get_bps_config_value(self.site, "retries", int, 1),
+            executors=executors,
+            monitoring=monitor,
+            retries=retries,
             checkpoint_mode="task_exit",
-            # The default is 'runinfo' which is not explicit enough for end
-            # users given that we are using BPS + Parsl + Slurm to execute
-            # a workflow.
-            run_dir="parsl_runinfo",
-            # This allocation strategy allows for scaling in and out Parsl
-            # workers.
-            strategy="htex_auto_scale",
+            run_dir=run_dir,
+            strategy=strategy,
         )

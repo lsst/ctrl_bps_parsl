@@ -37,7 +37,7 @@ from parsl.app.app import bash_app
 from parsl.app.bash import BashApp
 from parsl.app.futures import Future
 
-from .configuration import get_bps_config_value, get_workflow_filename, set_parsl_logging
+from .configuration import get_workflow_filename, set_parsl_logging
 from .job import ParslJob, get_file_paths
 from .site import SiteConfig
 
@@ -52,11 +52,10 @@ def get_parsl_config(config: BpsConfig) -> parsl.config.Config:
     For details on the site configuration, see `SiteConfig`. For details on the
     monitor configuration, see ``get_parsl_monitor``.
 
-    Subclasses of `SiteConfig` can override their method ``get_parsl_config``
-    to configure Parsl for the specific context of the site. A default
-    Parsl configuration is returned if the subclass did not provide a config.
-
-    The retries are set from the ``site.<computeSite>.retries`` value.
+    `SiteConfig` provides an implementation of the method ``get_parsl_config``
+    which returns a Parsl configuration with sensible defaults. Subclasses
+    of `SiteConfig` can overwrite that method to configure Parsl in a
+    way specific to the site's configuration.
 
     Parameters
     ----------
@@ -69,15 +68,7 @@ def get_parsl_config(config: BpsConfig) -> parsl.config.Config:
         Parsl configuration.
     """
     site = SiteConfig.from_config(config)
-    if parsl_config := site.get_parsl_config():
-        return parsl_config
-
-    return parsl.config.Config(
-        executors=site.get_executors(),
-        monitoring=site.get_monitor(),
-        retries=get_bps_config_value(site.site, "retries", int, 1),
-        checkpoint_mode="task_exit",
-    )
+    return site.get_parsl_config()
 
 
 class ParslWorkflow(BaseWmsWorkflow):
