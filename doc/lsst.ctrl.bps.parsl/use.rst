@@ -226,12 +226,6 @@ For each executor, you can override the default values above and in addition spe
 * ``memory`` (`int`): memory per node in GB. (Defaults: 4 GB for executor ``small``, 10 GB for ``medium``, 50 GB for ``large`` and 150 GB for ``xlarge``)
 
 .. _CC-IN2P3: https://cc.in2p3.fr
-.. |HighThroughputExecutor| replace:: ``HighThroughputExecutor``
-.. _HighThroughputExecutor: https://parsl.readthedocs.io/en/stable/stubs/parsl.executors.HighThroughputExecutor.html#parsl.executors.HighThroughputExecutor
-.. |SlurmProvider| replace:: ``SlurmProvider``
-.. _SlurmProvider: https://parsl.readthedocs.io/en/stable/stubs/parsl.providers.SlurmProvider.html#parsl.providers.SlurmProvider
-.. _Slurm: https://www.schedmd.com
-
 
 Adding a site
 =============
