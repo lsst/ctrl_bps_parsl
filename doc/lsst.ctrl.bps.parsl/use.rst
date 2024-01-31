@@ -209,7 +209,7 @@ LocalSrunWorkQueue
 Ccin2p3
 -------
 
-`lsst.ctrl.bps.parsl.sites.slac.Ccin2p3` is intended to be used with the Slurm farm at `CC-IN2P3`_.  It uses a |HighThroughputExecutor|_ and |SlurmProvider|_ to execute the workflow on the site's `Slurm`_ cluster.
+`lsst.ctrl.bps.parsl.sites.Ccin2p3` is intended to be used with the Slurm farm at `CC-IN2P3`_.  It uses a |HighThroughputExecutor|_ and |SlurmProvider|_ to execute the workflow on the site's `Slurm`_ cluster.
 The ``small``, ``medium``, ``large`` and ``xlarge`` executors may have different memory limits, allowing jobs to be sent to different partitions depending upon their requirements, in particular their memory
 requirements.
 
