@@ -1,14 +1,15 @@
 from typing import TYPE_CHECKING, Any, Dict, List
 
 import parsl.config
-from lsst.ctrl.bps.parsl.configuration import get_bps_config_value
-from lsst.ctrl.bps.parsl.site import SiteConfig
 from parsl.executors import HighThroughputExecutor
 from parsl.executors.base import ParslExecutor
 from parsl.providers import SlurmProvider
 
+from ..configuration import get_bps_config_value
+from ..site import SiteConfig
+
 if TYPE_CHECKING:
-    from lsst.ctrl.bps.parsl.job import ParslJob
+    from .job import ParslJob
 
 __all__ = ("Ccin2p3",)
 
