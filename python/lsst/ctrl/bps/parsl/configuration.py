@@ -49,8 +49,7 @@ def get_bps_config_value(
     key: str,
     dataType: type[T],
     default: T,
-) -> T:
-    ...
+) -> T: ...
 
 
 # No default, but required
@@ -62,8 +61,7 @@ def get_bps_config_value(
     default: T | None = None,
     *,
     required: Literal[True],
-) -> T:
-    ...
+) -> T: ...
 
 
 # No default, not required
@@ -73,8 +71,7 @@ def get_bps_config_value(
     key: str,
     dataType: type[T],
     default: T | None = None,
-) -> T | None:
-    ...
+) -> T | None: ...
 
 
 def get_bps_config_value(
