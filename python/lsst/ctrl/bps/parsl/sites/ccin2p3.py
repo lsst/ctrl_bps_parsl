@@ -32,6 +32,7 @@ class Ccin2p3(SiteConfig):
     slot sizes in the BPS submission file:
 
     .. code-block:: yaml
+
         wmsServiceClass: lsst.ctrl.bps.parsl.ParslService
         computeSite: ccin2p3
 
