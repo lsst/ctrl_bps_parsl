@@ -75,6 +75,7 @@ class Ccin2p3(SiteConfig):
     for all the job slot sizes use:
 
     .. code-block:: yaml
+
         wmsServiceClass: lsst.ctrl.bps.parsl.ParslService
         computeSite: ccin2p3
 
