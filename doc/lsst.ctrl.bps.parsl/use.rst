@@ -68,6 +68,7 @@ All sites respect the following settings (under ``site.<computeSite>``):
 * ``commandPrefix`` (`str`): command(s) to use as a prefix to executing a job command on a worker.
 * ``environment``` (`bool`): add bash commands that replicate the environment on the driver/submit machine?
 * ``retries`` (`int`): number of times to retry a job that fails; defaults to 1.
+* ``run_dir`` (`str`): work directory for Parsl to store its running data, including logs (Default: ``runinfo``).
 
 The following sites are provided by the ctrl_bps_parsl package.
 

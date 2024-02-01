@@ -216,6 +216,14 @@ class SiteConfig(ABC):
         executors = self.get_executors()
         monitor = self.get_monitor()
         retries = get_bps_config_value(self.site, "retries", int, 1)
+        # Path to Parsl run directory. The default set by Parsl is
+        # 'runinfo' which is not explicit enough for end users given that
+        # we are using BPS + Parsl + Slurm to execute a workflow.
+        run_dir = get_bps_config_value(self.site, "run_dir", str, "runinfo")
         return parsl.config.Config(
-            executors=executors, monitoring=monitor, retries=retries, checkpoint_mode="task_exit"
+            executors=executors,
+            monitoring=monitor,
+            retries=retries,
+            run_dir=run_dir,
+            checkpoint_mode="task_exit",
         )
