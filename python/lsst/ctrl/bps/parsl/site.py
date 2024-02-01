@@ -29,6 +29,7 @@ from abc import ABC, abstractmethod
 from types import ModuleType
 from typing import TYPE_CHECKING
 
+import parsl.config
 from lsst.ctrl.bps import BpsConfig
 from lsst.utils import doImport
 from parsl.addresses import address_by_hostname
@@ -196,4 +197,33 @@ class SiteConfig(ABC):
             resource_monitoring_interval=get_bps_config_value(self.site, "monitorInterval", float, 30.0),
             logging_endpoint="sqlite:///"
             + get_bps_config_value(self.site, "monitorFilename", str, "monitor.sqlite"),
+        )
+
+    def get_parsl_config(self) -> parsl.config.Config:
+        """Get Parsl configuration for this site.
+
+        Subclasses can overwrite this method to build a more specific Parsl
+        configuration, if required.
+
+        The retries are set from the ``site.<computeSite>.retries`` value
+        found in the BPS configuration file.
+
+        Returns
+        -------
+        config : `parsl.config.Config`
+            The configuration to be used for Parsl.
+        """
+        executors = self.get_executors()
+        monitor = self.get_monitor()
+        retries = get_bps_config_value(self.site, "retries", int, 1)
+        # Path to Parsl run directory. The default set by Parsl is
+        # 'runinfo' which is not explicit enough for end users given that
+        # we are using BPS + Parsl + Slurm to execute a workflow.
+        run_dir = get_bps_config_value(self.site, "run_dir", str, "runinfo")
+        return parsl.config.Config(
+            executors=executors,
+            monitoring=monitor,
+            retries=retries,
+            run_dir=run_dir,
+            checkpoint_mode="task_exit",
         )

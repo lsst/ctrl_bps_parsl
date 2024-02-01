@@ -68,6 +68,7 @@ All sites respect the following settings (under ``site.<computeSite>``):
 * ``commandPrefix`` (`str`): command(s) to use as a prefix to executing a job command on a worker.
 * ``environment``` (`bool`): add bash commands that replicate the environment on the driver/submit machine?
 * ``retries`` (`int`): number of times to retry a job that fails; defaults to 1.
+* ``run_dir`` (`str`): work directory for Parsl to store its running data, including logs (Default: ``runinfo``).
 
 The following sites are provided by the ctrl_bps_parsl package.
 
@@ -206,6 +207,26 @@ LocalSrunWorkQueue
 .. |work_queue| replace:: ``work_queue``
 .. _work_queue: https://cctools.readthedocs.io/en/stable/work_queue
 
+Ccin2p3
+-------
+
+`lsst.ctrl.bps.parsl.sites.Ccin2p3` is intended to be used with the Slurm farm at `CC-IN2P3`_.  It uses a |HighThroughputExecutor|_ and |SlurmProvider|_ to execute the workflow on the site's `Slurm`_ cluster.
+The ``small``, ``medium``, ``large`` and ``xlarge`` executors may have different memory limits, allowing jobs to be sent to different partitions depending upon their requirements, in particular their memory
+requirements.
+
+Optional settings that apply to all executors are:
+
+* ``account`` (`str`): account to charge the Slurm resource utilization to. (Default: ``lsst``)
+* ``partition`` (`str`): Slurm partition to submit the jobs to. (Default: ``lsst,htc``)
+* ``qos`` (`str`): quality-of-service to request to Slurm for executing the job. (Default: ``normal``)
+* ``walltime`` (`str`): time limit for each Slurm job. (Default: ``72:00:00``)
+
+For each executor, you can override the default values above and in addition specify values for the optional settings below:
+
+* ``max_blocks`` (`int`): maximum number of Slurm jobs to execute simultaneously. (Defaults: 3000 for executor ``small``, 1000 for ``medium``, 100 for ``large`` and 10 for ``xlarge``)
+* ``memory`` (`int`): memory per node in GB. (Defaults: 4 GB for executor ``small``, 10 GB for ``medium``, 50 GB for ``large`` and 150 GB for ``xlarge``)
+
+.. _CC-IN2P3: https://cc.in2p3.fr
 
 Adding a site
 =============

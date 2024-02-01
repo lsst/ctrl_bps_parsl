@@ -138,6 +138,11 @@ The following are intended to support operations at specific sites or by specifi
    :headings: ^"
    :no-inheritance-diagram:
 
+.. automodapi:: lsst.ctrl.bps.parsl.sites.ccin2p3
+   :no-main-docstr:
+   :no-heading:
+   :headings: ^"
+   :no-inheritance-diagram:
 
 Environment utility functions
 -----------------------------
