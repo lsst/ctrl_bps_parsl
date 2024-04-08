@@ -25,6 +25,8 @@
 # You should have received a copy of the GNU General Public License
 # along with this program.  If not, see <https://www.gnu.org/licenses/>.
 
+from typing import Any
+
 from lsst.ctrl.bps import BaseWmsService, BaseWmsWorkflow, BpsConfig, GenericWorkflow
 
 from .workflow import ParslWorkflow
@@ -61,13 +63,15 @@ class ParslService(BaseWmsService):
         workflow.write(out_prefix)
         return workflow
 
-    def submit(self, workflow: BaseWmsWorkflow):
+    def submit(self, workflow: BaseWmsWorkflow, **kwargs: Any):
         """Submit a single WMS workflow.
 
         Parameters
         ----------
         workflow : `lsst.ctrl.bps.BaseWmsWorkflow`
             Prepared WMS Workflow to submit for execution.
+        **kwargs : `~typing.Any`
+            Additional modifiers to the configuration.
         """
         workflow.start()
         workflow.run()
