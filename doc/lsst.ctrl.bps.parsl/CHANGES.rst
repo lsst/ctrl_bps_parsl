@@ -1,3 +1,19 @@
+lsst-ctrl-bps-parsl v27.0.0 2024-06-05
+======================================
+
+New Features
+------------
+
+- Updated the open-source license to allow for the code to be distributed with either GPLv3 or BSD 3-clause license. (`DM-37231 <https://rubinobs.atlassian.net/browse/DM-37231>`_)
+- Added log subdirectories to avoid having too many files in a single directory. (`DM-41229 <https://rubinobs.atlassian.net/browse/DM-41229>`_)
+
+
+Bug Fixes
+---------
+
+- Fixed ``compute_site`` keyword error in submit introduced by `DM-38138  <https://rubinobs.atlassian.net/browse/DM-38138>`_. (`DM-43721 <https://rubinobs.atlassian.net/browse/DM-43721>`_)
+
+
 lsst-ctrl-bps-parsl v26.0.0 2023-09-25
 ======================================
 
