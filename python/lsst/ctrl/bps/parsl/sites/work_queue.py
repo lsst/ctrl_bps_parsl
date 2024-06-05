@@ -152,14 +152,14 @@ class LocalSrunWorkQueue(WorkQueue):
     def get_executors(self) -> list[ParslExecutor]:
         """Get a list of executors to be used in processing."""
         nodes_per_block = get_bps_config_value(self.site, "nodes_per_block", int, 1)
-        provider_options: dict[str, Any] = dict(
-            nodes_per_block=nodes_per_block,
-            init_blocks=0,
-            min_blocks=0,
-            max_blocks=1,
-            parallelism=0,
-            cmd_timeout=300,
-        )
+        provider_options: dict[str, Any] = {
+            "nodes_per_block": nodes_per_block,
+            "init_blocks": 0,
+            "min_blocks": 0,
+            "max_blocks": 1,
+            "parallelism": 0,
+            "cmd_timeout": 300,
+        }
         if nodes_per_block > 1:
             provider_options["launcher"] = SrunLauncher(overrides="-K0 -k --slurmd-debug=verbose")
         provider = LocalProvider(**provider_options)

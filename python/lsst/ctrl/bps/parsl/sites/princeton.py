@@ -98,15 +98,15 @@ class Tiger(Slurm):
                 walltime="05:00:00",  # Ensures we get into qos=tiger-vshort, which cuts off at 5h
                 mem_per_node=187,  # Ensures all nodes are queried, reserving 5GB for OS services
                 singleton=True,
-                provider_options=dict(
-                    init_blocks=1,
-                    min_blocks=1,
-                    max_blocks=max_blocks,
-                    parallelism=1.0,
-                    worker_init=export_environment(),
-                    launcher=SrunLauncher(overrides="-K0 -k"),
-                    cmd_timeout=cmd_timeout,
-                ),
+                provider_options={
+                    "init_blocks": 1,
+                    "min_blocks": 1,
+                    "max_blocks": max_blocks,
+                    "parallelism": 1.0,
+                    "worker_init": export_environment(),
+                    "launcher": SrunLauncher(overrides="-K0 -k"),
+                    "cmd_timeout": cmd_timeout,
+                },
             )
         ]
 
