@@ -76,14 +76,14 @@ class Sdf(Slurm):
                 qos="normal",
                 singleton=True,
                 scheduler_options="#SBATCH --partition=rubin",
-                provider_options=dict(
-                    init_blocks=1,
-                    min_blocks=1,
-                    max_blocks=max_blocks,
-                    parallelism=1.0,
-                    worker_init=export_environment(),
-                    launcher=SrunLauncher(overrides="-K0 -k --slurmd-debug=verbose"),
-                ),
+                provider_options={
+                    "init_blocks": 1,
+                    "min_blocks": 1,
+                    "max_blocks": max_blocks,
+                    "parallelism": 1.0,
+                    "worker_init": export_environment(),
+                    "launcher": SrunLauncher(overrides="-K0 -k --slurmd-debug=verbose"),
+                },
             )
         ]
 
