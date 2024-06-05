@@ -30,16 +30,16 @@ jobs:
 
       - name: Update pip/wheel infrastructure
         run: |
-          pip install --upgrade setuptools pip wheel
+          pip install --upgrade pip wheel uv
 
       - name: Install dependencies
         run: |
-          pip install -r requirements.txt
+          uv pip install --system -r requirements.txt
 
       # We have two cores so we can speed up the testing with xdist
       - name: Install pytest packages
         run: |
-          pip install \
+          uv pip install --system \
             pytest pytest-xdist pytest-openfiles pytest-cov
 
       - name: List installed packages
@@ -48,7 +48,7 @@ jobs:
 
       - name: Build and install
         run: |
-          pip install --no-deps -v -e .
+          uv pip install --system --no-deps -v -e .
 
       - name: Run tests
         run: |
