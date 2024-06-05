@@ -1,1 +1,0 @@
-Add log subdirectories to avoid having too many files in a single directory.
