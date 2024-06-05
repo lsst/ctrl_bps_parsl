@@ -1,4 +1,4 @@
-from typing import TYPE_CHECKING, Any, Dict, List
+from typing import TYPE_CHECKING, Any
 
 import parsl.config
 from parsl.executors import HighThroughputExecutor
@@ -13,7 +13,7 @@ if TYPE_CHECKING:
 
 __all__ = ("Ccin2p3",)
 
-Kwargs = Dict[str, Any]
+Kwargs = dict[str, Any]
 
 
 class Ccin2p3(SiteConfig):
@@ -136,11 +136,11 @@ class Ccin2p3(SiteConfig):
             },
         }
 
-    def get_executors(self) -> List[ParslExecutor]:
+    def get_executors(self) -> list[ParslExecutor]:
         """Get a list of executors to be used for processing a workflow.
         Each executor must have a unique ``label``.
         """
-        executors: List[ParslExecutor] = []
+        executors: list[ParslExecutor] = []
         for label, slot in self._slot_size.items():
             qos = slot["qos"]
             executor = HighThroughputExecutor(
