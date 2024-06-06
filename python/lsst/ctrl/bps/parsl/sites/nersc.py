@@ -94,16 +94,16 @@ class CoriKnl(TripleSlurm):
                 "#SBATCH --time-min=2:00:00",
             )
         )
-        provider_options = dict(
-            exclusive=True,
-            init_blocks=0,
-            min_blocks=0,
-            max_blocks=1,
-            parallelism=0,
-            launcher=SrunLauncher(overrides="-K0 -k --slurmd-debug=verbose"),
-            cmd_timeout=300,
-        )
-        executor_options = dict(worker_debug=False, heartbeat_period=60, heartbeat_threshold=180)
+        provider_options = {
+            "exclusive": True,
+            "init_blocks": 0,
+            "min_blocks": 0,
+            "max_blocks": 1,
+            "parallelism": 0,
+            "launcher": SrunLauncher(overrides="-K0 -k --slurmd-debug=verbose"),
+            "cmd_timeout": 300,
+        }
+        executor_options = {"worker_debug": False, "heartbeat_period": 60, "heartbeat_threshold": 180}
 
         return super().get_executors(
             nodes=1,
