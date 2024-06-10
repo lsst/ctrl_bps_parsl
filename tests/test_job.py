@@ -41,7 +41,8 @@ def testInitWithTemplate():
         {
             "subDirTemplate": "{label}/{tract}/{patch}/{band}/{visit}/{exposure}",
             "submitPath": submit_path,
-        }
+        },
+        search_order=[],
     )
     gwjob = GenericWorkflowJob("job1", label="label1")
     gwjob.tags = {"exposure": 903344}
@@ -59,7 +60,8 @@ def testInitWithTemplateNoTags():
         {
             "subDirTemplate": "{label}/{tract}/{patch}/{band}/{visit}/{exposure}",
             "submitPath": submit_path,
-        }
+        },
+        search_order=[],
     )
     gwjob = GenericWorkflowJob("job2", label="label2")
     gwjob.tags = None
@@ -73,7 +75,7 @@ def testInitWithoutTemplate():
     """Test ParslJob stdout/stderr init. with template."""
     # Test doesn't actually use directory
     submit_path = os.path.join(TESTDIR, "without_template")
-    config = BpsConfig({"subDirTemplate": "", "submitPath": submit_path})
+    config = BpsConfig({"subDirTemplate": "", "submitPath": submit_path}, search_order=[])
     gwjob = GenericWorkflowJob("job3", label="label3")
     gwjob.tags = {"exposure": 903344}
 

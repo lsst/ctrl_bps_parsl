@@ -1,0 +1,1 @@
+Updated selected unit tests to reflect the changes made in ``BpsConfig.__init__()``.
