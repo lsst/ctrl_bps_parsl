@@ -282,7 +282,7 @@ class ParslJob:
             command = self.evaluate_command_line(command)
             if command_prefix:
                 command = command_prefix + "\n" + command
-            resources = self.get_resources() if add_resources else None
+            resources = self.get_resources() if add_resources else {}
 
             # Add a layer of indirection to which we can add a useful name.
             # This name is used by parsl for tracking workflow status.
