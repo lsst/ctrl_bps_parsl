@@ -220,6 +220,9 @@ Optional settings that apply to all executors are:
 * ``partition`` (`str`): Slurm partition to submit the jobs to. (Default: ``lsst,htc``)
 * ``walltime`` (`str`): time limit for each Slurm job. (Default: ``72:00:00``)
 * ``scheduler_options`` (`list` [`str`]): additional options submitted to Slurm for scheduling purposes. (Default: ``--licenses=sps``)
+* ``retries`` (`int`): Number of retries in case of job failure. (Default: 1)
+* ``run_dir`` (`str`): Path to Parsl run directory. (Default: ``parsl_runinfo``)
+* ``strategy`` (`str`): Strategy Parsl must use for scaling blocks up or down according to workflow needs. (Default: ``htex_auto_scale``)
 
 For each executor, you can override the default values above and in addition specify values for the optional settings below:
 
