@@ -1,3 +1,4 @@
+import copy
 from typing import TYPE_CHECKING, Any
 
 import parsl.config
@@ -17,19 +18,20 @@ Kwargs = dict[str, Any]
 
 
 class Ccin2p3(SiteConfig):
-    """Configuration for running Parsl jobs in CC-IN2P3 Slurm batch farm.
+    """Configuration for executing Parsl jobs in CC-IN2P3 Slurm batch farm.
 
-    This class provides 4 job slot sizes with different requirements, in
-    particular in terms of memory. Those slot sizes are named "small",
-    "medium", "large" and "xlarge".
+    This class provides four job slot sizes each with its specific
+    requirements, in particular in terms of memory. Those slot sizes are named
+    "small", "medium", "large" and "xlarge".
 
     Sensible default values for those requirements are provided for each
-    kind of job but you can specify different values either in the
+    job slot but you can overwrite those defaults either in the
     the BPS submission file or in a site configuration file that you
     include in your BPS submission file.
 
-    This is an example of how to modify the specifications for those job
-    slot sizes in the BPS submission file:
+    If you don't need to modify the default requirements for the job slot
+    sizes use the site specification below in your BPS configuration
+    file:
 
     .. code-block:: yaml
 
@@ -38,41 +40,12 @@ class Ccin2p3(SiteConfig):
 
         site:
           ccin2p3:
-            class: lsst.ctrl.bps.parsl.sites.Ccin2p3
-            walltime: "72:00:00"
-            qos: "normal"
-            small:
-                memory: 4
-                partition: "flash"
-            medium:
-                memory: 10
-                partition: "lsst,htc"
-            large:
-                memory: 50
-            xlarge:
-                memory: 150
-                partition: "lsst"
+            class: lsst.ctrl.bps.parsl.sites.ccin2p3.Ccin2p3
 
-    At the level of 'site:' entry in the BPS submission file, the following
-    configuration parameters are accepted, which apply to all slot sizes:
-
-    - `partition` (`str`): name of the one or more configured partitions. If
-       more than one, separate them with comma (',').
-       (Default: "lsst,htc")
-    - `qos` (`str`): quality of service to use (Default: "normal")
-    - `walltime` (`str`): walltime to require for the job (Default: "72:00:00")
-
-    For each kind of job slot (i.e. "small", "medium", etc.) you can specify
-    the parameters above as well as:
-
-    - `max_blocks` (`int`): maximum number of Slurm jobs that your workflow can
-       simultaneously use.
-    - ``memory`` (`int`): required amount of memory in Gigabytes.
-
-    as shown in the example above.
-
-    If you don't need to modify those values and use the default configuration
-    for all the job slot sizes use:
+    You may need to modify those defaults. If that is your case, you can
+    overwrite the defaults at both the site level as well as for each
+    job slot site.  This is an example of how to overwrite selected
+    requirements in your BPS submission file:
 
     .. code-block:: yaml
 
@@ -80,8 +53,48 @@ class Ccin2p3(SiteConfig):
         computeSite: ccin2p3
 
         site:
-        ccin2p3:
-            class: lsst.ctrl.bps.parsl.sites.Ccin2p3
+          ccin2p3:
+            class: lsst.ctrl.bps.parsl.sites.ccin2p3.Ccin2p3
+            walltime: "72:00:00"
+            scheduler_options
+              - "--licenses=sps"
+              - "--qos=normal"
+            small:
+              memory: 6
+              partition: "flash"
+            medium:
+              memory: 10
+              partition: "lsst,htc"
+            large:
+              memory: 80
+            xlarge:
+              memory: 180
+              partition: "lsst"
+              scheduler_options:
+                - "--constraint=el7"
+                - "--licenses=my_product"
+                - "--reservation=my_reservation"
+
+    At the level of 'site:' entry in the BPS submission file, the following
+    configuration parameters are accepted, which apply to all slot sizes:
+
+    - `partition` (`str`): name of the one or more configured partitions. If
+       more than one, separate them with comma (',').
+       (Default: "lsst,htc")
+    - `walltime` (`str`): walltime to require for the job (Default: "72:00:00")
+    - `scheduler_options` (`list` [`str`] ): scheduler options to send to Slurm
+       for scheduling purposes.
+       (Default: "--licenses=sps")
+
+    In addition, as shown in the example above, for each job slot (i.e.
+    "small", "medium", etc.) you can specify the requirements above as well as
+    the following:
+
+    - `max_blocks` (`int`): maximum number of Slurm jobs that your workflow can
+       simultaneously use.
+    - `memory` (`int`): required amount of memory for each job, in Gigabytes.
+       (Defaults: 4 for "small", 10 for "medium", 50 fo "large" and
+       150 for "xlarge").
 
     Parameters
     ----------
@@ -97,52 +110,78 @@ class Ccin2p3(SiteConfig):
         farm.
     """
 
+    DEFAULT_ACCOUNT: str = "lsst"
+    DEFAULT_PARTITION_SMALL: str = "lsst,htc"
+    DEFAULT_PARTITION_MEDIUM: str = "lsst"
+    DEFAULT_PARTITION_LARGE: str = "lsst"
+    DEFAULT_PARTITION_XLARGE: str = "lsst"
+    DEFAULT_WALLTIME: str = "72:00:00"
+    DEFAULT_SCHEDULER_OPTIONS: list[str] = [
+        "--licenses=sps",
+    ]
+
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
-
-        self._account = get_bps_config_value(self.site, "account", str, "lsst")
-        default_partition = get_bps_config_value(self.site, "partition", str, "lsst,htc")
-        default_qos = get_bps_config_value(self.site, "qos", str, "normal")
-        default_walltime = get_bps_config_value(self.site, "walltime", str, "72:00:00")
-
+        self._account = get_bps_config_value(self.site, ".account", str, self.DEFAULT_ACCOUNT)
+        self._scheduler_options = get_bps_config_value(
+            self.site, ".scheduler_options", list, self.DEFAULT_SCHEDULER_OPTIONS
+        )
         self._slot_size = {
             "small": {
-                "max_blocks": get_bps_config_value(self.site, "small.max_blocks", int, 3_000),
-                "memory": get_bps_config_value(self.site, "small.memory", int, 4),
-                "partition": get_bps_config_value(self.site, "small.partition", str, default_partition),
-                "qos": get_bps_config_value(self.site, "small.qos", str, default_qos),
-                "walltime": get_bps_config_value(self.site, "small.walltime", str, default_walltime),
+                "memory": get_bps_config_value(self.site, ".small.memory", int, 4),
+                "walltime": get_bps_config_value(self.site, ".small.walltime", str, self.DEFAULT_WALLTIME),
+                "max_blocks": get_bps_config_value(self.site, ".small.max_blocks", int, 3_000),
+                "partition": get_bps_config_value(
+                    self.site, ".small.partition", str, self.DEFAULT_PARTITION_SMALL
+                ),
+                "scheduler_options": get_bps_config_value(self.site, ".small.scheduler_options", list, []),
             },
             "medium": {
-                "max_blocks": get_bps_config_value(self.site, "medium.max_blocks", int, 1_000),
-                "memory": get_bps_config_value(self.site, "medium.memory", int, 10),
-                "partition": get_bps_config_value(self.site, "medium.partition", str, "lsst"),
-                "qos": get_bps_config_value(self.site, "medium.qos", str, default_qos),
-                "walltime": get_bps_config_value(self.site, "medium.walltime", str, default_walltime),
+                "memory": get_bps_config_value(self.site, ".medium.memory", int, 10),
+                "walltime": get_bps_config_value(self.site, ".medium.walltime", str, self.DEFAULT_WALLTIME),
+                "max_blocks": get_bps_config_value(self.site, ".medium.max_blocks", int, 1_000),
+                "partition": get_bps_config_value(
+                    self.site, ".medium.partition", str, self.DEFAULT_PARTITION_MEDIUM
+                ),
+                "scheduler_options": get_bps_config_value(self.site, ".medium.scheduler_options", list, []),
             },
             "large": {
-                "max_blocks": get_bps_config_value(self.site, "large.max_blocks", int, 100),
-                "memory": get_bps_config_value(self.site, "large.memory", int, 50),
-                "partition": get_bps_config_value(self.site, "large.partition", str, "lsst"),
-                "qos": get_bps_config_value(self.site, "large.qos", str, default_qos),
-                "walltime": get_bps_config_value(self.site, "large.walltime", str, default_walltime),
+                "memory": get_bps_config_value(self.site, ".large.memory", int, 50),
+                "walltime": get_bps_config_value(self.site, ".large.walltime", str, self.DEFAULT_WALLTIME),
+                "max_blocks": get_bps_config_value(self.site, ".large.max_blocks", int, 100),
+                "partition": get_bps_config_value(
+                    self.site, ".large.partition", str, self.DEFAULT_PARTITION_LARGE
+                ),
+                "scheduler_options": get_bps_config_value(self.site, ".large.scheduler_options", list, []),
             },
             "xlarge": {
-                "max_blocks": get_bps_config_value(self.site, "xlarge.max_blocks", int, 10),
-                "memory": get_bps_config_value(self.site, "xlarge.memory", int, 150),
-                "partition": get_bps_config_value(self.site, "xlarge.partition", str, "lsst"),
-                "qos": get_bps_config_value(self.site, "xlarge.qos", str, default_qos),
-                "walltime": get_bps_config_value(self.site, "xlarge.walltime", str, default_walltime),
+                "memory": get_bps_config_value(self.site, ".xlarge.memory", int, 150),
+                "max_blocks": get_bps_config_value(self.site, ".xlarge.max_blocks", int, 10),
+                "walltime": get_bps_config_value(self.site, ".xlarge.walltime", str, self.DEFAULT_WALLTIME),
+                "partition": get_bps_config_value(
+                    self.site, ".xlarge.partition", str, self.DEFAULT_PARTITION_XLARGE
+                ),
+                "scheduler_options": get_bps_config_value(self.site, ".xlarge.scheduler_options", list, []),
             },
         }
 
     def get_executors(self) -> list[ParslExecutor]:
-        """Get a list of executors to be used for processing a workflow.
+        """Get a list of Parsl executors that can be used for processing a
+        workflow.
+
         Each executor must have a unique ``label``.
         """
         executors: list[ParslExecutor] = []
         for label, slot in self._slot_size.items():
-            qos = slot["qos"]
+            # Compute the scheduler options for this job slot. Options
+            # specified at the slot level in the configuration file
+            # overwrite those specified at the site level.
+            scheduler_options = copy.deepcopy(self._scheduler_options)
+            if slot_scheduler_options := slot.get("scheduler_options", []):
+                scheduler_options = copy.deepcopy(slot_scheduler_options)
+
+            options = f"#SBATCH {' '.join(opt for opt in scheduler_options)}" if scheduler_options else ""
+
             executor = HighThroughputExecutor(
                 label,
                 provider=SlurmProvider(
@@ -167,7 +206,7 @@ class Ccin2p3(SiteConfig):
                     walltime=slot["walltime"],
                     # '#SBATCH' directives to prepend to the Slurm submission
                     # script.
-                    scheduler_options=f"#SBATCH --qos={qos} --licenses=sps",
+                    scheduler_options=options,
                     # Set the number of file descriptors and processes to
                     # the maximum allowed.
                     worker_init="ulimit -n hard && ulimit -u hard",
