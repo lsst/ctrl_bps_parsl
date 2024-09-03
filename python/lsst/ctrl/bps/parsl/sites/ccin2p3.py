@@ -268,12 +268,17 @@ class Ccin2p3(SiteConfig):
         """
         executors = self.get_executors()
         monitor = self.get_monitor()
-        retries = get_bps_config_value(self.site, "retries", int, 1)
-        run_dir = get_bps_config_value(self.site, "run_dir", str, "parsl_runinfo")
+
+        # Number of retries in case of job failure.
+        retries = get_bps_config_value(self.site, ".retries", int, 0)
+
+        # Path to run directory.
+        run_dir = get_bps_config_value(self.site, ".run_dir", str, "parsl_runinfo")
+
         # Strategy for scaling blocks according to workflow needs.
-        # Use a strategy that allows for scaling in and out Parsl
-        # workers.
-        strategy = get_bps_config_value(self.site, "strategy", str, "htex_auto_scale")
+        # Use a strategy that allows for scaling up and down Parsl workers.
+        strategy = get_bps_config_value(self.site, ".strategy", str, "htex_auto_scale")
+
         return parsl.config.Config(
             executors=executors,
             monitoring=monitor,
