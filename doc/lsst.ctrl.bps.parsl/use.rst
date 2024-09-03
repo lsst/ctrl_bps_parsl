@@ -210,16 +210,16 @@ LocalSrunWorkQueue
 Ccin2p3
 -------
 
-`lsst.ctrl.bps.parsl.sites.Ccin2p3` is intended to be used with the Slurm farm at `CC-IN2P3`_.  It uses a |HighThroughputExecutor|_ and |SlurmProvider|_ to execute the workflow on the site's `Slurm`_ cluster.
+`lsst.ctrl.bps.parsl.sites.ccin2p3.Ccin2p3` is intended to be used with the Slurm farm at `CC-IN2P3`_.  It uses a |HighThroughputExecutor|_ and |SlurmProvider|_ to execute the workflow on the site's `Slurm`_ cluster.
 The ``small``, ``medium``, ``large`` and ``xlarge`` executors may have different memory limits, allowing jobs to be sent to different partitions depending upon their requirements, in particular their memory
-requirements.
+requirement.
 
 Optional settings that apply to all executors are:
 
 * ``account`` (`str`): account to charge the Slurm resource utilization to. (Default: ``lsst``)
 * ``partition`` (`str`): Slurm partition to submit the jobs to. (Default: ``lsst,htc``)
-* ``qos`` (`str`): quality-of-service to request to Slurm for executing the job. (Default: ``normal``)
 * ``walltime`` (`str`): time limit for each Slurm job. (Default: ``72:00:00``)
+* ``scheduler_options`` (`list` [`str`]): additional options submitted to Slurm for scheduling purposes. (Default: ``--licenses=sps``)
 
 For each executor, you can override the default values above and in addition specify values for the optional settings below:
 
