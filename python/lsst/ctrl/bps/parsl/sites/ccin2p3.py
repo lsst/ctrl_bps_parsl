@@ -30,7 +30,7 @@ class Ccin2p3(SiteConfig):
     include in your BPS submission file.
 
     If you don't need to modify the default requirements for the job slot
-    sizes use the site specification below in your BPS configuration
+    sizes, use the site specification below in your BPS configuration
     file:
 
     .. code-block:: yaml
@@ -42,10 +42,13 @@ class Ccin2p3(SiteConfig):
           ccin2p3:
             class: lsst.ctrl.bps.parsl.sites.ccin2p3.Ccin2p3
 
-    You may need to modify those defaults. If that is your case, you can
-    overwrite the defaults at both the site level as well as for each
-    job slot site.  This is an example of how to overwrite selected
-    requirements in your BPS submission file:
+    If you do need to modify those defaults, you can overwrite them for
+    all job slots or for specific each job slots. Requirements specified
+    for a job slot take priority over those specified for all job slots
+    at the level of entry '.site.ccin2p3:'.
+
+    This is an example of how to overwrite selected requirements in your BPS
+    submission file:
 
     .. code-block:: yaml
 
@@ -56,7 +59,7 @@ class Ccin2p3(SiteConfig):
           ccin2p3:
             class: lsst.ctrl.bps.parsl.sites.ccin2p3.Ccin2p3
             walltime: "72:00:00"
-            scheduler_options
+            scheduler_options:
               - "--licenses=sps"
               - "--qos=normal"
             small:
@@ -75,8 +78,9 @@ class Ccin2p3(SiteConfig):
                 - "--licenses=my_product"
                 - "--reservation=my_reservation"
 
-    At the level of 'site:' entry in the BPS submission file, the following
-    configuration parameters are accepted, which apply to all slot sizes:
+    At the level of entry 'site.ccin2p3:' in the BPS submission file, the
+    following configuration parameters are accepted, which apply to all slot
+    sizes:
 
     - `partition` (`str`): name of the one or more configured partitions. If
        more than one, separate them with comma (',').
@@ -86,7 +90,7 @@ class Ccin2p3(SiteConfig):
        for scheduling purposes.
        (Default: "--licenses=sps")
 
-    In addition, as shown in the example above, for each job slot (i.e.
+    In addition, as shown in the previous example, for each job slot (i.e.
     "small", "medium", etc.) you can specify the requirements above as well as
     the following:
 
