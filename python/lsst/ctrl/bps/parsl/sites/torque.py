@@ -180,6 +180,10 @@ class Torque(SiteConfig):
         if worker_init is None:
             worker_init = ""
 
+        launcher = MpiRunLauncherI(
+            overrides=f"--map-by core:{tasks_per_node}"
+        )
+
         return HighThroughputExecutor(
             label,
             provider=TorqueProviderI(
@@ -189,6 +193,7 @@ class Torque(SiteConfig):
                 walltime=walltime,
                 scheduler_options=scheduler_options,
                 worker_init=worker_init,
+                launcher=launcher,
                 **(provider_options or {}),
             ),
             mem_per_worker=mem_per_worker,
@@ -305,6 +310,7 @@ class TorqueProviderI(TorqueProvider):
         )
         self.tasks_per_node = tasks_per_node
 
+
     def submit(self, command, tasks_per_node, job_name="parsl.torque"):
         """Submit the command onto an Local Resource Manager job.
 
@@ -329,3 +335,54 @@ class TorqueProviderI(TorqueProvider):
             tasks_per_node=self.tasks_per_node,
             job_name=job_name,
         )
+
+
+class MpiRunLauncherI(MpiRunLauncher):
+    """ Worker launcher that wraps the user's command with the framework to
+    launch multiple command invocations via mpirun.
+
+    This wrapper sets the bash env variable CORES to the number of cores on the
+    machine.
+
+    This launcher makes the following assumptions:
+    - mpirun is installed and can be located in $PATH
+    - The provider makes available the $PBS_NODEFILE environment variable
+    """
+    def __init__(
+        self,
+        debug: bool = True,
+        bash_location: str = '/bin/bash',
+        overrides: str = ''
+    ):
+        super().__init__(
+            debug=debug, bash_location=bash_location, overrides=overrides,
+        )
+
+    def __call__(self, command: str, tasks_per_node: int, nodes_per_block: int) -> str:
+        """
+        Args:
+        - command (string): The command string to be launched
+
+        """
+        task_blocks = nodes_per_block
+        debug_num = int(self.debug)
+
+        x = '''set -e
+export CORES=$(getconf _NPROCESSORS_ONLN)
+[[ "{debug}" == "1" ]] && echo "Found cores : $CORES"
+WORKERCOUNT={task_blocks}
+
+cat << MPIRUN_EOF > cmd_$JOBNAME.sh
+{command}
+MPIRUN_EOF
+chmod u+x cmd_$JOBNAME.sh
+
+mpirun -np $WORKERCOUNT {overrides} {bash_location} cmd_$JOBNAME.sh
+
+[[ "{debug}" == "1" ]] && echo "All workers done"
+'''.format(command=command,
+           task_blocks=task_blocks,
+           overrides=self.overrides,
+           bash_location=self.bash_location,
+           debug=debug_num)
+        return x
