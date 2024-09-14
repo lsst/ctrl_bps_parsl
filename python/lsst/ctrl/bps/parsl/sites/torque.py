@@ -196,6 +196,8 @@ class Torque(SiteConfig):
                 launcher=launcher,
                 **(provider_options or {}),
             ),
+            # Caps the number of workers launched per node.
+            max_workers=tasks_per_node,
             mem_per_worker=mem_per_worker,
             address=self.get_address(),
             **(executor_options or {}),
