@@ -57,11 +57,11 @@ class Torque(SiteConfig):
 
     .. code-block:: yaml
 
-        computeSite: slurm
+        computeSite: torque
         site:
-          slurm:
+          torque:
             class: lsst.ctrl.bps.parsl.sites.Torque
-            nodes: 3
+            nodes: 4
             tasks_per_node: 20
             walltime: "00:59:00"  # Note: always quote walltime in YAML
 
@@ -196,8 +196,8 @@ class Torque(SiteConfig):
                 launcher=launcher,
                 **(provider_options or {}),
             ),
-            # Caps the number of workers launched per node.
-            max_workers=tasks_per_node,
+            # Caps the number of workers per pool.
+            max_workers=1,
             mem_per_worker=mem_per_worker,
             address=self.get_address(),
             **(executor_options or {}),
@@ -312,7 +312,6 @@ class TorqueProviderI(TorqueProvider):
         )
         self.tasks_per_node = tasks_per_node
 
-
     def submit(self, command, tasks_per_node, job_name="parsl.torque"):
         """Submit the command onto an Local Resource Manager job.
 
@@ -366,13 +365,13 @@ class MpiRunLauncherI(MpiRunLauncher):
         - command (string): The command string to be launched
 
         """
-        task_blocks = nodes_per_block
+        workercount = nodes_per_block * tasks_per_node
         debug_num = int(self.debug)
 
         x = '''set -e
 export CORES=$(getconf _NPROCESSORS_ONLN)
 [[ "{debug}" == "1" ]] && echo "Found cores : $CORES"
-WORKERCOUNT={task_blocks}
+WORKERCOUNT={workercount}
 
 cat << MPIRUN_EOF > cmd_$JOBNAME.sh
 {command}
@@ -383,7 +382,7 @@ mpirun -np $WORKERCOUNT {overrides} {bash_location} cmd_$JOBNAME.sh
 
 [[ "{debug}" == "1" ]] && echo "All workers done"
 '''.format(command=command,
-           task_blocks=task_blocks,
+           workercount=workercount,
            overrides=self.overrides,
            bash_location=self.bash_location,
            debug=debug_num)
