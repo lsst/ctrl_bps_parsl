@@ -23,7 +23,7 @@ classifiers = [
 keywords = ["lsst"]
 dependencies = [
     "lsst-ctrl-bps",
-    "parsl",
+    "parsl >= 2024.03.04",
 ]
 dynamic = ["version"]
 

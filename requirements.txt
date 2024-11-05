@@ -1,2 +1,2 @@
-parsl >= 1.2
+parsl >= 2024.03.04
 lsst-ctrl-bps @ git+https://github.com/lsst/ctrl_bps@main

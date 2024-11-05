@@ -228,7 +228,7 @@ class Ccin2p3(SiteConfig):
                 # for each worker.
                 mem_per_worker=None,
                 # Caps the number of workers launched per node.
-                max_workers=1,
+                max_workers_per_node=1,
                 # Timeout period (in milliseconds) to be used by the
                 # executor components.
                 poll_period=1_000,

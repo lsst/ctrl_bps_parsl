@@ -53,7 +53,7 @@ class Local(SiteConfig):
         Each executor should have a unique ``label``.
         """
         cores = get_bps_config_value(self.site, "cores", int, required=True)
-        return [HighThroughputExecutor("local", provider=LocalProvider(), max_workers=cores)]
+        return [HighThroughputExecutor("local", provider=LocalProvider(), max_workers_per_node=cores)]
 
     def select_executor(self, job: "ParslJob") -> str:
         """Get the ``label`` of the executor to use to execute a job.
