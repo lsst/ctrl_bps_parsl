@@ -1,3 +1,19 @@
+lsst-ctrl-bps-parsl v28.0.0 2024-11-21
+======================================
+
+Bug Fixes
+---------
+
+- Resolved issue relating to the high throughput executor performing validation via checking of a resource spec dictionary.
+  Until now, ``ctrl_bps_parsl`` was passing `None`` instead of an empty `dict`` when there were no resource requests associated with a task. (`DM-45863 <https://rubinobs.atlassian.net/browse/DM-45863>`_)
+- Fixed an error caused by the deprecated ``max_workers`` parameter, which was removed in Parsl version 2024.09.09 following its deprecation in version 2024.03.04. (`DM-47399 <https://rubinobs.atlassian.net/browse/DM-47399>`_)
+
+Other Changes and Additions
+---------------------------
+
+- Updated selected unit tests to reflect the changes made in ``BpsConfig.__init__()``. (`DM-44110 <https://rubinobs.atlassian.net/browse/DM-44110>`_)
+
+
 lsst-ctrl-bps-parsl v27.0.0 2024-06-05
 ======================================
 
