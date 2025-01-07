@@ -72,3 +72,4 @@ target/
 .scon*
 python/lsst/ctrl/bps/parsl/version.py
 tests/.tests
+python/*.dist-info/
