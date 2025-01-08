@@ -217,8 +217,6 @@ class Ccin2p3(SiteConfig):
                     # Requests nodes which are not shared with other running
                     # jobs.
                     exclusive=False,
-                    # Should files be moved by Parsl?
-                    move_files=False,
                 ),
                 # Address to connect to the main Parsl process.
                 address=self.get_address(),
