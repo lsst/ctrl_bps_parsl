@@ -93,7 +93,7 @@ Slurm
 -----
 
 `lsst.ctrl.bps.parsl.sites.Slurm` uses a |HighThroughputExecutor|_ and |SlurmProvider|_ to execute the workflow on a `Slurm`_ cluster.
-This class can be used directly by providing the necessary values in the BPS configuration, or by subclasssing and setting values in the subclass.
+This class can be used directly by providing the necessary values in the BPS configuration, or by subclassing and setting values in the subclass.
 When used directly, required settings are:
 
 * ``nodes`` (`int`): number of nodes for each Slurm job.
@@ -123,7 +123,7 @@ TripleSlurm
 
 `lsst.ctrl.bps.parsl.sites.TripleSlurm` uses three |HighThroughputExecutors|_ and |SlurmProviders|_ to execute the workflow on a `Slurm`_ cluster.
 The ``small``, ``medium`` and ``large`` executors may have different memory limits, allowing jobs to be sent to different allocations depending upon their requirements.
-This class can be used directly by providing the necessary values in the BPS configuration, or by subclasssing and setting values in the subclass.
+This class can be used directly by providing the necessary values in the BPS configuration, or by subclassing and setting values in the subclass.
 The ``TripleSlurm`` site respects the same settings as for :ref:`lsst.ctrl.bps.parsl-slurm` (except for ``walltime``), plus the following optional settings:
 
 * ``small_memory`` (`float`): memory per worker (GB) for each 'small' Slurm job (default: 2.0).
@@ -236,7 +236,7 @@ PBS/Torque
 ----------
 
 `lsst.ctrl.bps.parsl.sites.Torque` uses a |HighThroughputExecutor|_ and |TorqueProvider|_ to execute the workflow on a `Torque`_ cluster.
-This class can be used directly by providing the necessary values in the BPS configuration, or by subclasssing and setting values in the subclass.
+This class can be used directly by providing the necessary values in the BPS configuration, or by subclassing and setting values in the subclass.
 When used directly, required settings are:
 
 * ``nodes`` (`int`): number of nodes for each job.
