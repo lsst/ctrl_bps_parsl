@@ -27,4 +27,5 @@
 
 from .local import *
 from .slurm import *
+from .torque import *
 from .work_queue import *

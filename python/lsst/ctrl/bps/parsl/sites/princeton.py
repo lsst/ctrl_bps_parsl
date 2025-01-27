@@ -58,19 +58,8 @@ class Tiger(Slurm):
       ``True``.
 
     When running on the Tiger cluster, you should operate on the
-    ``/scratch/gpfs`` filesystem, rather than ``/projects`` or ``/tigress``,
-    as the latter are much slower on the cluster nodes than they are on the
-    head nodes. Your BPS config should contain::
-
-        includeConfigs:
-          - ${CTRL_BPS_PARSL_DIR}/etc/execution_butler_copy_files.yaml
-
-    This will cause the necessary files to be transferred from your repo
-    (presumably on ``/projects`` or ``/tigress``) to the execution butler in
-    your submission directory (presumably on ``/scratch/gpfs``). Failure to do
-    so will result in about a 6x slowdown, and probably degrading performance
-    for other users. The results will be copied back to the original repo when
-    everything has completed.
+    ``/scratch/gpfs`` filesystem, rather than ``/projects`` or ``/tigress``;
+    the latter are not even mounted on the cluster nodes any more.
     """
 
     def get_executors(self) -> list[ParslExecutor]:
@@ -94,9 +83,9 @@ class Tiger(Slurm):
             self.make_executor(
                 "tiger",
                 nodes=4,
-                cores_per_node=40,
+                cores_per_node=112,
                 walltime="05:00:00",  # Ensures we get into qos=tiger-vshort, which cuts off at 5h
-                mem_per_node=187,  # Ensures all nodes are queried, reserving 5GB for OS services
+                mem_per_node=980,  # Ensures all nodes are available, reserving a little for OS services
                 singleton=True,
                 provider_options={
                     "init_blocks": 1,

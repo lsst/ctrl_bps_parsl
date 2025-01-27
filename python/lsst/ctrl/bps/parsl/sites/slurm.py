@@ -75,6 +75,7 @@ class Slurm(SiteConfig):
       default we use whatever Slurm gives us.
     - ``singleton`` (`bool`): allow only one job to run at a time; by default
       ``False``.
+    - ``account`` (`str`): account to use for Slurm jobs.
     - ``scheduler_options`` (`str`): text to prepend to the Slurm submission
       script (each line usually starting with ``#SBATCH``).
     """
@@ -135,6 +136,7 @@ class Slurm(SiteConfig):
         mem_per_node = get_bps_config_value(self.site, "mem_per_node", int, mem_per_node)
         qos = get_bps_config_value(self.site, "qos", str, qos)
         singleton = get_bps_config_value(self.site, "singleton", bool, singleton)
+        account = get_bps_config_value(self.site, "account", str)
         scheduler_options = get_bps_config_value(self.site, "scheduler_options", str, scheduler_options)
 
         job_name = get_workflow_name(self.config)
@@ -163,6 +165,7 @@ class Slurm(SiteConfig):
                 cores_per_node=cores_per_node,
                 mem_per_node=mem_per_node,
                 walltime=walltime,
+                account=account,
                 scheduler_options=scheduler_options,
                 **(provider_options or {}),
             ),

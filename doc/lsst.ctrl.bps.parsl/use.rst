@@ -93,7 +93,7 @@ Slurm
 -----
 
 `lsst.ctrl.bps.parsl.sites.Slurm` uses a |HighThroughputExecutor|_ and |SlurmProvider|_ to execute the workflow on a `Slurm`_ cluster.
-This class can be used directly by providing the necessary values in the BPS configuration, or by subclasssing and setting values in the subclass.
+This class can be used directly by providing the necessary values in the BPS configuration, or by subclassing and setting values in the subclass.
 When used directly, required settings are:
 
 * ``nodes`` (`int`): number of nodes for each Slurm job.
@@ -123,7 +123,7 @@ TripleSlurm
 
 `lsst.ctrl.bps.parsl.sites.TripleSlurm` uses three |HighThroughputExecutors|_ and |SlurmProviders|_ to execute the workflow on a `Slurm`_ cluster.
 The ``small``, ``medium`` and ``large`` executors may have different memory limits, allowing jobs to be sent to different allocations depending upon their requirements.
-This class can be used directly by providing the necessary values in the BPS configuration, or by subclasssing and setting values in the subclass.
+This class can be used directly by providing the necessary values in the BPS configuration, or by subclassing and setting values in the subclass.
 The ``TripleSlurm`` site respects the same settings as for :ref:`lsst.ctrl.bps.parsl-slurm` (except for ``walltime``), plus the following optional settings:
 
 * ``small_memory`` (`float`): memory per worker (GB) for each 'small' Slurm job (default: 2.0).
@@ -230,6 +230,33 @@ For each executor, you can override the default values above and in addition spe
 * ``memory`` (`int`): memory per node in GB. (Defaults: 4 GB for executor ``small``, 10 GB for ``medium``, 50 GB for ``large`` and 150 GB for ``xlarge``)
 
 .. _CC-IN2P3: https://cc.in2p3.fr
+
+
+PBS/Torque
+----------
+
+`lsst.ctrl.bps.parsl.sites.Torque` uses a |HighThroughputExecutor|_ and |TorqueProvider|_ to execute the workflow on a `Torque`_ cluster.
+This class can be used directly by providing the necessary values in the BPS configuration, or by subclassing and setting values in the subclass.
+When used directly, required settings are:
+
+* ``nodes`` (`int`): number of nodes for each job.
+* ``walltime`` (`str`): time limit for each job.
+
+.. caution::
+   ``walltime`` colon-delimited values should always be enclosed in double-quotes, to avoid YAML parsing them differently than you intend.
+
+Optional settings are:
+
+* ``queue`` (`int`): name of the queue to submit jobs to.
+* ``tasks_per_node`` (`int`): number of tasks per node for each job; by default we use one task per node, which uses all available cores.
+* ``worker_init`` (`str`): environment initialization command.
+* ``scheduler_options`` (`str`): text to prepend to the Torque submission script (each line usually starting with ``#PBS``); empty string by default.
+
+.. _HighThroughputExecutor: https://parsl.readthedocs.io/en/stable/stubs/parsl.executors.HighThroughputExecutor.html#parsl.executors.HighThroughputExecutor
+.. |TorqueProvider| replace:: ``TorqueProvider``
+.. _TorqueProvider: https://parsl.readthedocs.io/en/stable/stubs/parsl.providers.TorqueProvider.html#parsl.providers.TorqueProvider
+.. _Torque: https://en.wikipedia.org/wiki/TORQUE
+
 
 Adding a site
 =============
