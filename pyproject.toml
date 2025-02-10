@@ -147,6 +147,7 @@ select = [
     "C4",
     "I",  # isort
     "RUF022",  # sort __all__
+    "B",  # bugbear
 ]
 extend-select = [
     "RUF100", # Warn about unused noqa
