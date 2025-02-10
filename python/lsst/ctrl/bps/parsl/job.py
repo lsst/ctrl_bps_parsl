@@ -288,7 +288,7 @@ class ParslJob:
             # Add a layer of indirection to which we can add a useful name.
             # This name is used by parsl for tracking workflow status.
             func = partial(run_command)
-            setattr(func, "__name__", self.generic.label)
+            func.__name__ = self.generic.label
 
             self.future = app(func)(
                 command,
