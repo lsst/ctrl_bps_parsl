@@ -34,9 +34,10 @@ from functools import partial
 from textwrap import dedent
 from typing import Any
 
-from lsst.ctrl.bps import BpsConfig, GenericWorkflow, GenericWorkflowJob
 from parsl.app.bash import BashApp
 from parsl.app.futures import Future
+
+from lsst.ctrl.bps import BpsConfig, GenericWorkflow, GenericWorkflowJob
 
 from .configuration import get_bps_config_value
 
