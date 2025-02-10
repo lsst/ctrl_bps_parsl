@@ -30,11 +30,12 @@ from types import ModuleType
 from typing import TYPE_CHECKING
 
 import parsl.config
-from lsst.ctrl.bps import BpsConfig
-from lsst.utils import doImport
 from parsl.addresses import address_by_hostname
 from parsl.executors.base import ParslExecutor
 from parsl.monitoring import MonitoringHub
+
+from lsst.ctrl.bps import BpsConfig
+from lsst.utils import doImport
 
 from .configuration import get_bps_config_value, get_workflow_name
 from .environment import export_environment

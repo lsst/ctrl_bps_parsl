@@ -34,13 +34,14 @@ from functools import partial
 from textwrap import dedent
 from typing import Any
 
-from lsst.ctrl.bps import BpsConfig, GenericWorkflow, GenericWorkflowJob
 from parsl.app.bash import BashApp
 from parsl.app.futures import Future
 
+from lsst.ctrl.bps import BpsConfig, GenericWorkflow, GenericWorkflowJob
+
 from .configuration import get_bps_config_value
 
-__all__ = ("get_file_paths", "ParslJob")
+__all__ = ("ParslJob", "get_file_paths")
 
 _env_regex = re.compile(r"<ENV:(\S+)>")  # Regex for replacing <ENV:WHATEVER> in BPS job command-lines
 _file_regex = re.compile(r"<FILE:(\S+)>")  # Regex for replacing <FILE:WHATEVER> in BPS job command-lines
@@ -287,7 +288,7 @@ class ParslJob:
             # Add a layer of indirection to which we can add a useful name.
             # This name is used by parsl for tracking workflow status.
             func = partial(run_command)
-            setattr(func, "__name__", self.generic.label)
+            func.__name__ = self.generic.label  # type: ignore
 
             self.future = app(func)(
                 command,

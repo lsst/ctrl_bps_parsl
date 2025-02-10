@@ -32,10 +32,11 @@ from collections.abc import Iterable, Mapping
 
 import parsl
 import parsl.config
-from lsst.ctrl.bps import BaseWmsWorkflow, BpsConfig, GenericWorkflow, GenericWorkflowJob
 from parsl.app.app import bash_app
 from parsl.app.bash import BashApp
 from parsl.app.futures import Future
+
+from lsst.ctrl.bps import BaseWmsWorkflow, BpsConfig, GenericWorkflow, GenericWorkflowJob
 
 from .configuration import get_workflow_filename, set_parsl_logging
 from .job import ParslJob, get_file_paths
