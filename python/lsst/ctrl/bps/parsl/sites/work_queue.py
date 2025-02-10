@@ -43,7 +43,7 @@ from ..site import SiteConfig
 if TYPE_CHECKING:
     from ..job import ParslJob
 
-__all__ = ("WorkQueue", "LocalSrunWorkQueue")
+__all__ = ("LocalSrunWorkQueue", "WorkQueue")
 
 
 class WorkQueue(SiteConfig):

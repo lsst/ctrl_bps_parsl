@@ -41,7 +41,7 @@ from lsst.ctrl.bps import BpsConfig, GenericWorkflow, GenericWorkflowJob
 
 from .configuration import get_bps_config_value
 
-__all__ = ("get_file_paths", "ParslJob")
+__all__ = ("ParslJob", "get_file_paths")
 
 _env_regex = re.compile(r"<ENV:(\S+)>")  # Regex for replacing <ENV:WHATEVER> in BPS job command-lines
 _file_regex = re.compile(r"<FILE:(\S+)>")  # Regex for replacing <FILE:WHATEVER> in BPS job command-lines

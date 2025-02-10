@@ -33,8 +33,8 @@ from lsst.ctrl.bps import BpsConfig
 
 __all__ = (
     "get_bps_config_value",
-    "get_workflow_name",
     "get_workflow_filename",
+    "get_workflow_name",
     "set_parsl_logging",
 )
 
