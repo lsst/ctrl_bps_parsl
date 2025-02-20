@@ -1,4 +1,5 @@
 import copy
+import platform
 from typing import TYPE_CHECKING, Any
 
 import parsl.config
@@ -115,10 +116,6 @@ class Ccin2p3(SiteConfig):
     """
 
     DEFAULT_ACCOUNT: str = "lsst"
-    DEFAULT_PARTITION_SMALL: str = "lsst,htc"
-    DEFAULT_PARTITION_MEDIUM: str = "lsst"
-    DEFAULT_PARTITION_LARGE: str = "lsst"
-    DEFAULT_PARTITION_XLARGE: str = "lsst"
     DEFAULT_WALLTIME: str = "72:00:00"
     DEFAULT_SCHEDULER_OPTIONS: list[str] = [
         "--licenses=sps",
@@ -133,41 +130,116 @@ class Ccin2p3(SiteConfig):
         self._slot_size = {
             "small": {
                 "memory": get_bps_config_value(self.site, ".small.memory", int, 4),
-                "walltime": get_bps_config_value(self.site, ".small.walltime", str, self.DEFAULT_WALLTIME),
+                "walltime": self._get_walltime_for_slot("small"),
+                "partition": self._get_partition_for_slot("small"),
                 "max_blocks": get_bps_config_value(self.site, ".small.max_blocks", int, 3_000),
-                "partition": get_bps_config_value(
-                    self.site, ".small.partition", str, self.DEFAULT_PARTITION_SMALL
-                ),
                 "scheduler_options": get_bps_config_value(self.site, ".small.scheduler_options", list, []),
             },
             "medium": {
                 "memory": get_bps_config_value(self.site, ".medium.memory", int, 10),
-                "walltime": get_bps_config_value(self.site, ".medium.walltime", str, self.DEFAULT_WALLTIME),
+                "walltime": self._get_walltime_for_slot("medium"),
+                "partition": self._get_partition_for_slot("medium"),
                 "max_blocks": get_bps_config_value(self.site, ".medium.max_blocks", int, 1_000),
-                "partition": get_bps_config_value(
-                    self.site, ".medium.partition", str, self.DEFAULT_PARTITION_MEDIUM
-                ),
                 "scheduler_options": get_bps_config_value(self.site, ".medium.scheduler_options", list, []),
             },
             "large": {
                 "memory": get_bps_config_value(self.site, ".large.memory", int, 50),
-                "walltime": get_bps_config_value(self.site, ".large.walltime", str, self.DEFAULT_WALLTIME),
+                "walltime": self._get_walltime_for_slot("large"),
+                "partition": self._get_partition_for_slot("large"),
                 "max_blocks": get_bps_config_value(self.site, ".large.max_blocks", int, 100),
-                "partition": get_bps_config_value(
-                    self.site, ".large.partition", str, self.DEFAULT_PARTITION_LARGE
-                ),
                 "scheduler_options": get_bps_config_value(self.site, ".large.scheduler_options", list, []),
             },
             "xlarge": {
                 "memory": get_bps_config_value(self.site, ".xlarge.memory", int, 150),
+                "walltime": self._get_walltime_for_slot("xlarge"),
+                "partition": self._get_partition_for_slot("xlarge"),
                 "max_blocks": get_bps_config_value(self.site, ".xlarge.max_blocks", int, 10),
-                "walltime": get_bps_config_value(self.site, ".xlarge.walltime", str, self.DEFAULT_WALLTIME),
-                "partition": get_bps_config_value(
-                    self.site, ".xlarge.partition", str, self.DEFAULT_PARTITION_XLARGE
-                ),
                 "scheduler_options": get_bps_config_value(self.site, ".xlarge.scheduler_options", list, []),
             },
         }
+
+    def _get_partition_for_slot(self, slot: str) -> str:
+        """Return the Slurm partition Parsl must use to submit jobs for the
+        job slot `slot`. Values of `slot` can be "small", "medium", "large"
+        or "xlarge".
+        """
+        # The target Slurm partition must be selected according to the type of
+        # the job slot but also according to the CPU architecture of the
+        # compute node.
+        #
+        # Parsl requires that the CPU architecture of its orchestrator to
+        # be identical to the architecture of its executors. Therefore,
+        # we need to ensure that Slurm schedules our Parsl executors on
+        # compute nodes with the same architecture as the host where this
+        # orchestrator runs.
+
+        # Default target Slurm partitions per CPU architecture
+        default_partition = {
+            "aarch64": {
+                "small": "htc_arm",
+                "medium": "htc_arm",
+                "large": "htc_arm",
+                "xlarge": "htc_arm",
+            },
+            "x86_64": {
+                "small": "lsst,htc",
+                "medium": "lsst",
+                "large": "lsst",
+                "xlarge": "lsst",
+            },
+        }
+        architecture = platform.machine()
+        if architecture not in default_partition:
+            raise ValueError(f"architecture {architecture} is not supported")
+
+        # If a partition was specified in the workflow description file
+        # specifically for this job slot, use that partition. For instance:
+        #
+        # site:
+        #   ccin2p3:
+        #     class: lsst.ctrl.bps.parsl.sites.ccin2p3.Ccin2p3
+        #     small:
+        #       partition: htc
+        slot_partition = get_bps_config_value(self.site, f".{slot}.partition", str, "")
+        if slot_partition != "":
+            return slot_partition
+
+        # If a partition was specified in the workflow description file at
+        # the site level, use that partition. For instance:
+        #
+        # site:
+        #   ccin2p3:
+        #     class: lsst.ctrl.bps.parsl.sites.ccin2p3.Ccin2p3
+        #     partition: htc
+        #
+        # Otherwise, use the default for this slot on this architecture.
+        return get_bps_config_value(self.site, ".partition", str, default_partition[architecture][slot])
+
+    def _get_walltime_for_slot(self, slot: str) -> str:
+        """Return the value for walltime Parsl must use to submit jobs for the
+        job slot `slot`. Values of `slot` can be "small", "medium", "large"
+        or "xlarge".
+        """
+        # If a specific walltime value was specified for this job slot in the
+        # configuration use that value. For instance:
+        #
+        # site:
+        #   ccin2p3:
+        #     class: lsst.ctrl.bps.parsl.sites.ccin2p3.Ccin2p3
+        #     small:
+        #       walltime: "3:00:00"
+        slot_walltime = get_bps_config_value(self.site, f".{slot}.walltime", str, "")
+        if slot_walltime != "":
+            return slot_walltime
+
+        # If a walltime value was specified for the site use that value.
+        # Otherwise, use the default walltime. For instance:
+        #
+        # site:
+        #   ccin2p3:
+        #     class: lsst.ctrl.bps.parsl.sites.ccin2p3.Ccin2p3
+        #     walltime: "3:00:00"
+        return get_bps_config_value(self.site, ".walltime", str, self.DEFAULT_WALLTIME)
 
     def get_executors(self) -> list[ParslExecutor]:
         """Get a list of Parsl executors that can be used for processing a
