@@ -1,3 +1,12 @@
+lsst-ctrl-bps-parsl v29.0.0 2025-03-25
+======================================
+
+New Features
+------------
+
+- Added support for PBS/Torque and updated Princeton site to support new Tiger3 cluster. (`dm-48539 <https://rubinobs.atlassian.net/browse/dm-48539>`_)
+
+
 lsst-ctrl-bps-parsl v28.0.0 2024-11-21
 ======================================
 
