@@ -25,9 +25,9 @@
 # You should have received a copy of the GNU General Public License
 # along with this program.  If not, see <https://www.gnu.org/licenses/>.
 
-from contextlib import closing
 import socket
-from typing import TYPE_CHECKING, List, Optional, Any, Dict
+from contextlib import closing
+from typing import TYPE_CHECKING, Any
 
 from parsl.executors import WorkQueueExecutor
 from parsl.executors.base import ParslExecutor
@@ -57,9 +57,6 @@ def get_free_port():
         s.setsockopt(socket.SOL_SOCKET, socket.SO_REUSEADDR, 1)
         port = s.getsockname()[1]
         return port
-
-
-Kwargs = Dict[str, Any]
 
 
 class WorkQueue(SiteConfig):
@@ -142,7 +139,7 @@ class WorkQueue(SiteConfig):
             autolabel=False,
         )
 
-    def get_executors(self) -> List[ParslExecutor]:
+    def get_executors(self) -> list[ParslExecutor]:
         return [self.make_executor("work_queue", self.get_provider())]
 
     def select_executor(self, job: "ParslJob") -> str:
@@ -190,14 +187,14 @@ class LocalSrunWorkQueue(WorkQueue):
     def get_provider(self) -> ExecutionProvider:
         """Return a LocalProvider."""
         nodes = get_bps_config_value(self.site, "nodes_per_block", int, 1)
-        provider_options = dict(
-            nodes_per_block=nodes,
-            init_blocks=0,
-            min_blocks=0,
-            max_blocks=1,
-            parallelism=0,
-            cmd_timeout=300,
-        )
+        provider_options = {
+            "nodes_per_block": nodes,
+            "init_blocks": 0,
+            "min_blocks": 0,
+            "max_blocks": 1,
+            "parallelism": 0,
+            "cmd_timeout": 300,
+        }
         if nodes > 1:
             provider_options["launcher"] = SrunLauncher(overrides="-K0 -k --slurmd-debug=verbose")
         return LocalProvider(**provider_options)
@@ -218,22 +215,24 @@ class SlurmWorkQueue(WorkQueue):
       Default: ``""``
     - ``wq_max_retries`` (`int`): The number of retries that work_queue
       will make in case of task failures.  Set to ``None`` to have work_queue
-      retry forever; set to ``1`` to have retries managed by Parsl. Default: ``1``
-    - ``nodes_per_block`` (`int`): The number of allocated nodes. Default: ``1``
+      retry forever; set to ``1`` to have retries managed by Parsl.
+      Default: ``1``
+    - ``nodes_per_block`` (`int`): The number of allocated nodes.
+      Default: ``1``
     """
 
     def get_provider(
         self,
-        nodes: Optional[int] = 1,
-        cores_per_node: Optional[int] = None,
-        walltime: Optional[str] = None,
-        mem_per_node: Optional[int] = None,
-        qos: Optional[str] = None,
-        constraint: Optional[str] = None,
+        nodes: int | None = 1,
+        cores_per_node: int | None = None,
+        walltime: str | None = None,
+        mem_per_node: int | None = None,
+        qos: str | None = None,
+        constraint: str | None = None,
         singleton: bool = False,
         exclusive: bool = False,
-        scheduler_options: Optional[str] = None,
-        provider_options: Optional[Kwargs] = None,
+        scheduler_options: str | None = None,
+        provider_options: dict[str, Any] | None = None,
     ) -> ExecutionProvider:
         """Return a SlurmProvider."""
         nodes = get_bps_config_value(self.site, "nodes_per_block", int, 1)
