@@ -273,7 +273,7 @@ class SlurmWorkQueue(WorkQueue):
             walltime=walltime,
             exclusive=exclusive,
             scheduler_options=scheduler_options,
-            launcher=SrunLauncher(overrides="-K0 -k --slurmd-debug=verbose"),
+            launcher=SrunLauncher(overrides="-K0 -k --cpu-bind=none"),
             **(provider_options or {}),
         )
         return provider
