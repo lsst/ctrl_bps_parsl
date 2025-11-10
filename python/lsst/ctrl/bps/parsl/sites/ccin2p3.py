@@ -122,6 +122,8 @@ class Ccin2p3(SiteConfig):
     ]
 
     def __init__(self, *args, **kwargs):
+        # Have BPS-defined resource requests for each job passed to executor.
+        kwargs["resource_list"] = ["priority"]
         super().__init__(*args, **kwargs)
         self._account = get_bps_config_value(self.site, ".account", str, self.DEFAULT_ACCOUNT)
         self._scheduler_options = get_bps_config_value(
