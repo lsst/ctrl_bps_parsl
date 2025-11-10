@@ -237,6 +237,7 @@ class ParslJob:
             ("request_cpus", "cores", None),
             ("request_disk", "disk", None),  # Both are MB
             ("request_walltime", "running_time_min", None),  # Both are minutes
+            ("priority", "priority", None),
         ):
             value = getattr(self.generic, bps_name)
             if scale is not None:
@@ -249,7 +250,7 @@ class ParslJob:
         app: BashApp,
         inputs: list[Future],
         command_prefix: str | None = None,
-        add_resources: bool = False,
+        resource_list: list | None = None,
     ) -> Future | None:
         """Get the parsl app future for the job.
 
@@ -265,10 +266,8 @@ class ParslJob:
         command_prefix : `str`, optional
             Bash commands to execute before the job command, e.g., for setting
             the environment.
-        add_resources : `bool`
-            Add resource specification when submitting the job? This is only
-            appropriate for the ``WorkQueue`` executor; other executors will
-            raise an exception.
+        resource_list : `list`, optional
+            List of resource specifications to pass to the Parsl executor.
 
         Returns
         -------
@@ -283,7 +282,11 @@ class ParslJob:
             command = self.evaluate_command_line(command)
             if command_prefix:
                 command = command_prefix + "\n" + command
-            resources = self.get_resources() if add_resources else {}
+            resources = (
+                {k: v for k, v in self.get_resources().items() if k in resource_list}
+                if resource_list is not None
+                else {}
+            )
 
             # Add a layer of indirection to which we can add a useful name.
             # This name is used by parsl for tracking workflow status.

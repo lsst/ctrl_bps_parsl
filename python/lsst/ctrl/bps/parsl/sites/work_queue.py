@@ -59,7 +59,7 @@ class WorkQueue(SiteConfig):
         Parameters forwarded to base class constructor.
     **kwargs : `~typing.Any`
         Keyword arguments passed to base class constructor, augmented by
-        the ``add_resources`` argument.
+        the ``resource_list`` argument.
 
     Notes
     -----
@@ -79,7 +79,7 @@ class WorkQueue(SiteConfig):
 
     def __init__(self, *args, **kwargs):
         # Have BPS-defined resource requests for each job passed to work_queue.
-        kwargs["add_resources"] = True
+        kwargs["resource_list"] = ["memory", "cores", "disk", "running_time_min", "priority"]
         super().__init__(*args, **kwargs)
 
     def make_executor(
