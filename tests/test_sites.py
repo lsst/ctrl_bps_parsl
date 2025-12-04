@@ -26,6 +26,8 @@
 # along with this program.  If not, see <https://www.gnu.org/licenses/>.
 
 
+import platform
+
 from parsl.executors import HighThroughputExecutor, WorkQueueExecutor
 
 from lsst.ctrl.bps import BpsConfig
@@ -56,7 +58,11 @@ def testSiteResourcelists():
         WorkQueueExecutor: {"memory", "cores", "disk", "running_time_min", "priority"},
     }
 
-    site_classes = [Ccin2p3, Local, Slurm, Torque]
+    site_classes = [Local, Slurm, Torque]
+    if platform.machine() in ("aarch64", "x86_64"):
+        # If running on a supported architecture, then add Ccin2p3 site class.
+        site_classes.append(Ccin2p3)
+
     try:
         # If the ndcctools module is available, then add WorkQueue
         # subclasses to the site_classes list.
