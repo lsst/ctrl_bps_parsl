@@ -34,7 +34,7 @@ from lsst.ctrl.bps import BpsConfig
 from lsst.ctrl.bps.parsl.sites import Ccin2p3, Local, LocalSrunWorkQueue, Slurm, Torque
 
 
-def testSiteResourcelists():
+def testSiteResourceLists():
     """Test compute site resource lists."""
     # Provide a minimal config that allows compute site classes to be created.
     config = BpsConfig(

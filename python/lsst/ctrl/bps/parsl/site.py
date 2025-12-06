@@ -56,7 +56,7 @@ class SiteConfig(ABC):
     ----------
     config : `BpsConfig`
         BPS configuration.
-    resource_list : `list`
+    resource_list : `list`, optional
         List of parsl resource specifications to pass to the executor.
     """
 
