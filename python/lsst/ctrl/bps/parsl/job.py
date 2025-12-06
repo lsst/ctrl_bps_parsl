@@ -240,9 +240,15 @@ class ParslJob:
             ("priority", "priority", None),
         ):
             value = getattr(self.generic, bps_name)
-            if scale is not None:
+            if value is not None and scale is not None:
                 value *= scale
-            resources[parsl_name] = value
+            # Parsl's `HighThroughputExecutor` cannot have
+            # `priority=None`, but it can be omitted.  By contrast,
+            # `WorkQueueExecutor` needs to have the other resource
+            # requests provided, but `priority` can be omitted, so we
+            # need special handling for `priority`.
+            if (parsl_name == "priority" and value is not None) or parsl_name != "priority":
+                resources[parsl_name] = value
         return resources
 
     def get_future(

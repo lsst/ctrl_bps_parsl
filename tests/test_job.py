@@ -82,3 +82,28 @@ def testInitWithoutTemplate():
     parsl_job = ParslJob(gwjob, config, {})
     assert parsl_job.stdout == os.path.join(submit_path, "logs/job3.stdout")
     assert parsl_job.stderr == os.path.join(submit_path, "logs/job3.stderr")
+
+
+def testJobResourceLists():
+    """Test that ParslJob.get_resources() returns resource specifications
+    expected by Parsl Executors, including special handling needed for the
+    `priority` request.
+    """
+    # Test doesn't actually use directory
+    submit_path = os.path.join(TESTDIR, "without_template")
+    config = BpsConfig({"subDirTemplate": "", "submitPath": submit_path}, search_order=[])
+    gwjob = GenericWorkflowJob("job", label="label")
+
+    # If gwjob.priority is None, for Parsl's HighThroughputExecutor
+    # `"priority"` must be omitted, but WorkQueueExecutor requires
+    # `("cores", "disk", "memory")` to be provided.
+    gwjob.priority = None
+    parsl_job = ParslJob(gwjob, config, {})
+    assert "priority" not in parsl_job.get_resources()
+    for resource in ("cores", "disk", "memory"):
+        assert resource in parsl_job.get_resources()
+
+    # Check case where gwjob.priority is not None.
+    gwjob.priority = 1
+    for resource in ("cores", "disk", "memory", "priority"):
+        assert resource in parsl_job.get_resources()
