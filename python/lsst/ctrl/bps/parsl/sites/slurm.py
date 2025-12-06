@@ -80,6 +80,11 @@ class Slurm(SiteConfig):
       script (each line usually starting with ``#SBATCH``).
     """
 
+    def __init__(self, *args, **kwargs):
+        # Have BPS-defined resource requests for each job passed to executor.
+        kwargs["resource_list"] = ["priority"]
+        super().__init__(*args, **kwargs)
+
     def make_executor(
         self,
         label: str,

@@ -47,6 +47,11 @@ class Local(SiteConfig):
     ``site.<computeSite>.cores`` (`int`).
     """
 
+    def __init__(self, *args, **kwargs):
+        # Have BPS-defined resource requests for each job passed to executor.
+        kwargs["resource_list"] = ["priority"]
+        super().__init__(*args, **kwargs)
+
     def get_executors(self) -> list[ParslExecutor]:
         """Get a list of executors to be used in processing.
 
