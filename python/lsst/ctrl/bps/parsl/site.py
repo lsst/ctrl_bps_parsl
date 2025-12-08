@@ -56,16 +56,14 @@ class SiteConfig(ABC):
     ----------
     config : `BpsConfig`
         BPS configuration.
-    add_resources : `bool`
-        Add resource specification when submitting the job? This is only
-        appropriate for the ``WorkQueue`` executor; other executors will
-        raise an exception.
+    resource_list : `list`, optional
+        List of parsl resource specifications to pass to the executor.
     """
 
-    def __init__(self, config: BpsConfig, add_resources: bool = False):
+    def __init__(self, config: BpsConfig, resource_list: list = None):
         self.config = config
         self.site = self.get_site_subconfig(config)
-        self.add_resources = add_resources
+        self.resource_list = resource_list
 
     @staticmethod
     def get_site_subconfig(config: BpsConfig) -> BpsConfig:

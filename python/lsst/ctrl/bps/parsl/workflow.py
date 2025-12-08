@@ -278,7 +278,7 @@ class ParslWorkflow(BaseWmsWorkflow):
             self.apps[label],
             [ff for ff in inputs if ff is not None],
             self.command_prefix,
-            self.site.add_resources,
+            self.site.resource_list,
         )
 
     def load_dfk(self):
