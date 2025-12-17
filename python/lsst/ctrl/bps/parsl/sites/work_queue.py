@@ -196,7 +196,7 @@ class LocalSrunWorkQueue(WorkQueue):
             "cmd_timeout": 300,
         }
         if nodes > 1:
-            provider_options["launcher"] = SrunLauncher(overrides="-K0 -k --slurmd-debug=verbose")
+            provider_options["launcher"] = SrunLauncher(overrides="-K0 -k --cpu-bind=none")
         return LocalProvider(**provider_options)
 
 

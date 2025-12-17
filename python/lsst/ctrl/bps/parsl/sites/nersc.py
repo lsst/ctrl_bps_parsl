@@ -100,7 +100,7 @@ class CoriKnl(TripleSlurm):
             "min_blocks": 0,
             "max_blocks": 1,
             "parallelism": 0,
-            "launcher": SrunLauncher(overrides="-K0 -k --slurmd-debug=verbose"),
+            "launcher": SrunLauncher(overrides="-K0 -k --cpu-bind=none"),
             "cmd_timeout": 300,
         }
         executor_options = {"worker_debug": False, "heartbeat_period": 60, "heartbeat_threshold": 180}
