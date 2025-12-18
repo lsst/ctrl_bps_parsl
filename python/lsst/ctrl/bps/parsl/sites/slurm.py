@@ -98,6 +98,7 @@ class Slurm(SiteConfig):
         qos: str | None = None,
         constraint: str | None = None,
         singleton: bool = False,
+        exclusive: bool = False,
         scheduler_options: str | None = None,
         provider_options: Kwargs | None = None,
         executor_options: Kwargs | None = None,
@@ -123,7 +124,9 @@ class Slurm(SiteConfig):
         constraint : `str`, optional
             Node feature(s) to require for each Slurm job.
         singleton : `bool`, optional
-            Wether to allow only a single Slurm job to run at a time.
+            Whether to allow only a single Slurm job to run at a time.
+        exclusive : `bool`, optional
+            Flag to specify exclusive nodes in Slurm.
         scheduler_options : `str`, optional
             ``#SBATCH`` directives to prepend to the Slurm submission script.
         provider_options : `dict`, optional
@@ -141,7 +144,9 @@ class Slurm(SiteConfig):
         walltime = get_bps_config_value(self.site, "walltime", str, walltime, required=True)
         mem_per_node = get_bps_config_value(self.site, "mem_per_node", int, mem_per_node)
         qos = get_bps_config_value(self.site, "qos", str, qos)
+        constraint = get_bps_config_value(self.site, "constraint", str, qos)
         singleton = get_bps_config_value(self.site, "singleton", bool, singleton)
+        exclusive = get_bps_config_value(self.site, "exclusive", bool, exclusive)
         account = get_bps_config_value(self.site, "account", str)
         scheduler_options = get_bps_config_value(self.site, "scheduler_options", str, scheduler_options)
 
@@ -177,6 +182,7 @@ class Slurm(SiteConfig):
                 cores_per_node=cores_per_node,
                 mem_per_node=mem_per_node,
                 walltime=walltime,
+                exclusive=exclusive,
                 account=account,
                 scheduler_options=scheduler_options,
                 **(provider_options or {}),
