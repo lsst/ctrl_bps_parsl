@@ -29,6 +29,7 @@ from typing import TYPE_CHECKING, Any
 
 from parsl.executors import HighThroughputExecutor
 from parsl.executors.base import ParslExecutor
+from parsl.launchers import SrunLauncher
 from parsl.providers import SlurmProvider
 
 from ..configuration import get_bps_config_value, get_workflow_name
@@ -145,6 +146,12 @@ class Slurm(SiteConfig):
         scheduler_options = get_bps_config_value(self.site, "scheduler_options", str, scheduler_options)
 
         job_name = get_workflow_name(self.config)
+        if nodes > 1:
+            launcher = SrunLauncher(overrides="-K0 -k --cpu-bind=none")
+            if provider_options is None:
+                provider_options = {"launcher": launcher}
+            else:
+                provider_options["launcher"] = launcher
         if scheduler_options is None:
             scheduler_options = ""
         else:
