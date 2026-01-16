@@ -55,7 +55,7 @@ New Features
 ------------
 
 - Added support for getting ``scheduler_options`` from BPS configuration for Slurm. (`DM-32764 <https://rubinobs.atlassian.net/browse/DM-32764>`_)
-- Added `cmd_timeout` configurable option to the Princeton site settings. (`DM-38184 <https://rubinobs.atlassian.net/browse/DM-38184>`_)
+- Added ``cmd_timeout`` configurable option to the Princeton site settings. (`DM-38184 <https://rubinobs.atlassian.net/browse/DM-38184>`_)
 
 
 Bug Fixes
