@@ -1,3 +1,12 @@
+lsst-ctrl-bps-parsl v30.0.0 (2026-01-16)
+========================================
+
+New Features
+------------
+
+- Now pass job priority requests from BPS to Parsl executor classes (`DM-53483 <https://rubinobs.atlassian.net/browse/DM-53483>`_)
+
+
 lsst-ctrl-bps-parsl v29.0.0 2025-03-25
 ======================================
 
