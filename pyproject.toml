@@ -55,7 +55,7 @@ version = { attr = "lsst_versions.get_lsst_version" }
     package_dir = "python"
     filename = "doc/lsst.ctrl.bps.parsl/CHANGES.rst"
     directory = "doc/changes"
-    title_format = "lsst-ctrl-bps-parsl {version} {project_date}"
+    title_format = "lsst-ctrl-bps-parsl {version} ({project_date})"
     issue_format = "`{issue} <https://rubinobs.atlassian.net/browse/{issue}>`_"
 
     [[tool.towncrier.type]]
