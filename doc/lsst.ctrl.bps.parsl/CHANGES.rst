@@ -1,5 +1,14 @@
-lsst-ctrl-bps-parsl v29.0.0 2025-03-25
-======================================
+lsst-ctrl-bps-parsl v30.0.0 (2026-01-16)
+========================================
+
+New Features
+------------
+
+- Now pass job priority requests from BPS to Parsl executor classes (`DM-53483 <https://rubinobs.atlassian.net/browse/DM-53483>`_)
+
+
+lsst-ctrl-bps-parsl v29.0.0 (2025-03-25)
+========================================
 
 New Features
 ------------
@@ -7,8 +16,8 @@ New Features
 - Added support for PBS/Torque and updated Princeton site to support new Tiger3 cluster. (`dm-48539 <https://rubinobs.atlassian.net/browse/dm-48539>`_)
 
 
-lsst-ctrl-bps-parsl v28.0.0 2024-11-21
-======================================
+lsst-ctrl-bps-parsl v28.0.0 (2024-11-21)
+========================================
 
 Bug Fixes
 ---------
@@ -23,8 +32,8 @@ Other Changes and Additions
 - Updated selected unit tests to reflect the changes made in ``BpsConfig.__init__()``. (`DM-44110 <https://rubinobs.atlassian.net/browse/DM-44110>`_)
 
 
-lsst-ctrl-bps-parsl v27.0.0 2024-06-05
-======================================
+lsst-ctrl-bps-parsl v27.0.0 (2024-06-05)
+========================================
 
 New Features
 ------------
@@ -39,14 +48,14 @@ Bug Fixes
 - Fixed ``compute_site`` keyword error in submit introduced by `DM-38138  <https://rubinobs.atlassian.net/browse/DM-38138>`_. (`DM-43721 <https://rubinobs.atlassian.net/browse/DM-43721>`_)
 
 
-lsst-ctrl-bps-parsl v26.0.0 2023-09-25
-======================================
+lsst-ctrl-bps-parsl v26.0.0 (2023-09-25)
+========================================
 
 New Features
 ------------
 
 - Added support for getting ``scheduler_options`` from BPS configuration for Slurm. (`DM-32764 <https://rubinobs.atlassian.net/browse/DM-32764>`_)
-- Added `cmd_timeout` configurable option to the Princeton site settings. (`DM-38184 <https://rubinobs.atlassian.net/browse/DM-38184>`_)
+- Added ``cmd_timeout`` configurable option to the Princeton site settings. (`DM-38184 <https://rubinobs.atlassian.net/browse/DM-38184>`_)
 
 
 Bug Fixes
@@ -61,7 +70,7 @@ Other Changes and Additions
 - Brought package up to LSST middleware packaging standards. (`DM-36092 <https://rubinobs.atlassian.net/browse/DM-36092>`_)
 
 
-lsst-ctrl-bps-parsl v25.0.0 2023-07-01
-======================================
+lsst-ctrl-bps-parsl v25.0.0 (2023-07-01)
+========================================
 
 First release as part of the LSST Science Pipelines.
