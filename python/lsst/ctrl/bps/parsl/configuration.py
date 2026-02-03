@@ -89,32 +89,32 @@ def get_bps_config_value(
 
     Parameters
     ----------
-    config : `BpsConfig`
+    config : `lsst.ctrl.bps.BpsConfig`
         Configuration from which to retrieve value.
     key : `str`
         Key name.
     dataType : `type`
         We require that the returned value have this type.
-    default : optional
+    default : `typing.Any`, optional
         Default value to be provided if ``key`` doesn't exist in the
         ``config``. A default value of `None` means that there is no default.
     required : `bool`, optional
-        If ``True``, the returned value may come from the configuration or from
+        If `True`, the returned value may come from the configuration or from
         the default, but it may not be `None`.
 
     Returns
     -------
-    value
-        Value for ``key`` in the `config`` if it exists, otherwise ``default``,
-        if provided.
+    `type` or `None`
+        Value for ``key`` in the ``config`` if it exists, otherwise
+        ``default``, if provided.
 
     Raises
     ------
     KeyError
-        If ``key`` is not in ``config`` and no default is provided but a value
-        is ``required``.
+        Raised if ``key`` is not in ``config`` and no default is provided but
+        a value is ``required``.
     RuntimeError
-        If the value is not set or is of the wrong type.
+        Raised if the value is not set or is of the wrong type.
     """
     options: dict[str, Any] = {"expandEnvVars": True, "replaceVars": True, "required": required}
     if default is not None:
@@ -138,7 +138,7 @@ def get_workflow_name(config: BpsConfig) -> str:
 
     Parameters
     ----------
-    config : `BpsConfig`
+    config : `lsst.ctrl.bps.BpsConfig`
         BPS configuration.
 
     Returns
@@ -177,7 +177,7 @@ def set_parsl_logging(config: BpsConfig) -> int:
 
     Parameters
     ----------
-    config : `BpsConfig`
+    config : `lsst.ctrl.bps.BpsConfig`
         BPS configuration.
 
     Returns

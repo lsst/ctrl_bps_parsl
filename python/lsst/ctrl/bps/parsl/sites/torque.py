@@ -115,13 +115,15 @@ class Torque(SiteConfig):
         scheduler_options : `str`, optional
             ``#SBATCH`` directives to prepend to the Torque submission script.
         provider_options : `dict`, optional
-            Additional arguments for `TorqueProvider` constructor.
+            Additional arguments for `parsl.providers.TorqueProvider`
+            constructor.
         executor_options : `dict`, optional
-            Additional arguments for `HighThroughputExecutor` constructor.
+            Additional arguments for `parsl.executors.HighThroughputExecutor`
+            constructor.
 
         Returns
         -------
-        executor : `HighThroughputExecutor`
+        executor : `parsl.executors.HighThroughputExecutor`
             Executor for Torque jobs.
         """
         nodes = get_bps_config_value(self.site, "nodes", int, nodes, required=True)
@@ -179,7 +181,7 @@ class Torque(SiteConfig):
 
         Parameters
         ----------
-        job : `ParslJob`
+        job : `lsst.ctrl.bps.parsl.ParslJob`
             Job to be executed.
 
         Returns

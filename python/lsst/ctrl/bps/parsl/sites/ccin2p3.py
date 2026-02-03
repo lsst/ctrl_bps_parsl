@@ -46,7 +46,7 @@ class Ccin2p3(SiteConfig):
     If you do need to modify those defaults, you can overwrite them for
     all job slots or for specific each job slots. Requirements specified
     for a job slot take priority over those specified for all job slots
-    at the level of entry '.site.ccin2p3:'.
+    at the level of entry ``.site.ccin2p3:``.
 
     This is an example of how to overwrite selected requirements in your BPS
     submission file:
@@ -79,40 +79,41 @@ class Ccin2p3(SiteConfig):
                 - "--licenses=my_product"
                 - "--reservation=my_reservation"
 
-    At the level of entry 'site.ccin2p3:' in the BPS submission file, the
+    At the level of entry ``site.ccin2p3:`` in the BPS submission file, the
     following configuration parameters are accepted, which apply to all slot
     sizes:
 
-    - `partition` (`str`): name of the one or more configured partitions. If
+    - ``partition`` (`str`): name of the one or more configured partitions. If
        more than one, separate them with comma (',').
        (Default: "lsst,htc")
-    - `walltime` (`str`): walltime to require for the job (Default: "72:00:00")
-    - `scheduler_options` (`list` [`str`] ): scheduler options to send to Slurm
-       for scheduling purposes.
+    - ``walltime`` (`str`): walltime to require for the job
+       (Default: "72:00:00")
+    - ``scheduler_options`` (`list` [`str`] ): scheduler options to send to
+       Slurm for scheduling purposes.
        (Default: "--licenses=sps")
 
     In addition, as shown in the previous example, for each job slot (i.e.
     "small", "medium", etc.) you can specify the requirements above as well as
     the following:
 
-    - `max_blocks` (`int`): maximum number of Slurm jobs that your workflow can
-       simultaneously use.
-    - `memory` (`int`): required amount of memory for each job, in Gigabytes.
-       (Defaults: 4 for "small", 10 for "medium", 50 fo "large" and
+    - ``max_blocks`` (`int`): maximum number of Slurm jobs that your workflow
+       can simultaneously use.
+    - ``memory`` (`int`): required amount of memory for each job, in Gigabytes.
+       (Defaults: 4 for "small", 10 for "medium", 50 for "large" and
        150 for "xlarge").
 
     Parameters
     ----------
-    *args : optional
+    *args
         Arguments to initialize the super-class.
-    **kwargs : optional
+    **kwargs
         Keyword arguments to initialize the super-class.
 
     Returns
     -------
-    Ccin2p3 : `SiteConfig`
-        Concrete instance of a `SiteConfig` specific for the CC-IN2P3 Slurm
-        farm.
+    Ccin2p3 : `lsst.ctrl.bps.parsl.SiteConfig`
+        Concrete instance of a `~lsst.ctrl.bps.parsl.SiteConfig` specific for
+        the CC-IN2P3 Slurm farm.
     """
 
     DEFAULT_ACCOUNT: str = "lsst"
@@ -316,7 +317,7 @@ class Ccin2p3(SiteConfig):
 
         Parameters
         ----------
-        job : `ParslJob`
+        job : `lsst.ctrl.bps.parsl.ParslJob`
             Job to be executed.
 
         Returns
