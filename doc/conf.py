@@ -5,13 +5,10 @@ For more information, see:
 https://developer.lsst.io/stack/building-single-package-docs.html
 """
 
-from documenteer.conf.pipelinespkg import *  # noqa: F403, import *
+# ruff: noqa: F403, F405
 
-project = "ctrl_bps_parsl"
-html_theme_options["logotext"] = project  # noqa: F405, unknown name
-html_title = project
-html_short_title = project
-exclude_patterns = ["changes/*"]
-numpydoc_show_class_members = False
+from documenteer.conf.guide import *
 
-intersphinx_mapping["lsst"] = ("https://pipelines.lsst.io/v/daily/", None)  # noqa
+exclude_patterns.append("changes/*")
+
+# numpydoc_show_class_members = False

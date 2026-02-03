@@ -1,0 +1,18 @@
+[project]
+title = "lsst-ctrl-bps-parsl"
+
+[project.python]
+package = "lsst-ctrl-bps-parsl"
+
+[build]
+clean = true
+
+[sphinx]
+extensions = [
+    "sphinx_click"
+]
+
+[sphinx.intersphinx.projects]
+python = "https://docs.python.org/3"
+lsst = "https://pipelines.lsst.io/v/daily/"
+networkx = "https://networkx.org/documentation/stable/"

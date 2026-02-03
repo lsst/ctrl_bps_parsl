@@ -11,7 +11,7 @@ from ..configuration import get_bps_config_value
 from ..site import SiteConfig
 
 if TYPE_CHECKING:
-    from .job import ParslJob
+    from ..job import ParslJob
 
 __all__ = ("Ccin2p3",)
 

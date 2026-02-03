@@ -4,7 +4,7 @@ build-backend = "setuptools.build_meta"
 
 [project]
 name = "lsst-ctrl-bps-parsl"
-requires-python = ">=3.11.0"
+requires-python = ">=3.12.0"
 description = "Parsl-based plugin for lsst-ctrl-bps."
 license = "BSD-3-Clause OR GPL-3.0-or-later"
 license-files = ["COPYRIGHT", "LICENSE", "bsd_license.txt", "gpl-v3.0.txt"]
@@ -16,7 +16,6 @@ classifiers = [
     "Intended Audience :: Science/Research",
     "Operating System :: OS Independent",
     "Programming Language :: Python :: 3",
-    "Programming Language :: Python :: 3.11",
     "Programming Language :: Python :: 3.12",
     "Programming Language :: Python :: 3.13",
     "Programming Language :: Python :: 3.14",
@@ -31,6 +30,7 @@ dynamic = ["version"]
 
 [project.urls]
 "Homepage" = "https://github.com/lsst/ctrl_bps_parsl"
+"Source" = "https://github.com/lsst/ctrl_bps_parsl"
 
 [project.optional-dependencies]
 test = [
@@ -88,15 +88,6 @@ version = { attr = "lsst_versions.get_lsst_version" }
         name = "An API Removal or Deprecation"
         showcontent = true
 
-[tool.black]
-line-length = 110
-target-version = ["py311"]
-
-[tool.isort]
-profile = "black"
-line_length = 110
-known_first_party = ["lsst"]
-
 [tool.lsst_versions]
 write_to = "python/lsst/ctrl/bps/parsl/version.py"
 
@@ -115,7 +106,7 @@ add-ignore = ["D107", "D105", "D102", "D100", "D200", "D205", "D400", "D104"]
 
 [tool.ruff]
 line-length = 110
-target-version = "py311"
+target-version = "py312"
 exclude = [
     "__init__.py",
 ]
@@ -180,6 +171,7 @@ checks = [
     "RT01",  # Unfortunately our @property trigger this.
     "RT02",  # Does not want named return value. DM style says we do.
     "SS05",  # pydocstyle is better at finding infinitive verb.
+    "RT03",  # Temporarily disable for sphinx empty returns.
 ]
 exclude = [
     '^__init__$',
