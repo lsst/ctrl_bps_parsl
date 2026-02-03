@@ -47,6 +47,16 @@ Kwargs = dict[str, Any]
 class Torque(SiteConfig):
     """Configuration for generic Torque cluster.
 
+    Parameters
+    ----------
+    *args : `~typing.Any`
+        Parameters forwarded to base class constructor.
+    **kwargs : `~typing.Any`
+        Keyword arguments passed to base class constructor, augmented by
+        the ``resource_list`` argument.
+
+    Notes
+    -----
     This can be used directly as the site configuration for a Torque cluster by
     setting the BPS config, e.g.:
 
@@ -110,10 +120,10 @@ class Torque(SiteConfig):
             Default time limit for each Torque job.
         mem_per_worker : `float`, optional
             Minimum memory per worker (GB), limited by the executor.
-        worker_init : `str`, optional
-            Environment initiation command
         scheduler_options : `str`, optional
             ``#SBATCH`` directives to prepend to the Torque submission script.
+        worker_init : `str`, optional
+            Environment initiation command.
         provider_options : `dict`, optional
             Additional arguments for `parsl.providers.TorqueProvider`
             constructor.
@@ -193,8 +203,20 @@ class Torque(SiteConfig):
 
 
 class PbsTorqueProvider(TorqueProvider):
-    """Torque Execution Provider
+    """Torque Execution Provider.
 
+    Parameters
+    ----------
+    *args : `~typing.Any`
+        Parameters forwarded to base class constructor.
+    tasks_per_node : `int`, optional
+        Number of tasks per node.
+    **kwargs : `~typing.Any`
+        Keyword arguments passed to base class constructor, augmented by
+        the ``resource_list`` argument.
+
+    Notes
+    -----
     This provider uses qsub to submit, qstat for status, and qdel to cancel
     jobs. The qsub script to be used is created from a template file in this
     same module.
@@ -210,12 +232,6 @@ class PbsTorqueProvider(TorqueProvider):
     def submit(self, command, tasks_per_node, job_name="parsl.torque"):
         """Submit the command onto an Local Resource Manager job.
 
-        This function returns an ID that corresponds to the task that was just
-        submitted.
-
-        The ``tasks_per_node`` parameter is ignored in this provider, as it is
-        set at construction time.
-
         Parameters
         ----------
         command : `str`
@@ -228,9 +244,17 @@ class PbsTorqueProvider(TorqueProvider):
 
         Returns
         -------
-            None: At capacity, cannot provision more
-            job_id (string): Identifier for the job
+        response : `str` or `None`
+            If `None`: At capacity, cannot provision more.
+            If job_id (`str`): Identifier for the job.
 
+        Notes
+        -----
+        This function returns an ID that corresponds to the task that was just
+        submitted.
+
+        The ``tasks_per_node`` parameter is ignored in this provider, as it is
+        set at construction time.
         """
         return super().submit(
             command=command,
@@ -243,10 +267,22 @@ class PbsMpiRunLauncher(MpiRunLauncher):
     """Worker launcher that wraps the user's command with the framework to
     launch multiple command invocations via ``mpirun``.
 
+    Parameters
+    ----------
+    debug : `bool`, optional
+        Enable or disable debug logging.
+    bash_location : `str`, optional
+        Path to the ``bash`` shell binary.
+    overrides : `str`, optional
+        Any override options.
+
+    Notes
+    -----
     This wrapper sets the bash env variable ``CORES`` to the number of cores on
     the machine.
 
     This launcher makes the following assumptions:
+
     - mpirun is installed and can be located in ``$PATH``
     - The provider makes available the ``$PBS_NODEFILE`` environment variable
     """
