@@ -46,6 +46,16 @@ Kwargs = dict[str, Any]
 class Slurm(SiteConfig):
     """Configuration for generic Slurm cluster.
 
+    Parameters
+    ----------
+    *args : `~typing.Any`
+        Parameters forwarded to base class constructor.
+    **kwargs : `~typing.Any`
+        Keyword arguments passed to base class constructor, augmented by
+        the ``resource_list`` argument.
+
+    Notes
+    -----
     This can be used directly as the site configuration for a Slurm cluster by
     setting the BPS config, e.g.:
 
@@ -126,13 +136,15 @@ class Slurm(SiteConfig):
         scheduler_options : `str`, optional
             ``#SBATCH`` directives to prepend to the Slurm submission script.
         provider_options : `dict`, optional
-            Additional arguments for `SlurmProvider` constructor.
+            Additional arguments for `parsl.providers.SlurmProvider`
+            constructor.
         executor_options : `dict`, optional
-            Additional arguments for `HighThroughputExecutor` constructor.
+            Additional arguments for `parsl.executors.HighThroughputExecutor`
+            constructor.
 
         Returns
         -------
-        executor : `HighThroughputExecutor`
+        executor : `parsl.executors.HighThroughputExecutor`
             Executor for Slurm jobs.
         """
         nodes = get_bps_config_value(self.site, "nodes", int, nodes, required=True)
@@ -191,7 +203,7 @@ class Slurm(SiteConfig):
 
         Parameters
         ----------
-        job : `ParslJob`
+        job : `lsst.ctrl.bps.parsl.ParslJob`
             Job to be executed.
 
         Returns
@@ -265,11 +277,11 @@ class TripleSlurm(Slurm):
 
         Parameters
         ----------
-        small_options : kwargs
+        small_options : `dict` [`str`, `typing.Any`]
             Options for ``make_executor`` for small executor.
-        medium_options : kwargs
+        medium_options : `dict` [`str`, `typing.Any`]
             Options for ``make_executor`` for medium executor.
-        large_options : kwargs
+        large_options : `dict` [`str`, `typing.Any`]
             Options for ``make_executor`` for large executor.
         **common_options
             Common options for ``make_executor`` for each of the executors.
@@ -302,7 +314,7 @@ class TripleSlurm(Slurm):
 
         Parameters
         ----------
-        job : `ParslJob`
+        job : `lsst.ctrl.bps.parsl.ParslJob`
             Job to be executed.
 
         Returns

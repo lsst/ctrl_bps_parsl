@@ -35,7 +35,7 @@ from textwrap import dedent
 from typing import Any
 
 from parsl.app.bash import BashApp
-from parsl.app.futures import Future
+from parsl.dataflow.futures import AppFuture
 
 from lsst.ctrl.bps import BpsConfig, GenericWorkflow, GenericWorkflowJob
 
@@ -49,7 +49,7 @@ _file_regex = re.compile(r"<FILE:(\S+)>")  # Regex for replacing <FILE:WHATEVER>
 
 def run_command(
     command_line: str,
-    inputs: Sequence[Future] = (),
+    inputs: Sequence[AppFuture] = (),
     stdout: str | None = None,
     stderr: str | None = None,
     parsl_resource_specification: dict[str, Any] | None = None,
@@ -58,13 +58,14 @@ def run_command(
 
     This function exists to get information into parsl, through the ``inputs``,
     ``stdout`` and ``stderr`` parameters. It needs to be wrapped by a parsl
-    ``bash_app`` decorator before use, after which it will return a `Future`.
+    ``bash_app`` decorator before use, after which it will return a
+    `parsl.dataflow.futures.AppFuture`.
 
     Parameters
     ----------
     command_line : `str`
         Command-line to have parsl run.
-    inputs : list of `Future`
+    inputs : `list` [`parsl.dataflow.futures.AppFuture`]
         Other commands that must have run before this.
     stdout, stderr : `str`, optional
         Filenames for stdout and stderr.
@@ -84,7 +85,7 @@ def get_file_paths(workflow: GenericWorkflow, name: str) -> dict[str, str]:
 
     Parameters
     ----------
-    workflow : `GenericWorkflow`
+    workflow : `lsst.ctrl.bps.GenericWorkflow`
         BPS workflow that knows the file paths.
     name : `str`
         Job name.
@@ -102,9 +103,9 @@ class ParslJob:
 
     Parameters
     ----------
-    generic : `GenericWorkflowJob`
+    generic : `lsst.ctrl.bps.GenericWorkflowJob`
         BPS job information.
-    config : `BpsConfig`
+    config : `lsst.ctrl.bps.BpsConfig`
         BPS configuration.
     file_paths : `dict` mapping `str` to `str`
         File paths for job, indexed by symbolic name.
@@ -254,10 +255,10 @@ class ParslJob:
     def get_future(
         self,
         app: BashApp,
-        inputs: list[Future],
+        inputs: list[AppFuture],
         command_prefix: str | None = None,
         resource_list: list | None = None,
-    ) -> Future | None:
+    ) -> AppFuture | None:
         """Get the parsl app future for the job.
 
         This effectively queues the job for execution by a worker, subject to
@@ -265,9 +266,9 @@ class ParslJob:
 
         Parameters
         ----------
-        app : callable
+        app : `parsl.app.bash.BashApp`
             A parsl bash_app decorator to use.
-        inputs : list of `Future`
+        inputs : `list` [ `parsl.dataflow.futures.AppFuture` ]
             Dependencies to be satisfied before executing this job.
         command_prefix : `str`, optional
             Bash commands to execute before the job command, e.g., for setting
@@ -277,9 +278,10 @@ class ParslJob:
 
         Returns
         -------
-        future : `Future` or `None`
-            A `Future` object linked to the execution of the job, or `None` if
-            the job has already been done (e.g., by ``run_local``).
+        future : `parsl.dataflow.futures.AppFuture` or `None`
+            A `parsl.dataflow.futures.AppFuture` object linked to the execution
+            of the job, or `None` if the job has already been done (e.g., by
+            ``run_local``).
         """
         if self.done:
             return None  # Nothing to do

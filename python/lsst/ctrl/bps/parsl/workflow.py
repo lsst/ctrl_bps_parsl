@@ -60,7 +60,7 @@ def get_parsl_config(config: BpsConfig) -> parsl.config.Config:
 
     Parameters
     ----------
-    config : `BpsConfig`
+    config : `lsst.ctrl.bps.BpsConfig`
         BPS configuration.
 
     Returns
@@ -83,7 +83,7 @@ class ParslWorkflow(BaseWmsWorkflow):
         Generic workflow config.
     path : `str`
         Path prefix for workflow output files.
-    jobs : `dict` mapping `str` to `ParslJob`
+    jobs : `dict` mapping `str` to `lsst.ctrl.bps.parsl.ParslJob`
         Jobs to be executed.
     parents : `dict` mapping `str` to iterable of `str`
         Dependency tree. Keywords are job names, and values are a list of job
@@ -92,7 +92,7 @@ class ParslWorkflow(BaseWmsWorkflow):
     endpoints : iterable of `str`
         Endpoints of the dependency tree. These jobs (specified by name) have
         no children.
-    final : `ParslJob`, optional
+    final : `lsst.ctrl.bps.parsl.ParslJob`, optional
         Final job to be done, e.g., to merge the execution butler. This is done
         locally.
     """
@@ -149,7 +149,7 @@ class ParslWorkflow(BaseWmsWorkflow):
 
         Parameters
         ----------
-        config : `BpsConfig`
+        config : `lsst.ctrl.bps.BpsConfig`
             Configuration of the workflow.
         generic_workflow : `lsst.ctrl.bps.generic_workflow.GenericWorkflow`
             Generic representation of a single workflow.
@@ -233,8 +233,9 @@ class ParslWorkflow(BaseWmsWorkflow):
 
         Returns
         -------
-        futures : `list` of `Future`
-            `Future` objects linked to the execution of the endpoint jobs.
+        futures : `list` of `parsl.dataflow.futures.AppFuture`
+            `parsl.dataflow.futures.AppFuture` objects linked to the execution
+            of the endpoint jobs.
         """
         futures = [self.execute(name) for name in self.endpoints]
         if block:
@@ -260,9 +261,9 @@ class ParslWorkflow(BaseWmsWorkflow):
 
         Returns
         -------
-        future : `Future` or `None`
-            A `Future` object linked to the execution of the job, or `None` if
-            the job is being reserved to run locally.
+        future : `parsl.dataflow.futures.AppFuture` or `None`
+            A `parsl.dataflow.futures.AppFuture` object linked to the execution
+            of the job, or `None` if the job is being reserved to run locally.
         """
         if name in ("pipetaskInit", "mergeExecutionButler"):
             # These get done outside of parsl

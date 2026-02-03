@@ -1,3 +1,17 @@
+lsst-ctrl-bps-parsl v30.0.1 (2026-02-03)
+========================================
+
+Dropped support for Python 3.11.
+Tested with Python 3.14.
+
+Other Changes and Additions
+---------------------------
+
+- - Dropped unused ``black`` and ``isort`` sections from ``pyproject.toml``.
+  - Bumped minimum Python version to 3.12.
+  - Switched docs action to use ``sphinxutils``. (`DM-54033 <https://rubinobs.atlassian.net/browse/DM-54033>`_)
+
+
 lsst-ctrl-bps-parsl v30.0.0 (2026-01-16)
 ========================================
 
@@ -23,7 +37,7 @@ Bug Fixes
 ---------
 
 - Resolved issue relating to the high throughput executor performing validation via checking of a resource spec dictionary.
-  Until now, ``ctrl_bps_parsl`` was passing `None`` instead of an empty `dict`` when there were no resource requests associated with a task. (`DM-45863 <https://rubinobs.atlassian.net/browse/DM-45863>`_)
+  Until now, ``ctrl_bps_parsl`` was passing `None` instead of an empty `dict` when there were no resource requests associated with a task. (`DM-45863 <https://rubinobs.atlassian.net/browse/DM-45863>`_)
 - Fixed an error caused by the deprecated ``max_workers`` parameter, which was removed in Parsl version 2024.09.09 following its deprecation in version 2024.03.04. (`DM-47399 <https://rubinobs.atlassian.net/browse/DM-47399>`_)
 
 Other Changes and Additions

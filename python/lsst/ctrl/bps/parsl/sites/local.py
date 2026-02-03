@@ -43,6 +43,16 @@ __all__ = ("Local",)
 class Local(SiteConfig):
     """Configuration for running jobs on the local machine.
 
+    Parameters
+    ----------
+    *args : `~typing.Any`
+        Parameters forwarded to base class constructor.
+    **kwargs : `~typing.Any`
+        Keyword arguments passed to base class constructor, augmented by
+        the ``resource_list`` argument.
+
+    Notes
+    -----
     The number of cores to use is specified in the site configuration, under
     ``site.<computeSite>.cores`` (`int`).
     """
@@ -65,7 +75,7 @@ class Local(SiteConfig):
 
         Parameters
         ----------
-        job : `ParslJob`
+        job : `lsst.ctrl.bps.parsl.ParslJob`
             Job to be executed.
 
         Returns

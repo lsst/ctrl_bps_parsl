@@ -12,7 +12,10 @@ extensions = [
     "sphinx_click"
 ]
 
+
+
 [sphinx.intersphinx.projects]
 python = "https://docs.python.org/3"
 lsst = "https://pipelines.lsst.io/v/daily/"
 networkx = "https://networkx.org/documentation/stable/"
+parsl = "https://parsl.readthedocs.io/en/latest/"

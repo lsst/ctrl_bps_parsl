@@ -54,7 +54,7 @@ class SiteConfig(ABC):
 
     Parameters
     ----------
-    config : `BpsConfig`
+    config : `lsst.ctrl.bps.BpsConfig`
         BPS configuration.
     resource_list : `list`, optional
         List of parsl resource specifications to pass to the executor.
@@ -74,12 +74,12 @@ class SiteConfig(ABC):
 
         Parameters
         ----------
-        config : `BpsConfig`
+        config : `lsst.ctrl.bps.BpsConfig`
             BPS configuration.
 
         Returns
         -------
-        site : `BpsConfig`
+        site : `lsst.ctrl.bps.BpsConfig`
             Site sub-configuration.
         """
         computeSite = get_bps_config_value(config, "computeSite", str, required=True)
@@ -97,7 +97,7 @@ class SiteConfig(ABC):
 
         Parameters
         ----------
-        config : `BpsConfig`
+        config : `lsst.ctrl.bps.BpsConfig`
             BPS configuration.
 
         Returns
@@ -126,7 +126,7 @@ class SiteConfig(ABC):
 
         Parameters
         ----------
-        job : `ParslJob`
+        job : `lsst.ctrl.bps.parsl.ParslJob`
             Job to be executed.
 
         Returns
@@ -185,7 +185,7 @@ class SiteConfig(ABC):
 
         Returns
         -------
-        monitor : `MonitoringHub` or `None`
+        monitor : `parsl.monitoring.MonitoringHub` or `None`
             Parsl monitor, or `None` for no monitor.
         """
         if not get_bps_config_value(self.site, "monitorEnable", bool, False):

@@ -47,11 +47,11 @@ __all__ = ("LocalSrunWorkQueue", "WorkQueue")
 
 
 class WorkQueue(SiteConfig):
-    """Base class configuraton for `WorkQueueExecutor`.
+    """Base class configuraton for `parsl.executors.WorkQueueExecutor`.
 
     Subclasses must provide implementations for ``.get_executors``
     and ``.select_executor``.  In ``.get_executors``, the site-specific
-    `ExecutionProvider` must be defined.
+    `~parsl.providers.base.ExecutionProvider` must be defined.
 
     Parameters
     ----------
@@ -91,20 +91,20 @@ class WorkQueue(SiteConfig):
         worker_options: str = "",
         wq_max_retries: int = 1,
     ) -> ParslExecutor:
-        """Return a `WorkQueueExecutor`.  The ``provider`` contains the
-        site-specific configuration.
+        """Return a `parsl.executors.WorkQueueExecutor`.  The ``provider``
+        contains the site-specific configuration.
 
         Parameters
         ----------
         label : `str`
             Label for executor.
-        provider : `ExecutionProvider`
-            Parsl execution provider, e.g., `SlurmProvider`.
+        provider : `parsl.providers.base.ExecutionProvider`
+            Parsl execution provider, e.g., `parsl.providers.SlurmProvider`.
         port : `int`, optional
             Port used by work_queue.  Default: ``9000``.
         worker_options : `str`, optional
             Extra options to pass to work_queue workers, e.g.,
-            ``"--memory=90000"``. Default: `""`.
+            ``"--memory=90000"``. Default: ``""``.
         wq_max_retries : `int`, optional
             Number of retries for work_queue to attempt per job.  Set to
             ``None`` to have it try indefinitely; set to ``1`` to have Parsl
@@ -125,13 +125,13 @@ class WorkQueue(SiteConfig):
 
 
 class LocalSrunWorkQueue(WorkQueue):
-    """Configuration for a `WorkQueueExecutor` that uses a `LocalProvider`
-    to manage resources.
+    """Configuration for a `parsl.executors.WorkQueueExecutor` that uses a
+    `parsl.providers.LocalProvider` to manage resources.
 
     This can be used directly as the site configuration within a
     multi-node allocation when Slurm is available.  For running on a
-    single node, e.g., a laptop, a `SingleNodeLauncher` is used, and
-    Slurm need not be available.
+    single node, e.g., a laptop, a `parsl.launchers.SingleNodeLauncher` is
+    used, and Slurm need not be available.
 
     The following BPS configuration parameters are recognized, overriding the
     defaults:
@@ -170,7 +170,7 @@ class LocalSrunWorkQueue(WorkQueue):
 
         Parameters
         ----------
-        job : `ParslJob`
+        job : `lsst.ctrl.bps.parsl.ParslJob`
             Job to be executed.
 
         Returns
