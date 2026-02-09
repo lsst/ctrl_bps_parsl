@@ -87,7 +87,7 @@ class WorkQueue(SiteConfig):
         label: str,
         provider: ExecutionProvider,
         *,
-        port: int = 9000,
+        port: int = 0,
         worker_options: str = "",
         wq_max_retries: int = 1,
     ) -> ParslExecutor:
@@ -101,7 +101,8 @@ class WorkQueue(SiteConfig):
         provider : `parsl.providers.base.ExecutionProvider`
             Parsl execution provider, e.g., `parsl.providers.SlurmProvider`.
         port : `int`, optional
-            Port used by work_queue.  Default: ``9000``.
+            Port used by work_queue.  Default: ``0``.  For a value of ``0``,
+            parsl will allocate a port number automatically.
         worker_options : `str`, optional
             Extra options to pass to work_queue workers, e.g.,
             ``"--memory=90000"``. Default: ``""``.
@@ -136,7 +137,7 @@ class LocalSrunWorkQueue(WorkQueue):
     The following BPS configuration parameters are recognized, overriding the
     defaults:
 
-    - ``port`` (`int`): The port used by work_queue. Default: ``9000``.
+    - ``port`` (`int`): The port used by work_queue. Default: ``0``.
     - ``worker_options (`str`): Extra options to pass to work_queue workers.
       A typical option specifies the memory available per worker, e.g.,
       ``"--memory=90000"``, which sets the available memory to 90 GB.
