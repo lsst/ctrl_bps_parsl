@@ -136,6 +136,9 @@ def get_workflow_name(config: BpsConfig) -> str:
     ``campaign`` (if set; otherwise ``operator``) entries in the BPS
     configuration.
 
+    If ``project`` is not set, then use ``outputRun`` as the workflow
+    name.
+
     Parameters
     ----------
     config : `lsst.ctrl.bps.BpsConfig`
@@ -146,7 +149,11 @@ def get_workflow_name(config: BpsConfig) -> str:
     name : `str`
         Workflow name.
     """
-    project = get_bps_config_value(config, "project", str, "bps")
+    project = get_bps_config_value(config, "project", str, None)
+
+    if project is None:
+        return get_bps_config_value(config, "outputRun", str, required=True)
+
     campaign = get_bps_config_value(
         config, "campaign", str, get_bps_config_value(config, "operator", str, required=True)
     )

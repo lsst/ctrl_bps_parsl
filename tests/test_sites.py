@@ -42,6 +42,7 @@ def testSiteResourceLists():
             "submitPath": ".",
             "operator": "operator",
             "computeSite": "local",
+            "outputRun": "test_run",
             "site": {
                 "local": {
                     "class": "lsst.ctrl.bps.parsl.sites.Local",
