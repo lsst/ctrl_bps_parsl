@@ -26,7 +26,7 @@
 # along with this program.  If not, see <https://www.gnu.org/licenses/>.
 
 from lsst.ctrl.bps import BpsConfig
-from lsst.ctrl.bps.parsl.configuration import get_bps_config_value
+from lsst.ctrl.bps.parsl.configuration import get_bps_config_value, get_workflow_name
 from lsst.daf.butler import Config
 
 
@@ -37,3 +37,25 @@ def test_config():
     """
     config = BpsConfig(Config.fromString("foo: bar"))  # BpsConfig doesn't work directly with fromString
     assert get_bps_config_value(config, "foo", str) == "bar"
+
+
+def testWorkflowName():
+    """Test that the default worflow name is set to outputRun."""
+    config = BpsConfig(
+        {
+            "submitPath": ".",
+            "operator": "operator",
+            "computeSite": "local",
+            "outputRun": "test_run",
+            "site": {
+                "local": {
+                    "class": "lsst.ctrl.bps.parsl.sites.Local",
+                    "cores": 1,
+                    "nodes": 1,
+                    "walltime": "00:01:00",
+                }
+            },
+        }
+    )
+    workflow_name = get_workflow_name(config)
+    assert workflow_name == "test_run"
