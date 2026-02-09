@@ -119,7 +119,9 @@ class ParslWorkflow(BaseWmsWorkflow):
         # these are function decorators
         self.apps: dict[str, BashApp] = {
             ex.label: bash_app(  # type: ignore
-                executors=[ex.label], cache=True, ignore_for_cache=["stderr", "stdout"]
+                executors=[ex.label],
+                cache=True,
+                ignore_for_cache=["stderr", "stdout", "parsl_resource_specification"],
             )
             for ex in self.parsl_config.executors
         }
@@ -299,7 +301,10 @@ class ParslWorkflow(BaseWmsWorkflow):
 
     def restart(self):
         """Restart the workflow after interruption."""
-        self.parsl_config.checkpoint_files = parsl.utils.get_last_checkpoint()
+        # The following is a workaround for a bug in
+        # parsl.utils.get_last_checkpoint.
+        checkpoint_files = parsl.utils.get_all_checkpoints()
+        self.parsl_config.checkpoint_files = checkpoint_files[-1:]
         self.load_dfk()
 
     def shutdown(self):
