@@ -161,7 +161,7 @@ class LocalSrunWorkQueue(WorkQueue):
             "cmd_timeout": 300,
         }
         if nodes_per_block > 1:
-            provider_options["launcher"] = SrunLauncher(overrides="-K0 -k --slurmd-debug=verbose")
+            provider_options["launcher"] = SrunLauncher(overrides="-K0 -k --cpu-bind=none")
         provider = LocalProvider(**provider_options)
         return [self.make_executor("work_queue", provider)]
 
