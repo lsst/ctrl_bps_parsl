@@ -29,30 +29,45 @@
 import platform
 
 from parsl.executors import HighThroughputExecutor, WorkQueueExecutor
+from parsl.launchers import SingleNodeLauncher, SrunLauncher
 
 from lsst.ctrl.bps import BpsConfig
-from lsst.ctrl.bps.parsl.sites import Ccin2p3, Local, LocalSrunWorkQueue, Slurm, Torque
+from lsst.ctrl.bps.parsl.sites import (
+    Ccin2p3,
+    Local,
+    LocalSrunWorkQueue,
+    Slurm,
+    Torque,
+    TripleSlurm,
+)
 
 
-def testSiteResourceLists():
-    """Test compute site resource lists."""
-    # Provide a minimal config that allows compute site classes to be created.
-    config = BpsConfig(
+def get_bps_config(nodes=1, site_class="lsst.ctrl.bps.parsl.sites.Slurm"):
+    """Provide a minimal config that allows compute site classes to be
+    created, allowing for the site class type and the number of nodes
+    to be set.
+    """
+    return BpsConfig(
         {
             "submitPath": ".",
             "operator": "operator",
-            "computeSite": "local",
+            "computeSite": "slurm",
+            "outputRun": "test_run",
             "site": {
-                "local": {
-                    "class": "lsst.ctrl.bps.parsl.sites.Local",
+                "slurm": {
+                    "class": site_class,
                     "cores": 1,
-                    "nodes": 1,
+                    "nodes": nodes,
                     "walltime": "00:01:00",
                 }
             },
         }
     )
 
+
+def testSiteResourceLists():
+    """Test compute site resource lists."""
+    config = get_bps_config()
     expected_resources = {
         HighThroughputExecutor: {"priority"},
         WorkQueueExecutor: {"memory", "cores", "disk", "running_time_min", "priority"},
@@ -76,3 +91,22 @@ def testSiteResourceLists():
         compute_site = site_class(config)
         executor_type = type(compute_site.get_executors()[0])
         assert expected_resources[executor_type] == set(compute_site.resource_list)
+
+
+def testSlurmProviderLauncher():
+    """Test that the correct parsl launcher is selected for the
+    SlurmProvider given the number of nodes.
+    """
+    site_classes = [
+        ("lsst.ctrl.bps.parsl.Slurm", Slurm),
+        ("lsst.ctrl.bps.parsl.TripleSlurm", TripleSlurm),
+    ]
+    for nodes in (1, 2, 3):
+        for site_class_name, site_class in site_classes:
+            config = get_bps_config(nodes=nodes, site_class=site_class_name)
+            site_config = site_class(config)
+            executor = site_config.get_executors()[0]
+            if nodes > 1:
+                assert isinstance(executor.provider.launcher, SrunLauncher)
+            else:
+                assert isinstance(executor.provider.launcher, SingleNodeLauncher)

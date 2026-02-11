@@ -29,6 +29,7 @@ from typing import TYPE_CHECKING, Any
 
 from parsl.executors import HighThroughputExecutor
 from parsl.executors.base import ParslExecutor
+from parsl.launchers import SrunLauncher
 from parsl.providers import SlurmProvider
 
 from ..configuration import get_bps_config_value, get_workflow_name
@@ -107,6 +108,7 @@ class Slurm(SiteConfig):
         qos: str | None = None,
         constraint: str | None = None,
         singleton: bool = False,
+        exclusive: bool = False,
         scheduler_options: str | None = None,
         provider_options: Kwargs | None = None,
         executor_options: Kwargs | None = None,
@@ -132,7 +134,9 @@ class Slurm(SiteConfig):
         constraint : `str`, optional
             Node feature(s) to require for each Slurm job.
         singleton : `bool`, optional
-            Wether to allow only a single Slurm job to run at a time.
+            Whether to allow only a single Slurm job to run at a time.
+        exclusive : `bool`, optional
+            Flag to specify exclusive nodes.
         scheduler_options : `str`, optional
             ``#SBATCH`` directives to prepend to the Slurm submission script.
         provider_options : `dict`, optional
@@ -152,11 +156,19 @@ class Slurm(SiteConfig):
         walltime = get_bps_config_value(self.site, "walltime", str, walltime, required=True)
         mem_per_node = get_bps_config_value(self.site, "mem_per_node", int, mem_per_node)
         qos = get_bps_config_value(self.site, "qos", str, qos)
+        constraint = get_bps_config_value(self.site, "constraint", str, constraint)
         singleton = get_bps_config_value(self.site, "singleton", bool, singleton)
+        exclusive = get_bps_config_value(self.site, "exclusive", bool, exclusive)
         account = get_bps_config_value(self.site, "account", str)
         scheduler_options = get_bps_config_value(self.site, "scheduler_options", str, scheduler_options)
 
         job_name = get_workflow_name(self.config)
+        if nodes > 1:
+            launcher = SrunLauncher(overrides="-K0 -k --cpu-bind=none")
+            if provider_options is None:
+                provider_options = {"launcher": launcher}
+            else:
+                provider_options["launcher"] = launcher
         if scheduler_options is None:
             scheduler_options = ""
         else:
