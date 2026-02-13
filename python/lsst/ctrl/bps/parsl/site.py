@@ -31,6 +31,7 @@ from typing import TYPE_CHECKING
 
 import parsl.config
 from parsl.addresses import address_by_hostname
+from parsl.dataflow.memoization import BasicMemoizer
 from parsl.executors.base import ParslExecutor
 from parsl.monitoring import MonitoringHub
 
@@ -219,10 +220,11 @@ class SiteConfig(ABC):
         # 'runinfo' which is not explicit enough for end users given that
         # we are using BPS + Parsl + Slurm to execute a workflow.
         run_dir = get_bps_config_value(self.site, "run_dir", str, "runinfo")
+        memoizer = BasicMemoizer(checkpoint_mode="task_exit")
         return parsl.config.Config(
             executors=executors,
+            memoizer=memoizer,
             monitoring=monitor,
             retries=retries,
             run_dir=run_dir,
-            checkpoint_mode="task_exit",
         )
