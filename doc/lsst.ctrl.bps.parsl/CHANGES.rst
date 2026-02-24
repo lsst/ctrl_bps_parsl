@@ -1,3 +1,17 @@
+lsst-ctrl-bps-parsl v30.0.4 (2026-02-23)
+========================================
+
+Bug Fixes
+---------
+
+- * Fixed checkpointing bug when monitoring is enabled.
+  * Disabled cpu-affinity when running in slurm.
+  * Ensured jobs are distributed to all nodes when running on multiple nodes in slurm.
+  * Modified WorkQueueExecutor to automatically select the port.
+  * Set ``outputRun`` as the default workflow name in the monitoring database.
+  * Added ``exclusive: true`` as an option for running in slurm. (`DM-54086 <https://rubinobs.atlassian.net/browse/DM-54086>`_)
+
+
 lsst-ctrl-bps-parsl v30.0.1 (2026-02-03)
 ========================================
 
