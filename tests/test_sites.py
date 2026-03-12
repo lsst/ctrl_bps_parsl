@@ -52,7 +52,7 @@ def get_bps_config(nodes=1, site_class="lsst.ctrl.bps.parsl.sites.Slurm"):
             "submitPath": ".",
             "operator": "operator",
             "computeSite": "slurm",
-            "outputRun": "test_run",
+            "uniqProcName": "test_run",
             "site": {
                 "slurm": {
                     "class": site_class,
