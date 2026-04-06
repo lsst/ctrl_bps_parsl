@@ -1,3 +1,12 @@
+lsst-ctrl-bps-parsl v30.0.6 (2026-04-06)
+========================================
+
+Bug Fixes
+---------
+
+- Now set ``uniqProcName`` as the default workflow name to avoid slashes in Parsl-generated shell script names (`DM-54379 <https://rubinobs.atlassian.net/browse/DM-54379>`_)
+
+
 lsst-ctrl-bps-parsl v30.0.4 (2026-02-23)
 ========================================
 
