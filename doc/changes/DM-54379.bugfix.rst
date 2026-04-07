@@ -1,1 +1,0 @@
-Set `uniqProcName` as the default workflow name to avoid slashes in parsl-generated shell script names
