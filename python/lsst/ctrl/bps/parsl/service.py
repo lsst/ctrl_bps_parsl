@@ -25,11 +25,16 @@
 # You should have received a copy of the GNU General Public License
 # along with this program.  If not, see <https://www.gnu.org/licenses/>.
 
+import logging
+import os
 from typing import Any
 
-from lsst.ctrl.bps import BaseWmsService, BaseWmsWorkflow, BpsConfig, GenericWorkflow
+from lsst.ctrl.bps import BaseWmsService, BaseWmsWorkflow, BpsConfig, GenericWorkflow, WmsRunReport
 
+from .report_utils import find_monitoring_db, get_run_reports
 from .workflow import ParslWorkflow
+
+_LOG = logging.getLogger(__name__)
 
 __all__ = ("ParslService",)
 
@@ -75,6 +80,66 @@ class ParslService(BaseWmsService):
         """
         workflow.start()
         workflow.run()
+
+    def report(
+        self,
+        wms_workflow_id: str,
+        user: str | None = None,
+        hist: float = 0,
+        pass_thru: str | None = None,
+        is_global: bool = False,
+        return_exit_codes: bool = False,
+    ) -> tuple[list[WmsRunReport], str]:
+        """Query the Parsl monitoring database for the status of a run.
+
+        Parameters
+        ----------
+        wms_workflow_id : `str`
+            The submit path (``out_prefix``) of the workflow to report on.
+        user : `str`, optional
+            Ignored; Parsl monitoring does not record the submitting user.
+        hist : `float`, optional
+            Ignored; all records in the monitoring database are always
+            considered.
+        pass_thru : `str`, optional
+            Ignored.
+        is_global : `bool`, optional
+            Ignored; Parsl uses a single local monitoring database.
+        return_exit_codes : `bool`, optional
+            Ignored; Parsl monitoring does not expose per-job exit codes.
+
+        Returns
+        -------
+        run_reports : `list` [`lsst.ctrl.bps.WmsRunReport`]
+            Status information for the requested run(s).
+        message : `str`
+            Informational message, or an empty string when no issues arose.
+        """
+        # Use the full submit path for finding various artifacts.
+        submit_path = os.path.realpath(wms_workflow_id)
+
+        # Load the pickled workflow to recover the Parsl configuration (needed
+        # to locate the monitoring database).
+        workflow = ParslWorkflow.read(submit_path)
+        parsl_config = workflow.parsl_config
+        workflow_name = workflow.name
+
+        working_dir = submit_path.split("/submit")[0]
+        db_file = find_monitoring_db(working_dir, parsl_config)
+        if db_file is None:
+            return [], (
+                f"No Parsl monitoring database found for submit path '{submit_path}'. "
+                "Ensure that monitoring is enabled in the BPS configuration "
+                "(site.<computeSite>.monitorEnable: true)."
+            )
+
+        _LOG.debug("Found monitoring database at %s", db_file)
+        reports = get_run_reports(db_file, workflow, submit_path)
+
+        if not reports:
+            return [], f"No runs matching workflow '{workflow_name}' found in {db_file}."
+
+        return reports, ""
 
     def restart(self, out_prefix: str) -> tuple[str, str, str]:
         """Restart a workflow from the point of failure.
