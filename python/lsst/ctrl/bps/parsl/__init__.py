@@ -30,3 +30,4 @@ from .job import *
 from .service import *
 from .site import *
 from .workflow import *
+from .report_utils import *
