@@ -28,6 +28,8 @@
 
 import platform
 
+import parsl.config
+from parsl.dataflow.memoization import BasicMemoizer
 from parsl.executors import HighThroughputExecutor, WorkQueueExecutor
 from parsl.launchers import SingleNodeLauncher, SrunLauncher
 
@@ -91,6 +93,22 @@ def testSiteResourceLists():
         compute_site = site_class(config)
         executor_type = type(compute_site.get_executors()[0])
         assert expected_resources[executor_type] == set(compute_site.resource_list)
+
+
+def testGetParslConfig():
+    """
+    Test that get_parsl_config returns a properly configured parsl Config.
+    """
+    config = get_bps_config()
+    site_config = Slurm(config)
+    parsl_config = site_config.get_parsl_config()
+
+    assert isinstance(parsl_config, parsl.config.Config)
+    assert isinstance(parsl_config.memoizer, BasicMemoizer)
+    assert parsl_config.monitoring is None
+    assert parsl_config.retries == 1
+    assert parsl_config.run_dir == "runinfo"
+    assert parsl_config.memoizer.checkpoint_mode == "task_exit"
 
 
 def testSlurmProviderLauncher():
