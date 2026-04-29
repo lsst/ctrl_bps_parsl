@@ -301,10 +301,7 @@ class ParslWorkflow(BaseWmsWorkflow):
 
     def restart(self):
         """Restart the workflow after interruption."""
-        # The following is a workaround for a bug in
-        # parsl.utils.get_last_checkpoint.
-        checkpoint_files = parsl.utils.get_all_checkpoints()
-        self.parsl_config.checkpoint_files = checkpoint_files[-1:]
+        self.parsl_config.memoizer.checkpoint_files = parsl.utils.get_last_checkpoint()
         self.load_dfk()
 
     def shutdown(self):
