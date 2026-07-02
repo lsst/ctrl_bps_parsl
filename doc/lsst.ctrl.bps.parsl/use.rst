@@ -145,13 +145,33 @@ Specifying ``walltime`` (as for the ``Slurm`` site) would override the individua
 .. _Slurm: https://www.schedmd.com
 
 
+.. _lsst.ctrl.bps.parsl-impatientslurm:
+
+ImpatientSlurm
+--------------
+
+`lsst.ctrl.bps.parsl.sites.ImpatientSlurm` extends :ref:`lsst.ctrl.bps.parsl-slurm` by also using cores on the head node while Slurm nodes are being allocated.
+When ``local_cores`` is non-zero, a `~parsl.providers.LocalProvider` block is started immediately on the head node, allowing tasks to run there while the first Slurm job makes its way through the queue.
+As Slurm nodes come online the pool expands to include them; once the local block completes its tasks it is not restarted.
+When ``local_cores`` is ``0`` (the default) the behaviour is identical to :ref:`lsst.ctrl.bps.parsl-slurm`.
+
+This class accepts all the same settings as :ref:`lsst.ctrl.bps.parsl-slurm`, plus:
+
+* ``local_cores`` (`int`): number of cores to use on the head node; ``0`` to disable (default).
+
+.. caution::
+   Do not set ``local_cores`` larger than the number of cores you are willing to occupy on the head node.
+   Many sites discourage or forbid running jobs on the head node,
+   and may terminate them if they are detected.
+
+
 .. _lsst.ctrl.bps.parsl-tiger:
 
 Tiger
 -----
 
 `lsst.ctrl.bps.parsl.sites.princeton.Tiger` is intended for use with the `Princeton Tiger cluster`_.
-It subclasses :ref:`lsst.ctrl.bps.parsl-slurm` and adds some suitable customisation.
+It subclasses :ref:`lsst.ctrl.bps.parsl-impatientslurm` and adds some suitable customisation.
 By default, a block of 4 nodes of 40 cores each run while another block waits in the queue.
 Optional settings are:
 
@@ -161,6 +181,7 @@ Optional settings are:
 * ``mem_per_node`` (`int`): memory per node (GB) for each Slurm job.
 * ``max_blocks`` (`int`): number of blocks (Slurm jobs) to use; one will execute while the others wait.
 * ``cmd_timeout`` (`int`): timeout (seconds) to wait for a scheduler.
+* ``local_cores`` (`int`): number of cores to use on the head node while waiting for Slurm nodes; ``0`` to disable (default).
 
 .. _Princeton Tiger cluster: https://researchcomputing.princeton.edu/systems/tiger
 

@@ -33,12 +33,13 @@ from parsl.launchers import SrunLauncher
 from parsl.providers import SlurmProvider
 
 from ..configuration import get_bps_config_value, get_workflow_name
+from ..providers import ImpatientSlurmProvider
 from ..site import SiteConfig
 
 if TYPE_CHECKING:
     from ..job import ParslJob
 
-__all__ = ("Slurm", "TripleSlurm")
+__all__ = ("ImpatientSlurm", "Slurm", "TripleSlurm")
 
 
 Kwargs = dict[str, Any]
@@ -187,20 +188,63 @@ class Slurm(SiteConfig):
             # actively running at once, so that needs to be sized appropriately
             # by the user.
             scheduler_options += "#SBATCH --dependency=singleton\n"
+        provider = self._build_provider(
+            nodes, cores_per_node, walltime, mem_per_node, account, scheduler_options, provider_options
+        )
         return HighThroughputExecutor(
             label,
-            provider=SlurmProvider(
-                nodes_per_block=nodes,
-                cores_per_node=cores_per_node,
-                mem_per_node=mem_per_node,
-                walltime=walltime,
-                account=account,
-                scheduler_options=scheduler_options,
-                **(provider_options or {}),
-            ),
+            provider=provider,
             mem_per_worker=mem_per_worker,
             address=self.get_address(),
             **(executor_options or {}),
+        )
+
+    def _build_provider(
+        self,
+        nodes: int,
+        cores_per_node: int | None,
+        walltime: str,
+        mem_per_node: int | None,
+        account: str | None,
+        scheduler_options: str,
+        provider_options: Kwargs | None,
+    ) -> SlurmProvider:
+        """Build the execution provider for this site.
+
+        This method is a template-method hook so that subclasses can wrap or
+        replace the `~parsl.providers.SlurmProvider` without having to
+        duplicate the BPS configuration logic in :meth:`make_executor`.
+
+        Parameters
+        ----------
+        nodes : `int`
+            Nodes per Slurm block.
+        cores_per_node : `int` or ``None``
+            Cores per node, or ``None`` to use all available.
+        walltime : `str`
+            Walltime in ``HH:MM:SS`` format.
+        mem_per_node : `int` or ``None``
+            Memory per node in GB, or ``None`` to use the Slurm default.
+        account : `str` or ``None``
+            Slurm account to charge.
+        scheduler_options : `str`
+            ``#SBATCH`` directives already assembled by :meth:`make_executor`.
+        provider_options : `dict` or ``None``
+            Additional keyword arguments for `~parsl.providers.SlurmProvider`.
+
+        Returns
+        -------
+        provider : `parsl.providers.SlurmProvider`
+            Configured Slurm provider.
+        """
+        return SlurmProvider(
+            nodes_per_block=nodes,
+            cores_per_node=cores_per_node,
+            mem_per_node=mem_per_node,
+            walltime=walltime,
+            account=account,
+            scheduler_options=scheduler_options,
+            **(provider_options or {}),
         )
 
     def get_executors(self) -> list[ParslExecutor]:
@@ -340,3 +384,37 @@ class TripleSlurm(Slurm):
         if memory <= self.medium_memory:
             return "medium"
         return "large"
+
+
+class ImpatientSlurm(Slurm):
+    """Configuration for a Slurm cluster that also uses head-node cores.
+
+    This is a drop-in replacement for :class:`Slurm` that pools head-node
+    (local) cores with Slurm-allocated cores in a single executor.  When
+    ``local_cores`` is non-zero, tasks start immediately on the head node
+    while Slurm nodes are being allocated; the pool then expands as those
+    nodes come online.  When ``local_cores`` is zero (the default) the
+    behaviour is identical to :class:`Slurm`.
+
+    The following BPS configuration parameters are recognised in addition to
+    those accepted by :class:`Slurm`:
+
+    - ``local_cores`` (`int`): number of cores to use on the head node; by
+      default ``0`` (disabled).
+    """
+
+    def _build_provider(
+        self,
+        nodes: int,
+        cores_per_node: int | None,
+        walltime: str,
+        mem_per_node: int | None,
+        account: str | None,
+        scheduler_options: str,
+        provider_options: Kwargs | None,
+    ) -> ImpatientSlurmProvider:
+        slurm_provider = super()._build_provider(
+            nodes, cores_per_node, walltime, mem_per_node, account, scheduler_options, provider_options
+        )
+        local_cores = get_bps_config_value(self.site, "local_cores", int, 0)
+        return ImpatientSlurmProvider(slurm_provider, local_cores)

@@ -104,6 +104,16 @@ Python API reference
    :headings: ^"
 
 
+Execution providers
+-------------------
+
+.. automodapi:: lsst.ctrl.bps.parsl.providers
+   :no-main-docstr:
+   :no-heading:
+   :headings: ^"
+   :no-inheritance-diagram:
+
+
 Base and general-purpose sites
 ------------------------------
 

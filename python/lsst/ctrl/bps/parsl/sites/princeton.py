@@ -34,7 +34,7 @@ from psutil import net_if_addrs
 
 from ..configuration import get_bps_config_value
 from ..environment import export_environment
-from .slurm import Slurm
+from .slurm import ImpatientSlurm
 
 if TYPE_CHECKING:
     from ..job import ParslJob
@@ -42,7 +42,7 @@ if TYPE_CHECKING:
 __all__ = ("Tiger",)
 
 
-class Tiger(Slurm):
+class Tiger(ImpatientSlurm):
     """Configuration for running jobs on Princeton's Tiger cluster.
 
     The following BPS configuration parameters are recognised, overriding the
@@ -56,6 +56,8 @@ class Tiger(Slurm):
     - ``cmd_timeout`` (`int`): timeout (seconds) to wait for a scheduler.
     - ``singleton`` (`bool`): allow only one job to run at a time; by default
       ``True``.
+    - ``local_cores`` (`int`): number of cores to use on the head node while
+      waiting for Slurm nodes to be allocated; by default ``0`` (disabled).
 
     When running on the Tiger cluster, you should operate on the
     ``/scratch/gpfs`` filesystem, rather than ``/projects`` or ``/tigress``;
