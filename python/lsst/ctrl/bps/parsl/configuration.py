@@ -132,12 +132,11 @@ def get_bps_config_value(
 def get_workflow_name(config: BpsConfig) -> str:
     """Get name of this workflow.
 
-    The workflow name is constructed by joining the ``project`` and
-    ``campaign`` (if set; otherwise ``operator``) entries in the BPS
-    configuration.
+    Retrieve the workflow name from the ``workflowName`` variable.
 
-    If ``project`` is not set, then use ``uniqProcName`` as the workflow
-    name.
+    If ``workflowName`` is not set, then use ``uniqProcName`` as the workflow
+    name, since this must be unique in order to query the monintoring database
+    tables.
 
     Parameters
     ----------
@@ -149,15 +148,12 @@ def get_workflow_name(config: BpsConfig) -> str:
     name : `str`
         Workflow name.
     """
-    project = get_bps_config_value(config, "project", str, None)
+    workflow_name = get_bps_config_value(config, "workflowName", str, None)
 
-    if project is None:
+    if workflow_name is None:
         return get_bps_config_value(config, "uniqProcName", str, required=True)
 
-    campaign = get_bps_config_value(
-        config, "campaign", str, get_bps_config_value(config, "operator", str, required=True)
-    )
-    return f"{project}.{campaign}"
+    return workflow_name
 
 
 def get_workflow_filename(out_prefix: str) -> str:
