@@ -3,10 +3,10 @@ import platform
 from typing import TYPE_CHECKING, Any
 
 import parsl.config
+from parsl.dataflow.memoization import BasicMemoizer
 from parsl.executors import HighThroughputExecutor
 from parsl.executors.base import ParslExecutor
 from parsl.providers import SlurmProvider
-from parsl.dataflow.memoization import BasicMemoizer
 
 from ..configuration import get_bps_config_value
 from ..site import SiteConfig
