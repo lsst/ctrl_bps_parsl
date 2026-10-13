@@ -348,7 +348,7 @@ class Ccin2p3(SiteConfig):
         monitor = self.get_monitor()
 
         # Number of retries in case of job failure.
-        retries = get_bps_config_value(self.site, ".retries", int, 0)
+        retries = get_bps_config_value(self.site, ".retries", int, 1)
 
         # Path to run directory.
         run_dir = get_bps_config_value(self.site, ".run_dir", str, "parsl_runinfo")
