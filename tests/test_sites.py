@@ -112,7 +112,11 @@ def testGetParslConfig():
     Test that get_parsl_config returns a properly configured parsl Config.
     """
     config = get_bps_config()
-    for site_config_class in (Slurm, Ccin2p3):
+    site_classes = [Slurm]
+    if platform.machine() in ("aarch64", "x86_64"):
+        # If running on a supported architecture, then add Ccin2p3 site class.
+        site_classes.append(Ccin2p3)
+    for site_config_class in site_classes:
         site_config = site_config_class(config)
         parsl_config = site_config.get_parsl_config()
 
