@@ -351,7 +351,7 @@ class Ccin2p3(SiteConfig):
         retries = get_bps_config_value(self.site, ".retries", int, 1)
 
         # Path to run directory.
-        run_dir = get_bps_config_value(self.site, ".run_dir", str, "parsl_runinfo")
+        run_dir = get_bps_config_value(self.site, ".run_dir", str, "runinfo")
         memoizer = BasicMemoizer(checkpoint_mode="task_exit")
 
         # Strategy for scaling blocks according to workflow needs.
