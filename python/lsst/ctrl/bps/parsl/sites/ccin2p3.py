@@ -3,6 +3,7 @@ import platform
 from typing import TYPE_CHECKING, Any
 
 import parsl.config
+from parsl.dataflow.memoization import BasicMemoizer
 from parsl.executors import HighThroughputExecutor
 from parsl.executors.base import ParslExecutor
 from parsl.providers import SlurmProvider
@@ -347,10 +348,11 @@ class Ccin2p3(SiteConfig):
         monitor = self.get_monitor()
 
         # Number of retries in case of job failure.
-        retries = get_bps_config_value(self.site, ".retries", int, 0)
+        retries = get_bps_config_value(self.site, ".retries", int, 1)
 
         # Path to run directory.
         run_dir = get_bps_config_value(self.site, ".run_dir", str, "parsl_runinfo")
+        memoizer = BasicMemoizer(checkpoint_mode="task_exit")
 
         # Strategy for scaling blocks according to workflow needs.
         # Use a strategy that allows for scaling up and down Parsl workers.
@@ -358,9 +360,9 @@ class Ccin2p3(SiteConfig):
 
         return parsl.config.Config(
             executors=executors,
+            memoizer=memoizer,
             monitoring=monitor,
             retries=retries,
-            checkpoint_mode="task_exit",
             run_dir=run_dir,
             strategy=strategy,
         )

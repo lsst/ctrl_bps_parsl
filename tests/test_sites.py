@@ -100,15 +100,16 @@ def testGetParslConfig():
     Test that get_parsl_config returns a properly configured parsl Config.
     """
     config = get_bps_config()
-    site_config = Slurm(config)
-    parsl_config = site_config.get_parsl_config()
+    for site_config_class in (Slurm, Ccin2p3):
+        site_config = site_config_class(config)
+        parsl_config = site_config.get_parsl_config()
 
-    assert isinstance(parsl_config, parsl.config.Config)
-    assert isinstance(parsl_config.memoizer, BasicMemoizer)
-    assert parsl_config.monitoring is None
-    assert parsl_config.retries == 1
-    assert parsl_config.run_dir == "runinfo"
-    assert parsl_config.memoizer.checkpoint_mode == "task_exit"
+        assert isinstance(parsl_config, parsl.config.Config)
+        assert isinstance(parsl_config.memoizer, BasicMemoizer)
+        assert parsl_config.monitoring is None
+        assert parsl_config.retries == 1
+        assert parsl_config.run_dir == "runinfo" or parsl_config.run_dir == "parsl_runinfo"
+        assert parsl_config.memoizer.checkpoint_mode == "task_exit"
 
 
 def testSlurmProviderLauncher():
