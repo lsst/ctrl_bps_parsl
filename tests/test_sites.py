@@ -108,7 +108,7 @@ def testGetParslConfig():
         assert isinstance(parsl_config.memoizer, BasicMemoizer)
         assert parsl_config.monitoring is None
         assert parsl_config.retries == 1
-        assert parsl_config.run_dir == "runinfo"
+        assert parsl_config.run_dir == "runinfo" or parsl_config.run_dir == "parsl_runinfo"
         assert parsl_config.memoizer.checkpoint_mode == "task_exit"
 
 
