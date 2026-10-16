@@ -48,6 +48,18 @@ def get_bps_config(nodes=1, site_class="lsst.ctrl.bps.parsl.sites.Slurm"):
     """Provide a minimal config that allows compute site classes to be
     created, allowing for the site class type and the number of nodes
     to be set.
+
+    Parameters
+    ----------
+    nodes : `int`, optional
+        Number of nodes to request for the site.
+    site_class : `str`, optional
+        Fully qualified name of the compute site class.
+
+    Returns
+    -------
+    config : `lsst.ctrl.bps.BpsConfig`
+        The BPS configuration.
     """
     return BpsConfig(
         {
