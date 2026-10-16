@@ -1,0 +1,2 @@
+- Update ccin2p3 site classe to be compatible with latest Parsl version
+- Update tests for ccin2p3 site
