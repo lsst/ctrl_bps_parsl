@@ -48,6 +48,18 @@ def get_bps_config(nodes=1, site_class="lsst.ctrl.bps.parsl.sites.Slurm"):
     """Provide a minimal config that allows compute site classes to be
     created, allowing for the site class type and the number of nodes
     to be set.
+
+    Parameters
+    ----------
+    nodes : `int`, optional
+        Number of nodes to request for the site.
+    site_class : `str`, optional
+        Fully qualified name of the compute site class.
+
+    Returns
+    -------
+    config : `lsst.ctrl.bps.BpsConfig`
+        The BPS configuration.
     """
     return BpsConfig(
         {
@@ -100,7 +112,11 @@ def testGetParslConfig():
     Test that get_parsl_config returns a properly configured parsl Config.
     """
     config = get_bps_config()
-    for site_config_class in (Slurm, Ccin2p3):
+    site_classes = [Slurm]
+    if platform.machine() in ("aarch64", "x86_64"):
+        # If running on a supported architecture, then add Ccin2p3 site class.
+        site_classes.append(Ccin2p3)
+    for site_config_class in site_classes:
         site_config = site_config_class(config)
         parsl_config = site_config.get_parsl_config()
 
